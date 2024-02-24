@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "assets/*": ["assets/*"],
+      "auth/*": ["auth/*"],
+      "components/*": ["components/*"],
+      "helps/*": ["helps/*"],
+      "hooks/*": ["hooks/*"],
+      "layouts/*": ["layouts/*"],
+      "main/*": ["main/*"],
+      "pages/*": ["pages/*"],
+      "appdata/*": ["appdata/*"],
+      "routes/*": ["routes/*"],
+      "utils/*": ["utils/*"]
+    }
+  },
+  "include": ["src"]
+}

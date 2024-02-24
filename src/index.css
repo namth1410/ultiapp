@@ -1,13 +1,84 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: "Gilroy", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-weight: bold;
+  width: 100vw;
+  height: 100vh;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+:root {
+  --primary-color: #4255ff;
+  --blue: #2667af;
+  --blue-secondary: #1992cd;
+  --scrollbar-thumb: #DADCE0;
+  --blue-tertiary: #1992cd1a;
+  --bgc-primary: #ddeff8;
+  --text-color-primary: rgba(26, 25, 25, 0.7);
+  --black-text-secondary: #1a1919;
+  --red-primary: #ff0401;
+  --red-secondary: #ff04011a;
+  --gray-primary: #f7f7f7;
+  --gray-secondary: #E1E1E1;
+  --green-primary: #48cd3d;
+  --green-secondary: #ebfeea;
+  --warning-primary: #ff8a01;
+  --warning-secondary: #ff8a011a;
+}
+
+p {
+  margin: 0;
+}
+
+/* Normal */
+@font-face {
+  font-family: "Gilroy";
+  src: url(./assets/fonts/gilroy/SVN-Gilroy-Medium.otf) format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Regular */
+@font-face {
+  font-family: "Gilroy";
+  src: url(./assets/fonts/gilroy/SVN-Gilroy-Regular.otf) format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Light */
+@font-face {
+  font-family: "Gilroy";
+  src: url(./assets/fonts/gilroy/SVN-Gilroy-Light.otf) format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: "Gilroy";
+  src: url(./assets/fonts/gilroy/SVN-Gilroy-Bold.otf) format("opentype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Italic */
+@font-face {
+  font-family: "Gilroy";
+  src: url(./assets/fonts/gilroy/SVN-Gilroy-Italic.otf) format("opentype");
+  font-weight: normal;
+  font-style: italic;
 }

@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import MainLayout from "layouts/MainLayout";
+import { useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import "./App.css";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const authLocalStorage = localStorage.getItem("ulti_auth");
+    if (!authLocalStorage) {
+      navigate("/home");
+    } else {
+      navigate("/home");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<MainLayout />}>
+        <Route path="/home" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route index path="/login" element={<Login />} />
+      </Route>
+    </Routes>
   );
 }
 

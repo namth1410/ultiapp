@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 1098;
-  color: #fff;
+  background-color: #fff;
 
   .header {
     display: flex;
@@ -15,6 +15,68 @@
     .content_right {
       display: flex;
       gap: 10px;
+
+      .profile_dropdown_wrapper {
+        width: 74px;
+        position: relative;
+        z-index: 2000;
+
+        .profile_dropdown {
+          position: relative;
+
+          & > div {
+            transform: translate(-23px, 60px) !important;
+            width: 222px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+          }
+
+          .profile_menu {
+
+            .link_container {
+              display: flex;
+              flex-direction: column;
+
+              a {
+                color: #1a1919;
+                padding: 6px 24px;
+                text-align: center;
+                text-decoration: none;
+              }
+
+              a:hover {
+                background-color: rgb(215, 215, 215);
+              }
+
+              .logout_btn {
+                font-weight: bold;
+                font-size: 16px;
+                color: var(--blue);
+                text-align: center;
+                background-color: rgba(0, 171, 255, 0.1);
+                border: none;
+                border-radius: 10px;
+                padding: 5px 15px;
+                cursor: pointer;
+              }
+            }
+            & hr {
+              width: 100%;
+              margin: 8px 0px;
+              background: var(--body-text-body-color, #212529);
+              box-shadow: 0px -0.5px 0px 0px rgba(0, 0, 0, 0.15);
+            }
+
+            a:active {
+              background-color: #fff !important;
+            }
+          }
+        }
+
+        ::after {
+          display: none;
+        }
+      }
     }
   }
 }

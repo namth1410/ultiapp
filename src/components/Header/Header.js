@@ -2,7 +2,16 @@ import { UserOutlined } from "@ant-design/icons";
 import { Button, Divider, Dropdown, Space } from "antd";
 import Logo from "assets/img/logo.svg";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
@@ -56,7 +65,7 @@ function Header() {
   const contentStyle = {
     backgroundColor: "#fff",
     borderRadius: "10px",
-    boxShadow: "red",
+    boxShadow: "0 1.25rem 2rem 0 #00000029",
     border: "1px solid #ccc",
   };
   const menuStyle = {
@@ -68,14 +77,26 @@ function Header() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Lưu thông tin người dùng vào Firestore
-      await addDoc(collection(firestore, "users"), {
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        profilePic: user.photoURL,
-        //Thêm thông tin khác nếu cần
-      });
+      const usersRef = collection(firestore, "users");
+      const querySnapshot = await getDocs(
+        query(usersRef, where("uid", "==", user.uid))
+      );
+
+      if (!querySnapshot.empty) {
+        const docId = querySnapshot.docs[0].id;
+        await updateDoc(doc(usersRef, docId), {
+          displayName: user.displayName,
+          email: user.email,
+          profilePic: user.photoURL,
+        });
+      } else {
+        await addDoc(usersRef, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          profilePic: user.photoURL,
+        });
+      }
 
       // Lưu thông tin đăng nhập vào localStorage
       localStorage.setItem(
@@ -179,6 +200,11 @@ function Header() {
                         </div>
                       </div>
                     </Space>
+                    <Divider
+                      style={{
+                        margin: 0,
+                      }}
+                    />
                     {React.cloneElement(menu, {
                       style: menuStyle,
                     })}
@@ -212,6 +238,7 @@ function Header() {
                     padding: "0px",
                     borderRadius: "100px",
                     aspectRatio: "1",
+                    cursor: "pointer",
                   }}
                 >
                   <img

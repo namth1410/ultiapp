@@ -4,7 +4,7 @@ import Home from "pages/Home/Home";
 import Login from "pages/Login";
 import Signup from "pages/Signup";
 import { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 
 function App() {
@@ -13,8 +13,6 @@ function App() {
     const authLocalStorage = localStorage.getItem("ulti_auth");
     if (!authLocalStorage) {
       navigate("/login");
-    } else {
-      navigate("/home");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -25,6 +23,7 @@ function App() {
         <Route path="/create-set" element={<CreateSet />} />
         <Route path="/signup" element={<Signup />} />
         <Route index path="/login" element={<Login />} />
+        <Route index path="/*" element={<Navigate to="/home" />} />
       </Route>
     </Routes>
   );

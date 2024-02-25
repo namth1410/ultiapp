@@ -17,4 +17,19 @@
     font-family: "Gilroy", sans-serif;
     cursor: pointer;
   }
+
+  .my_quizzs_wrapper {
+    display: flex;
+    width: 80%;
+    height: auto;
+    padding: 15px 20px;
+    margin: 20px 0;
+    flex-direction: column;
+
+    .quizzs {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
 }

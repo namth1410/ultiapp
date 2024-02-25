@@ -1,20 +1,11 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Space } from "antd";
 import { addDoc, collection } from "firebase/firestore";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { auth, firestore } from "../../firebase";
 import styles from "./CreateSet.module.css";
 
-const onFinish = async (values) => {
-  console.log("Success:", values);
-  const dataToAdd = {
-    ...values,
-    dateCreate: new Date().toISOString(),
-    creator: auth.currentUser.uid,
-  };
-  console.log(dataToAdd);
-  await addDoc(collection(firestore, "quizzs"), dataToAdd);
-};
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
   if (errorInfo.values.quizz_items.length === 0) {
@@ -32,6 +23,31 @@ const onFinishFailed = (errorInfo) => {
 };
 
 function CreateSet() {
+  const navigate = useNavigate();
+  const onFinish = async (values) => {
+    console.log("Success:", values);
+    const dataToAdd = {
+      ...values,
+      dateCreate: new Date().toISOString(),
+      uidCreator: auth.currentUser.uid,
+      nameCreator: auth.currentUser.displayName,
+      photoURL: auth.currentUser.photoURL,
+    };
+    console.log(dataToAdd);
+    await addDoc(collection(firestore, "quizzs"), dataToAdd);
+    toast.success("Đã thêm mới 1 quizz", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    navigate("/home");
+  };
+
   return (
     <div className={styles.wrapper}>
       <h2>Tạo học phần mới</h2>

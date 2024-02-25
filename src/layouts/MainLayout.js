@@ -1,5 +1,5 @@
 import Header from "components/Header/Header";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 function MainLayout() {
@@ -27,7 +27,6 @@ function MainLayout() {
         ref={contentRef}
         style={{
           width: "100%",
-          overflow: "hidden",
           height: visibleHeader ? "calc(100vh - 89px)" : "100vh",
         }}
       >

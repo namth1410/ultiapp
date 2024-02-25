@@ -2,6 +2,7 @@ import MainLayout from "layouts/MainLayout";
 import CreateSet from "pages/CreateSet/CreateSet";
 import Home from "pages/Home/Home";
 import Login from "pages/Login";
+import Quizz from "pages/Quizz/Quizz";
 import Signup from "pages/Signup";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ function App() {
         <Route path="/create-set" element={<CreateSet />} />
         <Route path="/signup" element={<Signup />} />
         <Route index path="/login" element={<Login />} />
+        <Route index path="/quizz/:quizz_id" element={<Quizz />} />
         <Route index path="/*" element={<Navigate to="/home" />} />
       </Route>
     </Routes>

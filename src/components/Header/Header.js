@@ -1,13 +1,55 @@
 import { Button } from "antd";
 import Logo from "assets/img/logo.svg";
-import { signInWithGoogle } from "../../firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase";
 import styles from "./Header.module.css";
+import { firestore } from "../../firebase";
+
+const provider = new GoogleAuthProvider();
 
 function Header() {
+  const navigate = useNavigate();
+  
+  const signInWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Lưu thông tin người dùng vào Firestore
+      await addDoc(collection(firestore, "users"), {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        profilePic: user.photoURL,
+        //Thêm thông tin khác nếu cần
+      });
+
+      // Lưu thông tin đăng nhập vào localStorage
+      localStorage.setItem(
+        "ulti_auth",
+        JSON.stringify({
+          accessToken: user.stsTokenManager.accessToken,
+          refreshToken: user.stsTokenManager.refreshToken,
+        })
+      );
+      localStorage.setItem(
+        "ulti_user",
+        JSON.stringify({
+          name: user.displayName,
+          email: user.email,
+          profilePic: user.photoURL,
+        })
+      );
+
+      navigate("/home"); // Điều hướng sau khi đăng nhập thành công
+    } catch (error) {
+      console.error("Đã xảy ra lỗi khi đăng nhập:", error);
+    }
+  };
   const onLogin = () => {
-    signInWithGoogle().then((result) => {
-      console.log(result);
-    });
+    signInWithGoogle();
   };
   return (
     <div className={styles.wrapper_header}>

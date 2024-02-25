@@ -1,8 +1,7 @@
 import { Button } from "antd";
 import Splash from "assets/img/splash.jpg";
-import React from "react";
-const Login = () => {
 
+const Login = () => {
   return (
     <div style={{ position: "relative" }}>
       <img
@@ -20,7 +19,7 @@ const Login = () => {
           flexDirection: "column",
           maxWidth: "35rem",
           color: "#fff",
-          fontSize: "1.3rem"
+          fontSize: "1.3rem",
         }}
       >
         <h1>Thẻ ghi nhớ kỹ thuật số và các công cụ học tốt nhất</h1>

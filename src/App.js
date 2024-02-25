@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     const authLocalStorage = localStorage.getItem("ulti_auth");
     if (!authLocalStorage) {
-      navigate("/home");
+      navigate("/login");
     } else {
       navigate("/home");
     }

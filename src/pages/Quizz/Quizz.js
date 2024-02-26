@@ -42,6 +42,7 @@ function Quizz() {
 
       setDataShuffleQuizz(_dataQuizz);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShuffle]);
 
   useEffect(() => {
@@ -56,6 +57,7 @@ function Quizz() {
       u.voice = voice;
       synth.speak(u);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuizzItem]);
 
   useEffect(() => {

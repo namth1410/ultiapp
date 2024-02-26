@@ -25,9 +25,12 @@ function Quizz() {
   const [hideTerm, setHideTerm] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
 
-  useEffect(() => {
-    console.log(dataQuizz);
-  }, [dataQuizz]);
+  const [voice, setVoice] = useState(null);
+
+  const handleVoiceChange = (event) => {
+    const voices = window.speechSynthesis.getVoices();
+    setVoice(voices.find((v) => v.name === event.target.value));
+  };
 
   useEffect(() => {
     if (isShuffle && dataQuizz?.quizz_items) {
@@ -43,14 +46,16 @@ function Quizz() {
 
   useEffect(() => {
     const synth = window.speechSynthesis;
-    const u = new SpeechSynthesisUtterance(
-      dataQuizz?.quizz_items?.[indexQuizzItem].term
-    );
+    if (dataQuizz) {
+      const u = new SpeechSynthesisUtterance(
+        isShuffle
+          ? dataShuffleQuizz?.quizz_items[indexQuizzItem].term
+          : dataQuizz?.quizz_items[indexQuizzItem].term
+      );
 
-    synth.speak(u);
-    return () => {
-      synth.cancel();
-    };
+      u.voice = voice;
+      synth.speak(u);
+    }
   }, [indexQuizzItem]);
 
   useEffect(() => {
@@ -76,7 +81,15 @@ function Quizz() {
       }
     });
 
-    return () => unsubscribe();
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+
+    setVoice(voices[0]);
+
+    return () => {
+      synth.cancel();
+      unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -102,6 +115,29 @@ function Quizz() {
         <button>Mini games</button>
       </div>
 
+      <div style={{ marginTop: "20px" }}>
+        <span
+          style={{ color: "var(--text-color-primary)", marginRight: "10px" }}
+        >
+          Giọng đọc
+        </span>
+        <select
+          style={{
+            padding: "10px",
+            borderRadius: "10px",
+            fontFamily: "Gilroy",
+          }}
+          value={voice?.name}
+          onChange={handleVoiceChange}
+        >
+          {window.speechSynthesis.getVoices().map((voice) => (
+            <option key={voice.name} value={voice.name}>
+              {voice.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div
         className={styles.flash_card_wrapper}
         onClick={() => {
@@ -119,8 +155,12 @@ function Quizz() {
                   e.stopPropagation();
                   const synth = window.speechSynthesis;
                   const u = new SpeechSynthesisUtterance(
-                    dataQuizz?.quizz_items?.[indexQuizzItem].term
+                    isShuffle
+                      ? dataShuffleQuizz?.quizz_items[indexQuizzItem].term
+                      : dataQuizz?.quizz_items[indexQuizzItem].term
                   );
+
+                  u.voice = voice;
                   synth.speak(u);
                 }}
               />

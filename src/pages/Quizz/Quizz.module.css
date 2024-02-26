@@ -1,6 +1,10 @@
 .quizz_wrapper {
   padding-top: 15px;
   padding-left: 40px;
+  -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
   .mode_wrapper {
     display: flex;
@@ -40,6 +44,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+
+      .actions {
+        position: absolute;
+        top: 5%;
+        right: 5%;
+      }
     }
 
     .definition_wrapper {
@@ -59,7 +70,8 @@
   .tools_box {
     width: 80%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     margin-top: 20px;
+    padding: 0rem 1.5rem
   }
 }

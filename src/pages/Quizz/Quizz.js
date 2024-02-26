@@ -1,8 +1,12 @@
 import {
+  CaretRightOutlined,
   LeftCircleOutlined,
   RightCircleOutlined,
   RiseOutlined,
+  SettingOutlined,
+  SoundOutlined,
   StarFilled,
+  SwapOutlined,
 } from "@ant-design/icons";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -15,13 +19,39 @@ function Quizz() {
   const { quizz_id } = useParams();
 
   const [dataQuizz, setDataQuizz] = useState(null);
+  const [dataShuffleQuizz, setDataShuffleQuizz] = useState(null);
   const [indexQuizzItem, setIndexQuizzItem] = useState(0);
   const [totalQuizzItem, setTotalQuizzItem] = useState(0);
   const [hideTerm, setHideTerm] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
 
   useEffect(() => {
     console.log(dataQuizz);
   }, [dataQuizz]);
+
+  useEffect(() => {
+    if (isShuffle && dataQuizz?.quizz_items) {
+      const shuffledArray = [...dataQuizz.quizz_items].sort(
+        () => Math.random() - 0.5
+      );
+      let _dataQuizz = { ...dataQuizz };
+      _dataQuizz.quizz_items = shuffledArray;
+
+      setDataShuffleQuizz(_dataQuizz);
+    }
+  }, [isShuffle]);
+
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    const u = new SpeechSynthesisUtterance(
+      dataQuizz?.quizz_items?.[indexQuizzItem].term
+    );
+
+    synth.speak(u);
+    return () => {
+      synth.cancel();
+    };
+  }, [indexQuizzItem]);
 
   useEffect(() => {
     const getDataQuizz = async (id) => {
@@ -80,28 +110,67 @@ function Quizz() {
       >
         {!hideTerm && (
           <div className={styles.term_wrapper}>
+            <div className={styles.actions}>
+              <SoundOutlined
+                style={{
+                  fontSize: "20px",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const synth = window.speechSynthesis;
+                  const u = new SpeechSynthesisUtterance(
+                    dataQuizz?.quizz_items?.[indexQuizzItem].term
+                  );
+                  synth.speak(u);
+                }}
+              />
+            </div>
             <span className={styles.text_quizz_item}>
-              {dataQuizz?.quizz_items[indexQuizzItem].term}
+              {isShuffle
+                ? dataShuffleQuizz?.quizz_items[indexQuizzItem].term
+                : dataQuizz?.quizz_items[indexQuizzItem].term}
             </span>
           </div>
         )}
         {hideTerm && (
           <div className={styles.definition_wrapper}>
             <span className={styles.text_quizz_item}>
-              {dataQuizz?.quizz_items[indexQuizzItem].definition}
+              {isShuffle
+                ? dataShuffleQuizz?.quizz_items[indexQuizzItem].definition
+                : dataQuizz?.quizz_items[indexQuizzItem].definition}
             </span>
           </div>
         )}
       </div>
 
       <div className={styles.tools_box}>
+        <div style={{ display: "flex", gap: "15px" }}>
+          <CaretRightOutlined
+            onClick={() => {}}
+            style={{ fontSize: "35px", color: "var(--text-color-primary)" }}
+          />
+          <SwapOutlined
+            onClick={() => {
+              setIsShuffle(!isShuffle);
+            }}
+            style={{
+              fontSize: "35px",
+              color: isShuffle ? "red" : "var(--text-color-primary)",
+            }}
+          />
+        </div>
+
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <LeftCircleOutlined
             onClick={() => {
               if (indexQuizzItem === 0) return;
               return setIndexQuizzItem(indexQuizzItem - 1);
             }}
-            style={{ fontSize: "35px", color: "var(--text-color-primary)" }}
+            style={{
+              fontSize: "40px",
+              color:
+                indexQuizzItem === 0 ? "#E7EAF1" : "var(--text-color-primary)",
+            }}
           />
           <span
             style={{ color: "var(--text-color-primary)", fontSize: "20px" }}
@@ -111,6 +180,19 @@ function Quizz() {
               if (indexQuizzItem === totalQuizzItem - 1) return;
               return setIndexQuizzItem(indexQuizzItem + 1);
             }}
+            style={{
+              fontSize: "40px",
+              color:
+                indexQuizzItem === totalQuizzItem - 1
+                  ? "#E7EAF1"
+                  : "var(--text-color-primary)",
+            }}
+          />
+        </div>
+
+        <div style={{ display: "flex" }}>
+          <SettingOutlined
+            onClick={() => {}}
             style={{ fontSize: "35px", color: "var(--text-color-primary)" }}
           />
         </div>

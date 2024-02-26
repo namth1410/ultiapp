@@ -47,7 +47,7 @@ function Quizz() {
 
   useEffect(() => {
     const synth = window.speechSynthesis;
-    if (dataQuizz) {
+    if (dataQuizz && !hideTerm) {
       const u = new SpeechSynthesisUtterance(
         isShuffle
           ? dataShuffleQuizz?.quizz_items[indexQuizzItem].term
@@ -206,7 +206,8 @@ function Quizz() {
           <LeftCircleOutlined
             onClick={() => {
               if (indexQuizzItem === 0) return;
-              return setIndexQuizzItem(indexQuizzItem - 1);
+              setIndexQuizzItem(indexQuizzItem - 1);
+              setHideTerm(false);
             }}
             style={{
               fontSize: "40px",
@@ -220,7 +221,8 @@ function Quizz() {
           <RightCircleOutlined
             onClick={() => {
               if (indexQuizzItem === totalQuizzItem - 1) return;
-              return setIndexQuizzItem(indexQuizzItem + 1);
+              setIndexQuizzItem(indexQuizzItem + 1);
+              setHideTerm(false);
             }}
             style={{
               fontSize: "40px",

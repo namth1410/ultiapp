@@ -11,13 +11,14 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
 import styles from "./Quizz.module.css";
 import PropTypes from "prop-types";
 
 function Quizz() {
   const { quizz_id } = useParams();
+  const navigate = useNavigate()
 
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
 
@@ -116,7 +117,9 @@ function Quizz() {
       <div className={styles.mode_wrapper}>
         <button>Thẻ ghi nhớ</button>
         <button>Học</button>
-        <button>Kiểm tra</button>
+        <button onClick={() => {
+          navigate(`/quizz/test/${quizz_id}`)
+        }}>Kiểm tra</button>
         <button>Mini games</button>
       </div>
 

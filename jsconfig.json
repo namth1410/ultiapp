@@ -5,6 +5,7 @@
       "assets/*": ["assets/*"],
       "auth/*": ["auth/*"],
       "components/*": ["components/*"],
+      "contexts/*": ["contexts/*"],
       "helps/*": ["helps/*"],
       "hooks/*": ["hooks/*"],
       "layouts/*": ["layouts/*"],

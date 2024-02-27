@@ -8,7 +8,7 @@ function MainLayout() {
   const [visibleHeader, setVisibleHeader] = useState(true);
 
   useEffect(() => {
-    if (window.location.pathname.includes("/practice")) {
+    if (window.location.pathname.includes("/quizz/test")) {
       setVisibleHeader(false);
     } else {
       setVisibleHeader(true);

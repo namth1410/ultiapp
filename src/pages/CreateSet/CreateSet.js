@@ -33,7 +33,6 @@ function CreateSet() {
       nameCreator: auth.currentUser.displayName,
       photoURL: auth.currentUser.photoURL,
     };
-    console.log(dataToAdd);
     await addDoc(collection(firestore, "quizzs"), dataToAdd);
     toast.success("Đã thêm mới 1 quizz", {
       position: "top-center",

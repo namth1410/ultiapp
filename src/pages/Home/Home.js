@@ -71,7 +71,6 @@ const Home = () => {
         </div>
         <div className={styles.quizzs}>
           {myQuizzs.map((item, index) => {
-            console.log(item);
             return index < 3 ? (
               <div key={item.id}>
                 <CardQuizz props={item} />

@@ -14,9 +14,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
 import styles from "./Quizz.module.css";
+import PropTypes from "prop-types";
 
 function Quizz() {
   const { quizz_id } = useParams();
+
+  const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
 
   const [dataQuizz, setDataQuizz] = useState(null);
   const [dataShuffleQuizz, setDataShuffleQuizz] = useState(null);
@@ -241,8 +244,111 @@ function Quizz() {
           />
         </div>
       </div>
+
+      <div className={styles.devider}></div>
+
+      <div className={styles.extensions}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <img
+            style={{
+              objectFit: "cover",
+              width: "50px",
+              borderRadius: "50%",
+            }}
+            src={infoUser.profilePic}
+            alt="Notification Icon"
+          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              overflow: "hidden",
+              marginLeft: "20px",
+              gap: "5px",
+            }}
+          >
+            <span>{infoUser.name}</span>
+            <span
+              style={{
+                fontWeight: "500",
+                width: "100%",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {infoUser.email}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {dataQuizz?.quizz_items && (
+        <div className={styles.detail_quizz}>
+          <h2>{`Thuật ngữ trong học phần này (${totalQuizzItem})`}</h2>
+          <div>
+            {dataQuizz?.quizz_items.map((item) => {
+              return <Item key={item} props={item} voice={voice} />;
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+const Item = ({ props, voice }) => {
+  const { term, definition } = props;
+  return (
+    <div
+      style={{
+        display: "flex",
+        padding: "15px",
+        boxShadow: "0 0.25rem 1rem 0 #282e3e14",
+        backgroundColor: "#fff",
+        borderRadius: "0.5rem",
+        alignItems: "center",
+        color: "#1a1d28",
+        fontWeight: "500",
+      }}
+    >
+      <span style={{ width: "180px" }}>{term}</span>
+      <div
+        style={{ height: "40px", width: "2px", backgroundColor: "#f6f7fb" }}
+      ></div>
+      <span style={{ paddingLeft: "20px", fontWeight: "bold" }}>
+        {definition}
+      </span>
+
+      <div style={{ marginLeft: "auto" }}>
+        <SoundOutlined
+          style={{
+            fontSize: "20px",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            const synth = window.speechSynthesis;
+            const u = new SpeechSynthesisUtterance(term);
+
+            u.voice = voice;
+            synth.speak(u);
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+Item.propTypes = {
+  props: PropTypes.object,
+  term: PropTypes.string,
+  definition: PropTypes.string,
+  voice: PropTypes.any,
+};
 
 export default Quizz;

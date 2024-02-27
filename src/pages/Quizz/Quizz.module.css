@@ -1,10 +1,11 @@
 .quizz_wrapper {
   padding-top: 15px;
   padding-left: 40px;
+  padding-bottom: 20px;
   -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   .mode_wrapper {
     display: flex;
@@ -21,6 +22,7 @@
       font-size: 18px;
       padding: 20px;
       width: 150px;
+      cursor: pointer;
     }
 
     button:hover {
@@ -72,6 +74,17 @@
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-    padding: 0rem 1.5rem
+    padding: 0rem 1.5rem;
+  }
+
+  .devider {
+    width: 80%;
+    height: 2px;
+    background-color: #586380;
+    margin: 30px 1px;
+  }
+
+  .detail_quizz {
+    width: 80%;
   }
 }

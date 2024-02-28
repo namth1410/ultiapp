@@ -74,6 +74,16 @@ function Quizz() {
 
       u.voice = voice;
       synth.speak(u);
+
+      const cancelCurrentUtterance = () => {
+        if (synth && synth.speaking && u) {
+          synth.cancel();
+        }
+      };
+
+      return () => {
+        cancelCurrentUtterance();
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuizzItem]);

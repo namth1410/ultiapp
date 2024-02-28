@@ -1,9 +1,11 @@
-import { Card, Tag } from "antd";
+import { Card, Tag, Modal, Input } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function CardQuizz({ props }) {
-  const { id, title, quizz_items, photoURL, nameCreator, access } = props;
+  const { id, title, quizz_items, photoURL, nameCreator, access, password } =
+    props;
   const navigate = useNavigate();
 
   const COLOR_ACCESS = {
@@ -11,12 +13,36 @@ function CardQuizz({ props }) {
     password: "#f50",
     private: "#ccc",
   };
+
+  const [passwordModal, setPasswordModal] = useState("");
+  const [statusPassword, setStatusPassword] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    if (passwordModal !== password) {
+      setStatusPassword("error");
+    } else {
+      setIsModalOpen(false);
+      navigate(`/quizz/${id}`);
+    }
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div
+    <button
       onClick={() => {
-        navigate(`/quizz/${id}`);
+        if (access === "password") {
+          showModal();
+        } else {
+          navigate(`/quizz/${id}`);
+        }
       }}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", border: "none", backgroundColor: "unset" }}
     >
       <Card
         title={title}
@@ -46,7 +72,23 @@ function CardQuizz({ props }) {
           <span>{nameCreator}</span>
         </div>
       </Card>
-    </div>
+
+      <Modal
+        title="Nhập mật khẩu để truy cập"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Input.Password
+          status={statusPassword}
+          placeholder="Nhập mật khẩu"
+          onChange={(e) => {
+            setStatusPassword("");
+            setPasswordModal(e.target.value);
+          }}
+        />
+      </Modal>
+    </button>
   );
 }
 
@@ -58,5 +100,6 @@ CardQuizz.propTypes = {
   photoURL: PropTypes.string,
   nameCreator: PropTypes.string,
   access: PropTypes.string,
+  password: PropTypes.string,
 };
 export default CardQuizz;

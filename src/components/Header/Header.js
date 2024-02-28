@@ -137,7 +137,15 @@ function Header() {
     <div className={styles.wrapper_header}>
       <div className={styles.header}>
         <div className={styles.content_left}>
-          <Button type="link">
+          <Button
+            type="link"
+            onClick={() => {
+              navigate("/home");
+            }}
+            style={{
+              height: "auto",
+            }}
+          >
             <img
               style={{ height: "60px" }}
               src={Logo}

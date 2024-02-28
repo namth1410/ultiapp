@@ -52,8 +52,11 @@ export const TestProvider = ({ children }) => {
           const keyIndex = _correctAnswer[key];
 
           const availableIndexes = quizzData.quizz_items
-            .filter((item, index) => index !== key && index !== keyIndex)
-            .map((item, index) => index);
+            .map((item, index) => {
+              if (index !== key) return index;
+              return -1;
+            })
+            .filter((index) => index !== -1);
 
           const randomIndexes = [];
           for (let i = 0; i < 3; i++) {

@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import ChatBox from "pages/ChatBox/ChatBox ";
+import EditSet from "pages/EditSet/EditSet";
 
 function App() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function App() {
       <Route path="/" element={<MainLayout />}>
         <Route path="/home" element={<Home />} />
         <Route path="/create-set" element={<CreateSet />} />
+        <Route path="/edit-set/:quizz_id" element={<EditSet />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/chat" element={<ChatBox />} />
         <Route index path="/login" element={<Login />} />

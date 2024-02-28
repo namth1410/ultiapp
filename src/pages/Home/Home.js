@@ -10,6 +10,7 @@ import styles from "./Home.module.css";
 const Home = () => {
   const navigate = useNavigate();
   const [myQuizzs, setMyQuizzs] = useState([]);
+  const [maybeCareQuizzs, setMaybeCareQuizzs] = useState([]);
 
   useEffect(() => {
     console.log(myQuizzs);
@@ -23,16 +24,35 @@ const Home = () => {
       );
       console.log(querySnapshot);
       const quizzsData = [];
-      querySnapshot.forEach((doc) => {
+      querySnapshot?.forEach((doc) => {
         quizzsData.push({ id: doc.id, ...doc.data() });
       });
 
       setMyQuizzs(quizzsData);
     };
+
+    const getMaybeCareQuizz = async (uid) => {
+      const quizzsRef = collection(firestore, "quizzs");
+      const querySnapshot = await getDocs(
+        query(
+          quizzsRef,
+          where("uidCreator", "!=", uid),
+          where("access", "==", "public")
+        )
+      );
+      const quizzsData = [];
+      querySnapshot?.forEach((doc) => {
+        quizzsData.push({ id: doc.id, ...doc.data() });
+      });
+
+      setMaybeCareQuizzs(quizzsData);
+    };
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is signed in:", user);
         getDataQuizz(user.uid);
+        getMaybeCareQuizz(user.uid);
       } else {
         console.log("User is signed out");
       }
@@ -71,6 +91,37 @@ const Home = () => {
         </div>
         <div className={styles.quizzs}>
           {myQuizzs.map((item, index) => {
+            return index < 3 ? (
+              <div key={item.id}>
+                <CardQuizz props={item} />
+              </div>
+            ) : (
+              <></>
+            );
+          })}
+        </div>
+      </div>
+
+      <div
+        className={`${styles.my_quizzs_wrapper} ${styles.maybe_care_quizzs_wrapper}`}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h2>Có thể bạn quan tâm</h2>
+          <div
+            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+          >
+            <span
+              style={{
+                color: "var(--primary-color)",
+              }}
+            >
+              Xem thêm
+            </span>
+            <RightOutlined style={{ color: "var(--primary-color)" }} />
+          </div>
+        </div>
+        <div className={styles.quizzs}>
+          {maybeCareQuizzs.map((item, index) => {
             return index < 3 ? (
               <div key={item.id}>
                 <CardQuizz props={item} />

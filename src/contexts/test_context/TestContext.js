@@ -15,6 +15,21 @@ export const TestProvider = ({ children }) => {
   const [answer, setAnswer] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState([]);
   const [keys, setKeys] = useState([]);
+  const [isSubmited, setIsSubmited] = useState(false);
+  const [result, setResult] = useState(0);
+
+  useEffect(() => {
+    if (isSubmited) {
+      let count = 0;
+      for (let i = 0; i < answer.length; i++) {
+        if (answer[i] === correctAnswer[i]) {
+          count++;
+        }
+      }
+      setResult(count);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmited]);
 
   useEffect(() => {
     const getDataQuizz = async (id) => {
@@ -46,7 +61,7 @@ export const TestProvider = ({ children }) => {
               Math.random() * availableIndexes.length
             );
             randomIndexes.push(availableIndexes[randomIndex]);
-            //   availableIndexes.splice(randomIndex, 1);
+            availableIndexes.splice(randomIndex, 1);
           }
 
           const result = [];
@@ -91,9 +106,13 @@ export const TestProvider = ({ children }) => {
       correctAnswer,
       setCorrectAnswer,
       keys,
+      isSubmited,
+      setIsSubmited,
+      result,
+      setResult,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dataQuizz, answer, correctAnswer, keys]
+    [dataQuizz, answer, correctAnswer, keys, isSubmited, result]
   );
 
   return (

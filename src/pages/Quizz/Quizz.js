@@ -1,5 +1,6 @@
 import {
   CaretRightOutlined,
+  EditOutlined,
   LeftCircleOutlined,
   RightCircleOutlined,
   RiseOutlined,
@@ -8,17 +9,18 @@ import {
   StarFilled,
   SwapOutlined,
 } from "@ant-design/icons";
+import { Modal, Select } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
 import styles from "./Quizz.module.css";
-import PropTypes from "prop-types";
 
 function Quizz() {
   const { quizz_id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
 
@@ -28,12 +30,24 @@ function Quizz() {
   const [totalQuizzItem, setTotalQuizzItem] = useState(0);
   const [hideTerm, setHideTerm] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
-
+  const [access, setAccess] = useState("public");
   const [voice, setVoice] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
 
   const handleVoiceChange = (event) => {
     const voices = window.speechSynthesis.getVoices();
     setVoice(voices.find((v) => v.name === event.target.value));
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -74,6 +88,12 @@ function Quizz() {
         setDataQuizz(quizzData);
         setTotalQuizzItem(quizzData.quizz_items.length);
         setIndexQuizzItem(0);
+        if (auth.currentUser.uid === quizzData.uidCreator) {
+          setIsOwner(true);
+        } else {
+          setIsOwner(false);
+        }
+        console.log(quizzData);
       } else {
         console.log("Không tìm thấy quizz với id đã cho");
       }
@@ -117,9 +137,13 @@ function Quizz() {
       <div className={styles.mode_wrapper}>
         <button>Thẻ ghi nhớ</button>
         <button>Học</button>
-        <button onClick={() => {
-          navigate(`/quizz/test/${quizz_id}`)
-        }}>Kiểm tra</button>
+        <button
+          onClick={() => {
+            navigate(`/quizz/test/${quizz_id}`);
+          }}
+        >
+          Kiểm tra
+        </button>
         <button>Mini games</button>
       </div>
 
@@ -240,9 +264,21 @@ function Quizz() {
           />
         </div>
 
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", gap: "15px" }}>
+          <EditOutlined
+            onClick={() => {
+              navigate(`/edit-set/${quizz_id}`);
+            }}
+            style={{
+              fontSize: "35px",
+              color: "var(--text-color-primary)",
+              display: isOwner ? "inline-flex" : "none",
+            }}
+          />
           <SettingOutlined
-            onClick={() => {}}
+            onClick={() => {
+              showModal();
+            }}
             style={{ fontSize: "35px", color: "var(--text-color-primary)" }}
           />
         </div>
@@ -301,6 +337,32 @@ function Quizz() {
           </div>
         </div>
       )}
+
+      <Modal
+        title="Xác nhận nộp bài"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div style={{}}>
+          <span style={{ marginRight: "10px" }}>Quyền truy cập</span>
+          <Select
+            defaultValue={access}
+            style={{
+              width: "auto",
+            }}
+            onChange={(value) => {
+              setAccess(value);
+            }}
+          >
+            <Select.Option value="public">Mọi người</Select.Option>
+            <Select.Option value="password">Người có mật khẩu</Select.Option>
+            <Select.Option value="private">Chỉ mình tôi</Select.Option>
+          </Select>
+        </div>
+        <p>Có câu chưa làm !!!</p>
+        <p>Bạn có muốn nộp bài không?</p>
+      </Modal>
     </div>
   );
 }

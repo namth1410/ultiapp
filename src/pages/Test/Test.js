@@ -1,17 +1,43 @@
-import { CloseSquareOutlined } from "@ant-design/icons";
-import { Button, Select, Space } from "antd";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  CloseSquareOutlined,
+} from "@ant-design/icons";
+import { Button, Modal, Select, Space } from "antd";
 import QuestionItem from "components/QuestionItem/QuestionItem";
 import { useTest } from "contexts/test_context/TestContext";
-import { useRef, memo } from "react";
+import { memo, useRef, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
 import styles from "./Test.module.css";
-import { compareArrays } from "ultis/func";
-import { toast } from "react-toastify";
 
 function Test() {
+  const navigate = useNavigate();
+
   const rightboxRef = useRef(null);
 
-  const { dataQuizz, correctAnswer, answer, keys } = useTest();
+  const {
+    result,
+    dataQuizz,
+    correctAnswer,
+    answer,
+    keys,
+    isSubmited,
+    setIsSubmited,
+  } = useTest();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+    setIsSubmited(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const handleChange = (value) => {
     console.log(`selected ${value}`);
@@ -73,12 +99,19 @@ function Test() {
         />
 
         <div className={styles.infoTest}>
-          <span>0/20</span>
           <span>{dataQuizz?.title}</span>
+          <span>{`${answer.filter((el) => el !== -1).length}/${
+            dataQuizz?.quizz_items.length
+          }`}</span>
         </div>
 
         <div className={styles.actions_wrapper}>
-          <CloseSquareOutlined style={{ fontSize: "28px" }} />
+          <CloseSquareOutlined
+            onClick={() => {
+              navigate(-1);
+            }}
+            style={{ fontSize: "28px" }}
+          />
         </div>
       </div>
 
@@ -86,14 +119,43 @@ function Test() {
         <div className={styles.leftbox}>
           <h2>Danh sách câu hỏi</h2>
           {dataQuizz?.quizz_items.map((item, index) => (
-            <div
+            <button
               className={styles.index_ques}
               key={item.term}
               onClick={() => scrollToIndex(index)}
+              style={{
+                color: answer[index] !== -1 ? "var(--primary-color)" : "#ccc",
+              }}
             >
-              Câu hỏi {index + 1}
-            </div>
+              <div>
+                <span
+                  style={{
+                    color: isSubmited
+                      ? answer[index] === correctAnswer[index]
+                        ? "green"
+                        : "#ff5b5b"
+                      : "unset",
+                    marginRight: "5px",
+                  }}
+                >
+                  Câu hỏi {index + 1}
+                </span>
+                {isSubmited &&
+                  (answer[index] === correctAnswer[index] ? (
+                    <CheckOutlined style={{ color: "green" }} />
+                  ) : (
+                    <CloseOutlined style={{ color: "#ff5b5b" }} />
+                  ))}
+              </div>
+            </button>
           ))}
+          {isSubmited && (
+            <div
+              style={{
+                marginTop: "20px",
+              }}
+            >{`Kết quả: ${result}/${dataQuizz?.quizz_items.length}`}</div>
+          )}
         </div>
         <div className={styles.rightbox} ref={rightboxRef}>
           {dataQuizz?.quizz_items.map((item, index) => {
@@ -124,29 +186,12 @@ function Test() {
               border: "none",
             }}
             onClick={() => {
-              if (compareArrays(correctAnswer, answer)) {
-                toast.success("Đúng hết", {
-                  position: "top-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                });
+              if (answer.includes(-1)) {
+                showModal();
               } else {
-                toast.error("Sai rồi", {
-                  position: "top-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                });
+                setIsSubmited(true);
               }
+
               console.log(correctAnswer);
             }}
           >
@@ -154,6 +199,16 @@ function Test() {
           </Button>
         </div>
       </div>
+
+      <Modal
+        title="Xác nhận nộp bài"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Có câu chưa làm !!!</p>
+        <p>Bạn có muốn nộp bài không?</p>
+      </Modal>
     </div>
   );
 }

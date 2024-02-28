@@ -60,7 +60,11 @@
         display: flex;
         min-width: 6.25rem;
         padding: 0.25rem 0.5rem;
-        color: var(--primary-color);
+        border: none;
+        background-color: #f6f7fb;
+        font-family: "Gilroy", sans-serif;
+        font-weight: bold;
+        font-size: 20px;
       }
 
       .index_ques:hover {

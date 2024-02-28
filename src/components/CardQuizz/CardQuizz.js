@@ -3,8 +3,14 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 function CardQuizz({ props }) {
-  const { id, title, quizz_items, photoURL, nameCreator } = props;
+  const { id, title, quizz_items, photoURL, nameCreator, access } = props;
   const navigate = useNavigate();
+
+  const COLOR_ACCESS = {
+    public: "#87d068",
+    password: "#f50",
+    private: "#ccc",
+  };
   return (
     <div
       onClick={() => {
@@ -17,6 +23,7 @@ function CardQuizz({ props }) {
         style={{
           width: 300,
         }}
+        extra={<Tag color={COLOR_ACCESS[access]}>{access}</Tag>}
       >
         <Tag color="processing">{`${quizz_items.length} thuật ngữ`}</Tag>
         <div
@@ -50,5 +57,6 @@ CardQuizz.propTypes = {
   quizz_items: PropTypes.array,
   photoURL: PropTypes.string,
   nameCreator: PropTypes.string,
+  access: PropTypes.string,
 };
 export default CardQuizz;

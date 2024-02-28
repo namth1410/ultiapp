@@ -1,11 +1,13 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Space, Select } from "antd";
-import { addDoc, collection } from "firebase/firestore";
+import { Button, Form, Input, Select, Space, Modal } from "antd";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { auth, firestore } from "../../firebase";
-import styles from "./CreateSet.module.css";
-import { useState } from "react";
+import styles from "./EditSet.module.css";
 
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
@@ -23,10 +25,14 @@ const onFinishFailed = (errorInfo) => {
   }
 };
 
-function CreateSet() {
+function EditSet() {
+  const { quizz_id } = useParams();
+
   const navigate = useNavigate();
 
   const [access, setAccess] = useState("public");
+  const [dataQuizz, setDataQuizz] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onFinish = async (values) => {
     console.log("Success:", values);
@@ -38,8 +44,9 @@ function CreateSet() {
       nameCreator: auth.currentUser.displayName,
       photoURL: auth.currentUser.photoURL,
     };
-    await addDoc(collection(firestore, "quizzs"), dataToAdd);
-    toast.success("Đã thêm mới 1 quizz", {
+    const quizzRef = doc(firestore, "quizzs", quizz_id);
+    await updateDoc(quizzRef, dataToAdd);
+    toast.success("Cập nhật thành công", {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -51,6 +58,46 @@ function CreateSet() {
     });
     navigate("/home");
   };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+    navigate(-1);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    const getDataQuizz = async (id) => {
+      const quizzRef = doc(firestore, "quizzs", id);
+      const docSnapshot = await getDoc(quizzRef);
+
+      if (docSnapshot.exists()) {
+        const quizzData = { id: docSnapshot.id, ...docSnapshot.data() };
+        setDataQuizz(quizzData);
+        setAccess(quizzData.access);
+        console.log(quizzData);
+      } else {
+        console.log("Không tìm thấy quizz với id đã cho");
+      }
+    };
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is signed in:", user);
+        getDataQuizz(quizz_id);
+      } else {
+        console.log("User is signed out");
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -64,12 +111,23 @@ function CreateSet() {
           maxWidth: "100%",
           width: "100%",
         }}
-        initialValues={{
-          remember: true,
-        }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
+        fields={[
+          {
+            name: ["title"],
+            value: dataQuizz?.title,
+          },
+          {
+            name: ["description"],
+            value: dataQuizz?.description,
+          },
+          {
+            name: ["quizz_items"],
+            value: dataQuizz?.quizz_items,
+          },
+        ]}
       >
         <Form.Item
           name="title"
@@ -119,6 +177,7 @@ function CreateSet() {
             style={{
               width: "auto",
             }}
+            value={access}
             onChange={(value) => {
               setAccess(value);
             }}
@@ -232,7 +291,12 @@ function CreateSet() {
           </Form.List>
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <Button
             htmlType="submit"
             style={{
@@ -241,14 +305,35 @@ function CreateSet() {
               fontFamily: "Gilroy",
               height: "auto",
               color: "#fff",
+              marginRight: "20px",
             }}
           >
-            Lưu Quizz
+            Cập nhật Quizz
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#f6f7fb",
+              fontSize: "20px",
+              fontFamily: "Gilroy",
+              height: "auto",
+            }}
+            onClick={() => {
+              showModal(true);
+            }}
+          >
+            Hủy
           </Button>
         </Form.Item>
       </Form>
+
+      <Modal
+        title="Các thông tin thay đổi sẽ mất!"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      ></Modal>
     </div>
   );
 }
 
-export default CreateSet;
+export default EditSet;

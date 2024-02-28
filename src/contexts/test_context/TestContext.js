@@ -54,8 +54,9 @@ export const TestProvider = ({ children }) => {
           const availableIndexes = quizzData.quizz_items
             .map((item, index) => {
               if (index !== key) return index;
+              return -1;
             })
-            .filter((index) => index !== undefined);
+            .filter((index) => index !== -1);
 
           const randomIndexes = [];
           for (let i = 0; i < 3; i++) {

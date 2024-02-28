@@ -129,6 +129,24 @@ function CreateSet() {
           </Select>
         </Form.Item>
 
+        {access === "password" && (
+          <Form.Item
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Không để trống!",
+              },
+            ]}
+          >
+            <Input.Password
+              name="password"
+              style={{ width: "200px" }}
+              placeholder="Nhập mật khẩu"
+            />
+          </Form.Item>
+        )}
+
         <Form.Item>
           <Form.List
             name="quizz_items"

@@ -11,6 +11,7 @@ function QuestionItem({ props, index, total, keys }) {
   const [indexSelectedKey, setIndexSelectedKey] = useState(null);
 
   const onSelectKey = (i) => {
+    if (isSubmited) return;
     setIndexSelectedKey(i);
     let _answer = [...answer];
     _answer[index] = i;

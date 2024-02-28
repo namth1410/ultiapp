@@ -173,30 +173,32 @@ function Test() {
               </div>
             );
           })}
-          <Button
-            style={{
-              width: "fit-content",
-              backgroundColor: "var(--primary-color)",
-              color: "#fff",
-              fontFamily: "Gilroy",
-              padding: "15px 20px",
-              height: "auto",
-              margin: "auto",
-              fontSize: "24px",
-              border: "none",
-            }}
-            onClick={() => {
-              if (answer.includes(-1)) {
-                showModal();
-              } else {
-                setIsSubmited(true);
-              }
+          {!isSubmited && (
+            <Button
+              style={{
+                width: "fit-content",
+                backgroundColor: "var(--primary-color)",
+                color: "#fff",
+                fontFamily: "Gilroy",
+                padding: "15px 20px",
+                height: "auto",
+                margin: "auto",
+                fontSize: "24px",
+                border: "none",
+              }}
+              onClick={() => {
+                if (answer.includes(-1)) {
+                  showModal();
+                } else {
+                  setIsSubmited(true);
+                }
 
-              console.log(correctAnswer);
-            }}
-          >
-            Gửi bài kiểm tra
-          </Button>
+                console.log(correctAnswer);
+              }}
+            >
+              Gửi bài kiểm tra
+            </Button>
+          )}
         </div>
       </div>
 

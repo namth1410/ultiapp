@@ -79,7 +79,6 @@ function EditSet() {
         const quizzData = { id: docSnapshot.id, ...docSnapshot.data() };
         setDataQuizz(quizzData);
         setAccess(quizzData.access);
-        console.log(quizzData);
       } else {
         console.log("Không tìm thấy quizz với id đã cho");
       }
@@ -318,7 +317,7 @@ function EditSet() {
               height: "auto",
             }}
             onClick={() => {
-              showModal(true);
+              showModal();
             }}
           >
             Hủy

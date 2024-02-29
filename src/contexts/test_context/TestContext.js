@@ -7,6 +7,12 @@ import { useParams } from "react-router-dom";
 
 const TestContext = createContext();
 
+export const MODE = {
+  MULTIPLE_CHOICE: "MULTIPLE_CHOICE",
+  ESSAY: "ESSAY",
+  MIXTURE: "MIXTURE",
+};
+
 export const TestProvider = ({ children }) => {
   const { quizz_id } = useParams();
 
@@ -15,6 +21,10 @@ export const TestProvider = ({ children }) => {
   const [answer, setAnswer] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState([]);
   const [keys, setKeys] = useState([]);
+  const [setting, setSetting] = useState({
+    mode: MODE.MULTIPLE_CHOICE,
+    quantityQuestion: 5
+  });
   const [isSubmited, setIsSubmited] = useState(false);
   const [result, setResult] = useState(0);
 
@@ -113,9 +123,11 @@ export const TestProvider = ({ children }) => {
       setIsSubmited,
       result,
       setResult,
+      setting,
+      setSetting,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dataQuizz, answer, correctAnswer, keys, isSubmited, result]
+    [dataQuizz, answer, correctAnswer, keys, isSubmited, result, setting]
   );
 
   return (

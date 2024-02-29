@@ -2,14 +2,16 @@ import {
   CheckOutlined,
   CloseOutlined,
   CloseSquareOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Modal, Select, Space } from "antd";
-import QuestionItem from "components/QuestionItem/QuestionItem";
-import { useTest } from "contexts/test_context/TestContext";
+import { Button, Modal, Select, Space, InputNumber, Switch } from "antd";
+import MultipleChoiceItem from "components/MultipleChoiceItem/MultipleChoiceItem";
+import { MODE, useTest } from "contexts/test_context/TestContext";
 import { memo, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import styles from "./Test.module.css";
+import EssayItem from "components/EssayItem/EssayItem";
 
 function Test() {
   const navigate = useNavigate();
@@ -24,9 +26,20 @@ function Test() {
     keys,
     isSubmited,
     setIsSubmited,
+    setting,
+    setSetting,
   } = useTest();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
+  const [quantityQuestionSetting, setQuantityQuestionSetting] = useState(
+    setting?.quantityQuestion
+  );
+  const [hasMultipleChoiceSetting, setHasMultipleChoiceSetting] =
+    useState(true);
+  const [hasEssaySetting, setHasEssaySetting] = useState(false);
+
+  const mode = setting?.mode;
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -41,6 +54,22 @@ function Test() {
 
   const handleChange = (value) => {
     console.log(`selected ${value}`);
+  };
+
+  const handleOkSetting = () => {
+    const mode =
+      hasEssaySetting && hasMultipleChoiceSetting
+        ? MODE.MIXTURE
+        : hasEssaySetting
+        ? MODE.ESSAY
+        : MODE.MULTIPLE_CHOICE;
+
+    const _setting = {
+      quantityQuestion: quantityQuestionSetting,
+      mode: mode,
+    };
+
+    setSetting(_setting);
   };
 
   const scrollToIndex = (index) => {
@@ -99,13 +128,19 @@ function Test() {
         />
 
         <div className={styles.infoTest}>
-          <span>{dataQuizz?.title}</span>
-          <span>{`${answer.filter((el) => el !== -1).length}/${
-            dataQuizz?.quizz_items.length
-          }`}</span>
+          <span style={{ fontSize: "24px" }}>{dataQuizz?.title}</span>
+          <span style={{ color: "#717171" }}>{`${
+            answer.filter((el) => el !== -1).length
+          }/${setting?.quantityQuestion}`}</span>
         </div>
 
         <div className={styles.actions_wrapper}>
+          <SettingOutlined
+            onClick={() => {
+              setIsSettingModalOpen(true);
+            }}
+            style={{ fontSize: "28px", marginRight: "20px" }}
+          />
           <CloseSquareOutlined
             onClick={() => {
               navigate(-1);
@@ -118,37 +153,41 @@ function Test() {
       <div className={styles.content}>
         <div className={styles.leftbox}>
           <h2>Danh sách câu hỏi</h2>
-          {dataQuizz?.quizz_items.map((item, index) => (
-            <button
-              className={styles.index_ques}
-              key={item.term}
-              onClick={() => scrollToIndex(index)}
-              style={{
-                color: answer[index] !== -1 ? "var(--primary-color)" : "#ccc",
-              }}
-            >
-              <div>
-                <span
-                  style={{
-                    color: isSubmited
-                      ? answer[index] === correctAnswer[index]
-                        ? "green"
-                        : "#ff5b5b"
-                      : "unset",
-                    marginRight: "5px",
-                  }}
-                >
-                  Câu hỏi {index + 1}
-                </span>
-                {isSubmited &&
-                  (answer[index] === correctAnswer[index] ? (
-                    <CheckOutlined style={{ color: "green" }} />
-                  ) : (
-                    <CloseOutlined style={{ color: "#ff5b5b" }} />
-                  ))}
-              </div>
-            </button>
-          ))}
+          {dataQuizz?.quizz_items.map((item, index) => {
+            return index < setting?.quantityQuestion ? (
+              <button
+                className={styles.index_ques}
+                key={item.term}
+                onClick={() => scrollToIndex(index)}
+                style={{
+                  color: answer[index] !== -1 ? "var(--primary-color)" : "#ccc",
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      color: isSubmited
+                        ? answer[index] === correctAnswer[index]
+                          ? "green"
+                          : "#ff5b5b"
+                        : "unset",
+                      marginRight: "5px",
+                    }}
+                  >
+                    Câu hỏi {index + 1}
+                  </span>
+                  {isSubmited &&
+                    (answer[index] === correctAnswer[index] ? (
+                      <CheckOutlined style={{ color: "green" }} />
+                    ) : (
+                      <CloseOutlined style={{ color: "#ff5b5b" }} />
+                    ))}
+                </div>
+              </button>
+            ) : (
+              <></>
+            );
+          })}
           {isSubmited && (
             <div
               style={{
@@ -159,18 +198,48 @@ function Test() {
         </div>
         <div className={styles.rightbox} ref={rightboxRef}>
           {dataQuizz?.quizz_items.map((item, index) => {
-            return (
+            return index < setting?.quantityQuestion ? (
               <div
                 style={{ paddingBottom: "40px", backgroundColor: "#f6f7fb" }}
                 key={item.term}
               >
-                <QuestionItem
-                  props={item}
-                  index={index}
-                  total={dataQuizz.quizz_items.length}
-                  keys={keys.length > 0 ? keys[index] : []}
-                />
+                {mode === MODE.MULTIPLE_CHOICE && (
+                  <MultipleChoiceItem
+                    props={item}
+                    index={index}
+                    total={dataQuizz.quizz_items.length}
+                    keys={keys.length > 0 ? keys[index] : []}
+                  />
+                )}
+
+                {mode === MODE.ESSAY && (
+                  <EssayItem
+                    props={item}
+                    indexItem={index}
+                    total={dataQuizz.quizz_items.length}
+                    keys={keys.length > 0 ? keys[index] : []}
+                  />
+                )}
+
+                {mode === MODE.MIXTURE &&
+                  (index % 2 === 0 ? (
+                    <MultipleChoiceItem
+                      props={item}
+                      index={index}
+                      total={dataQuizz.quizz_items.length}
+                      keys={keys.length > 0 ? keys[index] : []}
+                    />
+                  ) : (
+                    <EssayItem
+                      props={item}
+                      indexItem={index}
+                      total={dataQuizz.quizz_items.length}
+                      keys={keys.length > 0 ? keys[index] : []}
+                    />
+                  ))}
               </div>
+            ) : (
+              <></>
             );
           })}
           {!isSubmited && (
@@ -192,8 +261,6 @@ function Test() {
                 } else {
                   setIsSubmited(true);
                 }
-
-                console.log(correctAnswer);
               }}
             >
               Gửi bài kiểm tra
@@ -210,6 +277,53 @@ function Test() {
       >
         <p>Có câu chưa làm !!!</p>
         <p>Bạn có muốn nộp bài không?</p>
+      </Modal>
+
+      <Modal
+        title="Xác nhận nộp bài"
+        open={isSettingModalOpen}
+        onOk={handleOkSetting}
+        onCancel={() => {
+          setIsSettingModalOpen(false);
+        }}
+      >
+        <div>
+          <h2>{dataQuizz?.title}</h2>
+          <h1>Thiết lập bài kiểm tra</h1>
+
+          <div className={styles.setting_wrapper}>
+            <div className={styles.setting}>
+              <span>{`Câu hỏi (tối đa ${dataQuizz?.quizz_items.length})`}</span>
+              <InputNumber
+                min={5}
+                max={dataQuizz?.quizz_items.length}
+                defaultValue={setting?.quantityQuestion}
+                onChange={(e) => {
+                  setQuantityQuestionSetting(e);
+                }}
+              />
+            </div>
+
+            <div className={styles.setting}>
+              <span>Trắc nghiệm</span>
+              <Switch
+                defaultChecked
+                onChange={(e) => {
+                  setHasMultipleChoiceSetting(e);
+                }}
+              />
+            </div>
+
+            <div className={styles.setting}>
+              <span>Tự luận</span>
+              <Switch
+                onChange={(e) => {
+                  setHasEssaySetting(e);
+                }}
+              />
+            </div>
+          </div>
+        </div>
       </Modal>
     </div>
   );

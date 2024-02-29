@@ -103,7 +103,6 @@ function Quizz() {
         } else {
           setIsOwner(false);
         }
-        console.log(quizzData);
       } else {
         console.log("Không tìm thấy quizz với id đã cho");
       }
@@ -180,7 +179,7 @@ function Quizz() {
         </select>
       </div>
 
-      <div
+      <button
         className={styles.flash_card_wrapper}
         onClick={() => {
           setHideTerm((pre) => !pre);
@@ -223,7 +222,7 @@ function Quizz() {
             </span>
           </div>
         )}
-      </div>
+      </button>
 
       <div className={styles.tools_box}>
         <div style={{ display: "flex", gap: "15px" }}>

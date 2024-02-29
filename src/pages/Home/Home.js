@@ -22,7 +22,6 @@ const Home = () => {
       const querySnapshot = await getDocs(
         query(quizzsRef, where("uidCreator", "==", uid))
       );
-      console.log(querySnapshot);
       const quizzsData = [];
       querySnapshot?.forEach((doc) => {
         quizzsData.push({ id: doc.id, ...doc.data() });

@@ -4,14 +4,14 @@ import {
   CloseSquareOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Modal, Select, Space, InputNumber, Switch } from "antd";
+import { Button, InputNumber, Modal, Select, Space, Switch } from "antd";
 import MultipleChoiceItem from "components/MultipleChoiceItem/MultipleChoiceItem";
 import { MODE, useTest } from "contexts/test_context/TestContext";
 import { memo, useRef, useState } from "react";
 
+import EssayItem from "components/EssayItem/EssayItem";
 import { useNavigate } from "react-router-dom";
 import styles from "./Test.module.css";
-import EssayItem from "components/EssayItem/EssayItem";
 
 function Test() {
   const navigate = useNavigate();
@@ -70,6 +70,7 @@ function Test() {
     };
 
     setSetting(_setting);
+    setIsSettingModalOpen(false);
   };
 
   const scrollToIndex = (index) => {
@@ -137,9 +138,14 @@ function Test() {
         <div className={styles.actions_wrapper}>
           <SettingOutlined
             onClick={() => {
+              if (isSubmited) return;
               setIsSettingModalOpen(true);
             }}
-            style={{ fontSize: "28px", marginRight: "20px" }}
+            style={{
+              fontSize: "28px",
+              marginRight: "20px",
+              color: isSubmited ? "#939bb4" : "unset",
+            }}
           />
           <CloseSquareOutlined
             onClick={() => {
@@ -193,7 +199,7 @@ function Test() {
               style={{
                 marginTop: "20px",
               }}
-            >{`Kết quả: ${result}/${dataQuizz?.quizz_items.length}`}</div>
+            >{`Kết quả: ${result}/${setting?.quantityQuestion}`}</div>
           )}
         </div>
         <div className={styles.rightbox} ref={rightboxRef}>
@@ -275,8 +281,7 @@ function Test() {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <p>Có câu chưa làm !!!</p>
-        <p>Bạn có muốn nộp bài không?</p>
+        <p>Bạn chắc chắn muốn nộp bài không?</p>
       </Modal>
 
       <Modal

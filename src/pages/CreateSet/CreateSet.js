@@ -1,11 +1,12 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Space, Select } from "antd";
+import { Button, Form, Input, Select, Space, Spin, Upload } from "antd";
 import { addDoc, collection } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { auth, firestore } from "../../firebase";
+import { auth, firestore, storage } from "../../firebase";
 import styles from "./CreateSet.module.css";
-import { useState } from "react";
 
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
@@ -23,22 +24,65 @@ const onFinishFailed = (errorInfo) => {
   }
 };
 
+const imageListURL = [];
+
 function CreateSet() {
   const navigate = useNavigate();
 
   const [access, setAccess] = useState("public");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const uploadImageList = async (quizz) => {
+    const quizz_items = quizz.quizz_items;
+
+    for (let [index, question] of quizz_items.entries()) {
+      if (!question.image) {
+        imageListURL.push("");
+        continue;
+      }
+      if (question.image.fileList.length === 0) {
+        imageListURL.push("");
+        continue;
+      }
+
+      const storageRef = ref(storage, `ImagesQuizz/${quizz.title}_${index}`);
+
+      try {
+        const snapshot = await uploadString(
+          storageRef,
+          question.image.fileList[0].thumbUrl,
+          "data_url"
+        );
+        console.log("Uploaded a data_url string!");
+
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        imageListURL.push(downloadURL);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  };
 
   const onFinish = async (values) => {
-    console.log("Success:", values);
+    setIsLoading(true);
+    await uploadImageList(values);
+    let _quizz_items = values.quizz_items.map((el, index) => ({
+      ...el,
+      image: imageListURL[index],
+    }));
+
     const dataToAdd = {
       ...values,
+      quizz_items: _quizz_items,
       access: access,
       dateCreate: new Date().toISOString(),
       uidCreator: auth.currentUser.uid,
       nameCreator: auth.currentUser.displayName,
       photoURL: auth.currentUser.photoURL,
     };
+
     await addDoc(collection(firestore, "quizzs"), dataToAdd);
+    setIsLoading(false);
     toast.success("Đã thêm mới 1 quizz", {
       position: "top-center",
       autoClose: 5000,
@@ -51,6 +95,20 @@ function CreateSet() {
     });
     navigate("/home");
   };
+
+  const handlePreview = (file) => {
+    console.log(file);
+  };
+
+  const handleChange = (e, index) => {
+    console.log(e);
+  };
+
+  const uploadButton = (
+    <div>
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -224,6 +282,20 @@ function CreateSet() {
                       >
                         <Input placeholder="Định nghĩa" />
                       </Form.Item>
+                      <Form.Item name={[name, "image"]}>
+                        <Upload
+                          name="avatar"
+                          listType="picture-card"
+                          onPreview={(e) => handlePreview(e)}
+                          onChange={(e) => handleChange(e, index)}
+                          beforeUpload={(e) => {
+                            return false;
+                          }}
+                          maxCount={1}
+                        >
+                          {uploadButton}
+                        </Upload>
+                      </Form.Item>
                     </div>
                   </Space>
                 ))}
@@ -265,6 +337,27 @@ function CreateSet() {
           </Button>
         </Form.Item>
       </Form>
+
+      {isLoading && (
+        <>
+          <div className={styles.overlay}></div>
+          <div
+            style={{
+              position: "absolute",
+              top: "40%",
+              left: "50%",
+              translate: "-50% -20%",
+              zIndex: 3000,
+              width: "200px",
+              height: "200px",
+            }}
+          >
+            <Spin size="large">
+              <div className="content" />
+            </Spin>
+          </div>
+        </>
+      )}
     </div>
   );
 }

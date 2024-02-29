@@ -44,6 +44,11 @@ function EssayItem({ props, indexItem, total, keys }) {
       </div>
 
       <div className={styles.answer_wrapper}>
+        {isSubmited && (
+          <div
+            style={{ marginBottom: "35px", color: "green", fontSize: "20px" }}
+          >{`Đáp án đúng: ${keys[correctAnswer[indexItem]]}`}</div>
+        )}
         <section
           style={{ color: "var(--text-color-primary)", marginBottom: "1.5rem" }}
         >

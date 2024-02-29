@@ -9,7 +9,7 @@ import {
   StarFilled,
   SwapOutlined,
 } from "@ant-design/icons";
-import { Modal, Select } from "antd";
+import { Image, Modal, Select } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -220,6 +220,15 @@ function Quizz() {
                 ? dataShuffleQuizz?.quizz_items[indexQuizzItem].definition
                 : dataQuizz?.quizz_items[indexQuizzItem].definition}
             </span>
+            <Image
+              preview={false}
+              width="40%"
+              src={
+                isShuffle
+                  ? dataShuffleQuizz?.quizz_items[indexQuizzItem].image
+                  : dataQuizz?.quizz_items[indexQuizzItem].image
+              }
+            />
           </div>
         )}
       </button>

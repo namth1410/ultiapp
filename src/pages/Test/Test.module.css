@@ -43,7 +43,7 @@
     .leftbox {
       position: fixed;
       top: calc(4rem + 2rem);
-      left: 1.5rem rem;
+      left: 1.5rem;
       max-width: 15rem;
       bottom: 10rem;
       overflow-y: var(--d74rnun-5);

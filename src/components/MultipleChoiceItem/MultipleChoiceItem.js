@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import styles from "./MultipleChoiceItem.module.css";
 
-function MultipleChoiceItem({ props, index, total, keys }) {
+function MultipleChoiceItem({ props, index, keys, indexSequence }) {
   const { definition } = props;
 
   const { answer, setAnswer, isSubmited, correctAnswer, setting } = useTest();
@@ -14,16 +14,19 @@ function MultipleChoiceItem({ props, index, total, keys }) {
     if (isSubmited) return;
     setIndexSelectedKey(i);
     let _answer = [...answer];
-    _answer[index] = i;
+    _answer[indexSequence] = i;
     setAnswer(_answer);
   };
 
   const colorItem = (index_in_item) => {
     if (isSubmited) {
+      if (!indexSelectedKey && index_in_item === correctAnswer[indexSequence]) {
+        return "green";
+      }
       if (indexSelectedKey === index_in_item) {
-        return answer[index] === correctAnswer[index] ? "green" : "#ff5b5b";
+        return answer[indexSequence] === correctAnswer[indexSequence] ? "green" : "#ff5b5b";
       } else {
-        return index_in_item === correctAnswer[index] ? "green" : "unset";
+        return index_in_item === correctAnswer[indexSequence] ? "green" : "unset";
       }
     } else {
       return indexSelectedKey === index_in_item ? "#edefff" : "unset";
@@ -35,7 +38,7 @@ function MultipleChoiceItem({ props, index, total, keys }) {
       <div className={styles.header}>
         <div className={styles.info_header}>
           <span>Định nghĩa</span>
-          <span>{`${index + 1}/${setting.quantityQuestion}`}</span>
+          <span>{`${indexSequence + 1}/${setting.quantityQuestion}`}</span>
         </div>
         <div className={styles.question}>{definition}</div>
       </div>
@@ -73,9 +76,9 @@ function MultipleChoiceItem({ props, index, total, keys }) {
 MultipleChoiceItem.propTypes = {
   props: PropTypes.object,
   index: PropTypes.any,
-  total: PropTypes.any,
   definition: PropTypes.string,
   keys: PropTypes.array,
+  indexSequence: PropTypes.any,
 };
 
 export default MultipleChoiceItem;

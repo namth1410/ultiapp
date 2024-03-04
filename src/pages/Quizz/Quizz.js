@@ -148,7 +148,9 @@ function Quizz() {
         <button>Học</button>
         <button
           onClick={() => {
-            navigate(`/quizz/test/${quizz_id}`);
+            navigate(
+              `/quizz/test/${quizz_id}?mode=MULTIPLE_CHOICE&quantityQuestion=5&isShuffle=false`
+            );
           }}
         >
           Kiểm tra

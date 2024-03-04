@@ -70,6 +70,7 @@ export const TestProvider = ({ children }) => {
       setDataQuizz(a);
       setCorrectAnswer(_correctAns);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataQuizz, setting]);
 
   useEffect(() => {
@@ -106,6 +107,7 @@ export const TestProvider = ({ children }) => {
       create4Keys(index)
     );
     setKeys(_keys ?? []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [correctAnswer]);
 
   useEffect(() => {

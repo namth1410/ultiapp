@@ -1,12 +1,23 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Select, Space, Modal } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  Upload,
+} from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { auth, firestore } from "../../firebase";
+import { auth, firestore, storage } from "../../firebase";
 import styles from "./EditSet.module.css";
 
 const onFinishFailed = (errorInfo) => {
@@ -25,6 +36,8 @@ const onFinishFailed = (errorInfo) => {
   }
 };
 
+const imageListURLUpdate = [];
+
 function EditSet() {
   const { quizz_id } = useParams();
 
@@ -33,9 +46,48 @@ function EditSet() {
   const [access, setAccess] = useState("public");
   const [dataQuizz, setDataQuizz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageListInitial, setImageListInitial] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [indexItemHasChangeImageList, setIndexItemHasChangeImageList] =
+    useState([]);
+
+  const uploadImageList = async (quizz) => {
+    const quizz_items = quizz.quizz_items;
+
+    for (let [index, question] of quizz_items.entries()) {
+      if (typeof question.image === "object") {
+        const storageRef = ref(storage, `ImagesQuizz/${quizz.title}_${index}`);
+
+        try {
+          const snapshot = await uploadString(
+            storageRef,
+            question.image.fileList[0].thumbUrl,
+            "data_url"
+          );
+          console.log("Uploaded a data_url string!");
+
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          imageListURLUpdate.push(downloadURL);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      } else {
+        if (!question.image) {
+          imageListURLUpdate.push("");
+          continue;
+        }
+        if (question.image.startsWith("https://")) {
+          imageListURLUpdate.push(question.image);
+          continue;
+        }
+      }
+    }
+  };
 
   const onFinish = async (values) => {
     console.log("Success:", values);
+    setIsLoading(true);
+    await uploadImageList(values);
     const dataToAdd = {
       ...values,
       access: access,
@@ -46,6 +98,7 @@ function EditSet() {
     };
     const quizzRef = doc(firestore, "quizzs", quizz_id);
     await updateDoc(quizzRef, dataToAdd);
+    setIsLoading(false);
     toast.success("Cập nhật thành công", {
       position: "top-center",
       autoClose: 5000,
@@ -70,6 +123,29 @@ function EditSet() {
     setIsModalOpen(false);
   };
 
+  const handlePreview = (file) => {
+    console.log(file);
+  };
+
+  const handleChange = (e, index) => {
+    const _indexItemHasChangeImageList = [...indexItemHasChangeImageList];
+    if (e.fileList.length !== 0) {
+      _indexItemHasChangeImageList.push(index);
+    } else {
+      _indexItemHasChangeImageList.splice(
+        _indexItemHasChangeImageList.indexOf(index),
+        1
+      );
+    }
+    setIndexItemHasChangeImageList(_indexItemHasChangeImageList);
+  };
+
+  const uploadButton = (
+    <div>
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
+
   useEffect(() => {
     const getDataQuizz = async (id) => {
       const quizzRef = doc(firestore, "quizzs", id);
@@ -79,6 +155,8 @@ function EditSet() {
         const quizzData = { id: docSnapshot.id, ...docSnapshot.data() };
         setDataQuizz(quizzData);
         setAccess(quizzData.access);
+        const _imageListInitial = quizzData.quizz_items.map((el) => el.image);
+        setImageListInitial(_imageListInitial);
       } else {
         console.log("Không tìm thấy quizz với id đã cho");
       }
@@ -264,6 +342,30 @@ function EditSet() {
                       >
                         <Input placeholder="Định nghĩa" />
                       </Form.Item>
+                      {!indexItemHasChangeImageList.includes(index) && (
+                        <Image
+                          width={100}
+                          style={{
+                            borderRadius: "8px",
+                            marginBottom: "10px",
+                          }}
+                          src={imageListInitial[index]}
+                        />
+                      )}
+                      <Form.Item name={[name, "image"]}>
+                        <Upload
+                          name="image"
+                          listType="picture-card"
+                          onPreview={(e) => handlePreview(e)}
+                          onChange={(e) => handleChange(e, index)}
+                          beforeUpload={(e) => {
+                            return false;
+                          }}
+                          maxCount={1}
+                        >
+                          {uploadButton}
+                        </Upload>
+                      </Form.Item>
                     </div>
                   </Space>
                 ))}
@@ -331,6 +433,27 @@ function EditSet() {
         onOk={handleOk}
         onCancel={handleCancel}
       ></Modal>
+
+      {isLoading && (
+        <>
+          <div className={styles.overlay}></div>
+          <div
+            style={{
+              position: "absolute",
+              top: "40%",
+              left: "50%",
+              translate: "-50% -20%",
+              zIndex: 3000,
+              width: "200px",
+              height: "200px",
+            }}
+          >
+            <Spin size="large">
+              <div className="content" />
+            </Spin>
+          </div>
+        </>
+      )}
     </div>
   );
 }

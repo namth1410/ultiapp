@@ -6,7 +6,7 @@ import styles from "./EssayItem.module.css";
 function EssayItem({ props, indexItem, total, keys }) {
   const { definition } = props;
 
-  const { answer, setAnswer, isSubmited, correctAnswer } = useTest();
+  const { answer, setAnswer, isSubmited, correctAnswer, setting } = useTest();
 
   const onSelectKey = (value) => {
     if (isSubmited) return;
@@ -16,7 +16,11 @@ function EssayItem({ props, indexItem, total, keys }) {
       setAnswer(_answer);
     } else {
       let _answer = [...answer];
-      _answer[indexItem] = 100;
+      if (value === "") {
+        _answer[indexItem] = -1;
+      } else {
+        _answer[indexItem] = 100;
+      }
       setAnswer(_answer);
     }
   };
@@ -38,7 +42,7 @@ function EssayItem({ props, indexItem, total, keys }) {
       <div className={styles.header}>
         <div className={styles.info_header}>
           <span>Định nghĩa</span>
-          <span>{`${indexItem + 1}/${total}`}</span>
+          <span>{`${indexItem + 1}/${setting.quantityQuestion}`}</span>
         </div>
         <div className={styles.question}>{definition}</div>
       </div>

@@ -11,4 +11,16 @@
   & h2 {
     align-self: flex-start !important;
   }
+
+  .overlay {
+    height: 100%;
+    width: 100vw;
+    position: absolute;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
 }

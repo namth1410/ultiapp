@@ -1,10 +1,12 @@
 import { TestProvider } from "contexts/test_context/TestContext";
 
+import { AddHomeWorkProvider } from "contexts/add_homework_context/AddHomeWorkContext";
 import ClassLayout from "layouts/ClassLayout";
 import MainLayout from "layouts/MainLayout";
 import ChatBox from "pages/ChatBox/ChatBox ";
 import AddHomeWork from "pages/Class/HomeWork/AddHomeWork/AddHomeWork";
 import HomeWork from "pages/Class/HomeWork/HomeWork";
+import Member from "pages/Class/Member/Member";
 import NewsFeed from "pages/Class/NewsFeed/NewsFeed";
 import CreateClass from "pages/CreateClass/CreateClass";
 import CreateSet from "pages/CreateSet/CreateSet";
@@ -17,8 +19,6 @@ import Test from "pages/Test/Test";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import { AddHomeWorkProvider } from "contexts/add_homework_context/AddHomeWorkContext";
-import Member from "pages/Class/Member/Member";
 
 function App() {
   const navigate = useNavigate();

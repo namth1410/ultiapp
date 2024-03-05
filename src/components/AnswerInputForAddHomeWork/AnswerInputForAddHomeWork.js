@@ -1,7 +1,6 @@
 import { Input } from "antd";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import PropTypes from "prop-types";
-import { useEffect } from "react";
 
 function AnswerInputForAddHomeWork({ props }) {
   const { index } = props;
@@ -20,10 +19,6 @@ function AnswerInputForAddHomeWork({ props }) {
     console.log(newAnswer);
     setAnswer(newAnswer);
   };
-
-  useEffect(() => {
-    console.log(props);
-  }, []);
 
   return (
     <button

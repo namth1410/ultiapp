@@ -12,14 +12,12 @@ import React, { useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { auth, firestore, storage } from "../../../../firebase";
 import styles from "./AddHomeWork.module.css";
-import { useNavigate } from "react-router-dom";
 
 let fileURL = "";
 
 function AddHomeWork() {
   const { answer, setAnswer, countAnswer, setCountAnswer } = useAddHomeWork();
 
-  const navigate = useNavigate();
   const hiddenFileInput = useRef(null);
 
   const [selectedDocs, setSelectedDocs] = useState([]);
@@ -67,6 +65,7 @@ function AddHomeWork() {
     console.log(dataToAdd);
 
     const docRef = await addDoc(collection(firestore, "homework"), dataToAdd);
+    console.log(docRef);
     setIsLoading(false);
     toast.success("Đã thêm mới 1 quizz", {
       position: "top-center",

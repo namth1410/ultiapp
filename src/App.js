@@ -17,6 +17,8 @@ import Test from "pages/Test/Test";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
+import { AddHomeWorkProvider } from "contexts/add_homework_context/AddHomeWorkContext";
+import Member from "pages/Class/Member/Member";
 
 function App() {
   const navigate = useNavigate();
@@ -49,7 +51,15 @@ function App() {
             <Route path="/class/*" element={<ClassLayout />}>
               <Route path=":class_id/newsfeed" element={<NewsFeed />} />
               <Route path=":class_id/homework" element={<HomeWork />} />
-              <Route path=":class_id/homework/add" element={<AddHomeWork />} />
+              <Route path=":class_id/member" element={<Member />} />
+              <Route
+                path=":class_id/homework/add"
+                element={
+                  <AddHomeWorkProvider>
+                    <AddHomeWork />
+                  </AddHomeWorkProvider>
+                }
+              />
               <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
             </Route>
 

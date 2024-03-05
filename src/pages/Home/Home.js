@@ -51,10 +51,7 @@ const Home = () => {
     const getMyClasses = async (uid) => {
       const classesRef = collection(firestore, "classes");
       const querySnapshot = await getDocs(
-        query(
-          classesRef,
-          where("uidCreator", "==", uid)
-        )
+        query(classesRef, where("members", "array-contains", uid))
       );
       const classesData = [];
       querySnapshot?.forEach((doc) => {
@@ -69,13 +66,15 @@ const Home = () => {
         console.log("User is signed in:", user);
         getDataQuizz(user.uid);
         getMaybeCareQuizz(user.uid);
-        getMyClasses(user.uid)
+        getMyClasses(user.uid);
       } else {
         console.log("User is signed out");
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (
@@ -160,7 +159,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* <div
+      <div
         className={`${styles.my_quizzs_wrapper} ${styles.maybe_care_quizzs_wrapper}`}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -182,14 +181,14 @@ const Home = () => {
           {myClasses.map((item, index) => {
             return index < 3 ? (
               <div key={item.id}>
-                <CardQuizz props={item} />
+                <></>
               </div>
             ) : (
               <></>
             );
           })}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import styles from "./HomeWork.module.css";
 import { useNavigate } from "react-router-dom";
+import styles from "./HomeWork.module.css";
 
 function HomeWork() {
   const navigate = useNavigate();
+
   return (
     <div>
       <div className={styles.tools}>
@@ -18,6 +19,8 @@ function HomeWork() {
           Tạo bài tập
         </Button>
       </div>
+
+      <div></div>
     </div>
   );
 }

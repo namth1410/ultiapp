@@ -21,6 +21,7 @@ export const AddHomeWorkProvider = ({ children }) => {
     }
 
     setAnswer(modifiedAnswer.slice(0, countAnswer));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countAnswer]);
 
   const contextValue = useMemo(

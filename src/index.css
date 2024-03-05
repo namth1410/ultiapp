@@ -20,19 +20,31 @@ code {
   height: 100%;
 }
 
+.overlay {
+  height: 100%;
+  width: 100vw;
+  position: absolute;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
 :root {
   --primary-color: #4255ff;
   --blue: #2667af;
   --blue-secondary: #1992cd;
-  --scrollbar-thumb: #DADCE0;
+  --scrollbar-thumb: #dadce0;
   --blue-tertiary: #1992cd1a;
-  --bgc-primary: #0A092D;
+  --bgc-primary: #0a092d;
   --text-color-primary: #586380;
   --black-text-secondary: #1a1919;
   --red-primary: #ff0401;
   --red-secondary: #ff04011a;
   --gray-primary: #f7f7f7;
-  --gray-secondary: #E1E1E1;
+  --gray-secondary: #e1e1e1;
   --green-primary: #48cd3d;
   --green-secondary: #ebfeea;
   --warning-primary: #ff8a01;

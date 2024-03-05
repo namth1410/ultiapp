@@ -1,11 +1,7 @@
 import { TestProvider } from "contexts/test_context/TestContext";
 
-import ClassLayout from "layouts/ClassLayout";
 import MainLayout from "layouts/MainLayout";
 import ChatBox from "pages/ChatBox/ChatBox ";
-import AddHomeWork from "pages/Class/HomeWork/AddHomeWork/AddHomeWork";
-import HomeWork from "pages/Class/HomeWork/HomeWork";
-import NewsFeed from "pages/Class/NewsFeed/NewsFeed";
 import CreateClass from "pages/CreateClass/CreateClass";
 import CreateSet from "pages/CreateSet/CreateSet";
 import EditSet from "pages/EditSet/EditSet";
@@ -45,13 +41,6 @@ function App() {
             <Route path="/chat" element={<ChatBox />} />
 
             <Route index path="/quizz/:quizz_id" element={<Quizz />} />
-
-            <Route path="/class/*" element={<ClassLayout />}>
-              <Route path=":class_id/newsfeed" element={<NewsFeed />} />
-              <Route path=":class_id/homework" element={<HomeWork />} />
-              <Route path=":class_id/homework/add" element={<AddHomeWork />} />
-              <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
-            </Route>
 
             <Route
               index

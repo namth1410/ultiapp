@@ -9,10 +9,10 @@ function ClassLayout() {
         style={{
           width: "100%",
           height: "100%",
-          display: "flex"
+          display: "flex",
         }}
       >
-        <MenuClass />
+        {!window.location.pathname.includes("/homework/add") && <MenuClass />}
         <Outlet />
       </div>
     </ClassProvider>

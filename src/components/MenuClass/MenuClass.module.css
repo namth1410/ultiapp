@@ -1,0 +1,11 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-top: 20px;
+  height: -webkit-fill-available;
+  position: sticky;
+  top: 4.5rem;
+  width: fit-content;
+  border-right: 1px solid #d8dcf0;
+}

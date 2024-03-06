@@ -36,6 +36,10 @@ function HomeWork() {
     setHomeworkData(convertToDataTable(dataHomework));
   }, [dataHomework]);
 
+  useEffect(() => {
+    console.log(selectedHomework);
+  }, [selectedHomework]);
+
   return (
     <>
       {dataClass?.uidCreator !== auth?.currentUser?.uid ? (

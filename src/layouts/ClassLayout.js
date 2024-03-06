@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 function ClassLayout() {
   const [visibleMenu, setVisibleMenu] = useState(true);
 
-  const pathDisableMenu = ["/homework/add", "/test"];
+  const pathDisableMenu = ["/homework/add", "/test", "/detail"];
 
   useEffect(() => {
     if (

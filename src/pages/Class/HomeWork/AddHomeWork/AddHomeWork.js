@@ -4,6 +4,7 @@ import j1 from "assets/img/j1.json";
 import j2 from "assets/img/j2.json";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
+import { useClass } from "contexts/class_context/ClassContext";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Lottie from "lottie-react";
@@ -12,7 +13,6 @@ import React, { useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { auth, firestore, storage } from "../../../../firebase";
 import styles from "./AddHomeWork.module.css";
-import { useClass } from "contexts/class_context/ClassContext";
 
 let fileURL = "";
 

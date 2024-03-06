@@ -1,13 +1,24 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
 import { firestore } from "../../../../firebase";
+import RightBox from "./RightBox";
 import styles from "./TestHomework.module.css";
 
 const homeworkId = window.location.pathname.split("/")[4];
+console.log(homeworkId);
 
 function TestHomework() {
   const [dataHomework, setDataHomework] = useState(null);
+
+  const memoizedDocuments = useMemo(() => {
+    return [
+      {
+        uri: dataHomework?.fileURL,
+      },
+    ];
+  }, [dataHomework?.fileURL]);
 
   useEffect(() => {
     console.log(dataHomework);
@@ -18,7 +29,8 @@ function TestHomework() {
       const homeworkRef = doc(firestore, "homework", homeworkId);
       const docSnapshot = await getDoc(homeworkRef);
       console.log(docSnapshot.data());
-      setDataHomework(docSnapshot.data());
+      console.log(docSnapshot.id);
+      setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
     };
     getDataHomework();
   }, []);
@@ -26,19 +38,25 @@ function TestHomework() {
   return (
     <div className={styles.wrapper}>
       {dataHomework && (
-        <div className={styles.left_box}>
-          <DocViewer
-            documents={[
-              {
-                uri: "https://firebasestorage.googleapis.com/v0/b/ultiapp-255c3.appspot.com/o/Homework%2Fshub_sample_pdf.pdf?alt=media&token=d53cba67-1733-4a82-b947-d316c8e34e1a",
-              },
-            ]}
-            pluginRenderers={DocViewerRenderers}
-          />
-        </div>
+        <>
+          <div className={styles.left_box}>
+            <MemoizedDocViewer documents={memoizedDocuments} />
+          </div>
+          <div className={styles.right_box}>
+            <RightBox dataHomework={dataHomework} />
+          </div>
+        </>
       )}
     </div>
   );
 }
+
+const MemoizedDocViewer = React.memo(({ documents }) => (
+  <DocViewer documents={documents} pluginRenderers={DocViewerRenderers} />
+));
+
+MemoizedDocViewer.propTypes = {
+  documents: PropTypes.any,
+};
 
 export default TestHomework;

@@ -21,6 +21,7 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
 import TestHomework from "pages/Class/HomeWork/TestHomework/TestHomework";
+import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
 
 function App() {
   const navigate = useNavigate();
@@ -59,6 +60,10 @@ function App() {
                     <HomeWork />
                   </HomeworkProvider>
                 }
+              />
+              <Route
+                path=":class_id/homework/:homework_id/detail/:record_id"
+                element={<DetailRecordHomework />}
               />
               <Route path=":class_id/member" element={<Member />} />
               <Route

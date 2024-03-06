@@ -1,0 +1,8 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+
+  .left_box {
+    width: 70%;
+  }
+}

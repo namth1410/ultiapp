@@ -170,7 +170,7 @@ function Member() {
           />
         ) : (
           <div>
-            <Table columns={columns} dataSource={dataMembers} />
+            <Table columns={columns} dataSource={dataMembers}/>
           </div>
         )}
       </div>

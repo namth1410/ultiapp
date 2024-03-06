@@ -1,8 +1,23 @@
-import { ClassProvider } from "contexts/class_context/ClassContext";
-import { Outlet } from "react-router-dom";
 import MenuClass from "components/MenuClass/MenuClass";
+import { ClassProvider } from "contexts/class_context/ClassContext";
+import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
 
 function ClassLayout() {
+  const [visibleMenu, setVisibleMenu] = useState(true);
+
+  const pathDisableMenu = ["/homework/add", "/test"];
+
+  useEffect(() => {
+    if (
+      pathDisableMenu.some((path) => window.location.pathname.includes(path))
+    ) {
+      setVisibleMenu(false);
+    } else {
+      setVisibleMenu(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.location.pathname]);
   return (
     <ClassProvider>
       <div
@@ -12,7 +27,7 @@ function ClassLayout() {
           display: "flex",
         }}
       >
-        {!window.location.pathname.includes("/homework/add") && <MenuClass />}
+        {visibleMenu && <MenuClass />}
         <Outlet />
       </div>
     </ClassProvider>

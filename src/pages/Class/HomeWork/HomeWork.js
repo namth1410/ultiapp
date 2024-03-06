@@ -42,7 +42,7 @@ function HomeWork() {
 
   return (
     <>
-      {dataClass?.uidCreator !== auth?.currentUser?.uid ? (
+      {dataClass?.uidCreator === auth?.currentUser?.uid ? (
         <div>
           <div className={styles.tools}>
             <Button

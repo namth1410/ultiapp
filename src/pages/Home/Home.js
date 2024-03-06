@@ -1,5 +1,6 @@
 import { RightOutlined } from "@ant-design/icons";
 import CardQuizz from "components/CardQuizz/CardQuizz";
+import CardClass from "components/CardClass/CardClass";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -57,6 +58,8 @@ const Home = () => {
       querySnapshot?.forEach((doc) => {
         classesData.push({ id: doc.id, ...doc.data() });
       });
+
+      console.log(classesData);
 
       setMyClasses(classesData);
     };
@@ -163,7 +166,7 @@ const Home = () => {
         className={`${styles.my_quizzs_wrapper} ${styles.maybe_care_quizzs_wrapper}`}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h2>Lớp học của bạn</h2>
+          <h2>Lớp học bạn đã tham gia</h2>
           <div
             style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
           >
@@ -181,7 +184,7 @@ const Home = () => {
           {myClasses.map((item, index) => {
             return index < 3 ? (
               <div key={item.id}>
-                <></>
+                <CardClass props={item}></CardClass>
               </div>
             ) : (
               <></>

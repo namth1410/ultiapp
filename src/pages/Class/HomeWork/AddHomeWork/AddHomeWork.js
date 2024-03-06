@@ -12,12 +12,15 @@ import React, { useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { auth, firestore, storage } from "../../../../firebase";
 import styles from "./AddHomeWork.module.css";
+import { useClass } from "contexts/class_context/ClassContext";
 
 let fileURL = "";
 
 function AddHomeWork() {
+  const { classId } = useClass();
   const { answer, setAnswer, countAnswer, setCountAnswer } = useAddHomeWork();
 
+  const nameHomeworkInputRef = useRef(null);
   const hiddenFileInput = useRef(null);
 
   const [selectedDocs, setSelectedDocs] = useState([]);
@@ -52,6 +55,19 @@ function AddHomeWork() {
   };
 
   const createHomework = async () => {
+    if (nameHomeworkInputRef.current.input.value === "") {
+      toast.error("Bạn chưa nhập tên bài tập", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
     setIsLoading(true);
     await uploadFile();
     const dataToAdd = {
@@ -61,6 +77,8 @@ function AddHomeWork() {
       photoURL: auth.currentUser.photoURL,
       fileURL: fileURL,
       answer: answer,
+      class: classId,
+      nameHomework: nameHomeworkInputRef.current.input.value,
     };
     console.log(dataToAdd);
 
@@ -162,6 +180,13 @@ function AddHomeWork() {
           <div className={styles.header_wrapper}>
             <div style={{ fontSize: "18px", color: "#3b3b3b" }}>
               Thêm bài tập
+            </div>
+            <div style={{ display: "flex" }}>
+              <Input
+                ref={nameHomeworkInputRef}
+                placeholder="Nhập tên bài tập"
+                size="large"
+              ></Input>
             </div>
             <Button
               type="primary"

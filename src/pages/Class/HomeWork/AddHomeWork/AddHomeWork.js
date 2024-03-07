@@ -1,5 +1,16 @@
+import { SettingOutlined } from "@ant-design/icons";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { Button, Input, InputNumber, Modal, Spin } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  DatePicker,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Spin,
+  Switch,
+} from "antd";
 import j1 from "assets/img/j1.json";
 import j2 from "assets/img/j2.json";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
@@ -10,6 +21,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Lottie from "lottie-react";
 import PropTypes from "prop-types";
 import React, { useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { auth, firestore, storage } from "../../../../firebase";
 import styles from "./AddHomeWork.module.css";
@@ -17,22 +29,39 @@ import styles from "./AddHomeWork.module.css";
 let fileURL = "";
 
 function AddHomeWork() {
+  const navigate = useNavigate();
   const { classId } = useClass();
-  const { answer, setAnswer, countAnswer, setCountAnswer } = useAddHomeWork();
+  const { correctAnswer, setCorrectAnswer, countAnswer, setCountAnswer } =
+    useAddHomeWork();
 
   const nameHomeworkInputRef = useRef(null);
   const hiddenFileInput = useRef(null);
 
   const [selectedDocs, setSelectedDocs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [hasTimeLimit, setHasTimeLimit] = useState(false);
+  const [hasTimeStart, setHasTimeStart] = useState(false);
+  const [hasDeadline, setHasDeadline] = useState(false);
+  const [hasReview, setHasReview] = useState(false);
+
+  const [timeLimit, setTimeLimit] = useState(null);
+  const [timeStart, setTimeStart] = useState(null);
+  const [deadline, setDeadline] = useState(null);
+  const [wayGetScore, setWayGetScore] = useState(
+    "Lấy điểm lần làm bài đầu tiên"
+  );
+  const [timesLimitDo, setTimesLimitDo] = useState(1);
 
   const handleOk = () => {
     setIsModalOpen(false);
-    setCountAnswer(answer.length);
+    setCountAnswer(correctAnswer.length);
   };
   const handleCancel = () => {
-    setAnswer(null);
+    setCorrectAnswer([]);
+    setCountAnswer(0);
     setIsModalOpen(false);
   };
 
@@ -70,22 +99,32 @@ function AddHomeWork() {
     }
     setIsLoading(true);
     await uploadFile();
+    const config = {
+      hasReview: hasReview,
+      timeLimit: timeLimit,
+      timeStart: timeStart,
+      deadline: deadline,
+      wayGetScore: wayGetScore,
+      timesLimitDo: timesLimitDo,
+    };
+    console.log(config);
     const dataToAdd = {
       dateCreate: new Date().toISOString(),
       uidCreator: auth.currentUser.uid,
       nameCreator: auth.currentUser.displayName,
       photoURL: auth.currentUser.photoURL,
       fileURL: fileURL,
-      answer: answer,
+      correctAnswer: correctAnswer,
       class: classId,
       nameHomework: nameHomeworkInputRef.current.input.value,
+      config: config,
     };
     console.log(dataToAdd);
 
     const docRef = await addDoc(collection(firestore, "homework"), dataToAdd);
     console.log(docRef);
     setIsLoading(false);
-    toast.success("Đã thêm mới 1 quizz", {
+    toast.success("Đã thêm mới 1 bài tập", {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -95,6 +134,7 @@ function AddHomeWork() {
       progress: undefined,
       theme: "light",
     });
+    navigate(`/class/${classId}/homework`);
   };
 
   const memoizedDocuments = useMemo(
@@ -223,6 +263,15 @@ function AddHomeWork() {
                 </div>
                 <Button
                   type="primary"
+                  shape="circle"
+                  icon={<SettingOutlined />}
+                  onClick={() => {
+                    setIsSettingModalOpen(true);
+                  }}
+                />
+
+                <Button
+                  type="primary"
                   size="large"
                   style={{
                     fontFamily: "Gilroy",
@@ -243,7 +292,7 @@ function AddHomeWork() {
                   [...Array(countAnswer)].map((_, index) => (
                     <AnswerInputForAddHomeWork
                       key={index}
-                      props={{ index, answer: answer?.[index] }}
+                      props={{ index, answer: correctAnswer?.[index] }}
                     />
                   ))}
               </div>
@@ -266,7 +315,7 @@ function AddHomeWork() {
               }}
               size="large"
               onChange={(e) => {
-                setAnswer(e.target.value);
+                setCorrectAnswer(e.target.value.toUpperCase().split(""));
               }}
             />
             <p
@@ -275,7 +324,167 @@ function AddHomeWork() {
                 fontSize: "10px",
                 marginLeft: "10px",
               }}
-            >{`Bạn đã tạo ra ${answer?.length} đáp án`}</p>
+            >{`Bạn đã tạo ra ${correctAnswer?.length} đáp án`}</p>
+          </Modal>
+
+          <Modal
+            title="Cài đặt bài tập"
+            open={isSettingModalOpen}
+            onOk={() => {
+              setIsSettingModalOpen(false);
+            }}
+            onCancel={() => {
+              setIsSettingModalOpen(false);
+            }}
+            footer={[
+              <Button
+                type="primary"
+                style={{
+                  width: "100%",
+                  fontFamily: "Gilroy",
+                  padding: "10px 5px",
+                  height: "auto",
+                  fontSize: "18px",
+                }}
+                onClick={() => {
+                  setIsSettingModalOpen(false);
+                }}
+                key={1}
+              >
+                OK
+              </Button>,
+            ]}
+          >
+            <div className={styles.setting_wrapper}>
+              <div className={styles.setting}>
+                <span>Thời gian làm bài (phút)</span>
+                <Switch
+                  onChange={(e) => {
+                    setHasTimeLimit(e);
+                    if (e) setTimeLimit(30);
+                  }}
+                />
+              </div>
+
+              {hasTimeLimit && (
+                <InputNumber
+                  size="large"
+                  min={1}
+                  max={100000}
+                  defaultValue={30}
+                  style={{ width: "100%" }}
+                  onChange={(e) => {
+                    setTimeLimit(e);
+                  }}
+                />
+              )}
+
+              <div className={styles.setting}>
+                <span>Thời gian bắt đầu</span>
+                <Switch
+                  onChange={(e) => {
+                    setHasTimeStart(e);
+                  }}
+                />
+              </div>
+
+              {hasTimeStart && (
+                <ConfigProvider>
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    showTime
+                    onChange={(_, time) => {
+                      setTimeStart(new Date(time).toISOString());
+                    }}
+                  />
+                </ConfigProvider>
+              )}
+
+              <div className={styles.setting}>
+                <span>Hạn chót nộp bài</span>
+                <Switch
+                  onChange={(e) => {
+                    setHasDeadline(e);
+                  }}
+                />
+              </div>
+
+              {hasDeadline && (
+                <ConfigProvider>
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    showTime
+                    onChange={(_, time) => {
+                      setDeadline(new Date(time).toISOString());
+                    }}
+                  />
+                </ConfigProvider>
+              )}
+
+              <div className={styles.setting}>
+                <span>Không xem lại</span>
+                <Switch
+                  onChange={(e) => {
+                    setHasReview(e);
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  flexDirection: "column",
+                  gap: "5px",
+                  marginTop: "10px",
+                }}
+              >
+                <span>Thiết lập bảng điểm</span>
+                <Select
+                  defaultValue="Lấy điểm lần làm bài đầu tiên"
+                  style={{
+                    width: "100%",
+                  }}
+                  options={[
+                    {
+                      value: "Lấy điểm lần làm bài đầu tiên",
+                      label: "Lấy điểm lần làm bài đầu tiên",
+                    },
+                    {
+                      value: "Lấy điểm lần làm bài mới nhất",
+                      label: "Lấy điểm lần làm bài mới nhất",
+                    },
+                    {
+                      value: "Lấy điểm lần làm bài cao nhất",
+                      label: "Lấy điểm lần làm bài cao nhất",
+                    },
+                  ]}
+                  onChange={(e) => {
+                    setWayGetScore(e);
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  flexDirection: "column",
+                  gap: "5px",
+                }}
+              >
+                <span>Số lần làm bài</span>
+                <InputNumber
+                  size="large"
+                  min={1}
+                  max={100000}
+                  defaultValue={1}
+                  onChange={(e) => {
+                    setTimesLimitDo(e);
+                  }}
+                />
+              </div>
+            </div>
           </Modal>
         </div>
       )}

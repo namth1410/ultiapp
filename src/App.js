@@ -22,6 +22,7 @@ import "./App.css";
 import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
 import TestHomework from "pages/Class/HomeWork/TestHomework/TestHomework";
 import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
+import EditHomework from "pages/Class/HomeWork/EditHomework/EditHomework";
 
 function App() {
   const navigate = useNavigate();
@@ -64,6 +65,14 @@ function App() {
               <Route
                 path=":class_id/homework/:homework_id/detail/:record_id"
                 element={<DetailRecordHomework />}
+              />
+              <Route
+                path=":class_id/homework/:homework_id/edit"
+                element={
+                  <AddHomeWorkProvider>
+                    <EditHomework />
+                  </AddHomeWorkProvider>
+                }
               />
               <Route path=":class_id/member" element={<Member />} />
               <Route

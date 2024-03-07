@@ -1,10 +1,11 @@
 import { Input } from "antd";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 
 function AnswerInputForAddHomeWork({ props }) {
   const { index } = props;
-  const { answer, selectedAnswer, setSelectedAnswer, setAnswer } =
+  const { correctAnswer, setCorrectAnswer, selectedAnswer, setSelectedAnswer } =
     useAddHomeWork();
 
   const onClick = () => {
@@ -12,13 +13,17 @@ function AnswerInputForAddHomeWork({ props }) {
   };
 
   const handleTypeAnswer = (value) => {
-    let newAnswer = [...answer];
+    let newAnswer = [...correctAnswer];
     console.log(index);
-    console.log(answer);
-    newAnswer[index] = value;
+    console.log(correctAnswer);
+    newAnswer[index] = value.toUpperCase();
     console.log(newAnswer);
-    setAnswer(newAnswer);
+    setCorrectAnswer(newAnswer);
   };
+
+  useEffect(() => {
+    console.log(correctAnswer);
+  }, []);
 
   return (
     <button
@@ -54,7 +59,9 @@ function AnswerInputForAddHomeWork({ props }) {
             Đáp án
           </span>
           <Input
-            value={answer[index] ? answer[index].toUpperCase() : ""}
+            value={
+              correctAnswer[index] ? correctAnswer[index].toUpperCase() : ""
+            }
             onKeyDown={(e) => {
               handleTypeAnswer(e.key);
             }}

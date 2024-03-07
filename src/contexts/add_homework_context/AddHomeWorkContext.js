@@ -4,7 +4,7 @@ import { createContext, useContext, useMemo, useState, useEffect } from "react";
 const AddHomeWorkContext = createContext();
 
 export const AddHomeWorkProvider = ({ children }) => {
-  const [answer, setAnswer] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState([]);
   const [countAnswer, setCountAnswer] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
@@ -13,28 +13,28 @@ export const AddHomeWorkProvider = ({ children }) => {
       setCountAnswer(null);
       return;
     }
-    let modifiedAnswer = [...answer];
-    if (countAnswer > answer.length) {
-      for (let i = answer.length; i < countAnswer; i++) {
-        modifiedAnswer.push("");
+    let modifiedAnswer = [...correctAnswer];
+    if (countAnswer > correctAnswer.length) {
+      for (let i = correctAnswer.length; i < countAnswer; i++) {
+        modifiedAnswer.push(" ");
       }
     }
 
-    setAnswer(modifiedAnswer.slice(0, countAnswer));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setCorrectAnswer(modifiedAnswer.slice(0, countAnswer));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countAnswer]);
 
   const contextValue = useMemo(
     () => ({
-      answer,
-      setAnswer,
+      correctAnswer,
+      setCorrectAnswer,
       countAnswer,
       setCountAnswer,
       selectedAnswer,
       setSelectedAnswer,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [answer, countAnswer, selectedAnswer]
+    [correctAnswer, countAnswer, selectedAnswer]
   );
 
   return (

@@ -14,6 +14,8 @@ function RightBox({ dataHomework }) {
   const [myAnswer, setMyAnswer] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
 
   const onChange = (e) => {
     setValue(e.target.value);
@@ -30,18 +32,21 @@ function RightBox({ dataHomework }) {
 
   const onHandleSubmit = async () => {
     setIsLoading(true);
-
+    const elapsedTime = new Date().getTime() - startTime;
+    setIsTimerRunning(false);
     const dataToAdd = {
       dateCreate: new Date().toISOString(),
-      uidCreator: auth.currentUser.uid,
-      nameCreator: auth.currentUser.displayName,
+      userUid: auth.currentUser.uid,
+      username: auth.currentUser.displayName,
       photoURL: auth.currentUser.photoURL,
       homework_id: dataHomework.id,
       class: dataHomework.class,
-      correctAnswer: dataHomework.answer,
-      answer: myAnswer.join(""),
+      correctAnswer: dataHomework.correctAnswer,
+      answer: myAnswer,
       fileURL: dataHomework.fileURL,
+      timeSpent: elapsedTime,
     };
+    console.log(dataToAdd);
     const docRef = await addDoc(
       collection(firestore, "homework_results"),
       dataToAdd
@@ -55,14 +60,25 @@ function RightBox({ dataHomework }) {
   useEffect(() => {
     if (!dataHomework) return;
     console.log(dataHomework);
-    setMyAnswer(dataHomework.answer.split("").map(() => " "));
+    setMyAnswer(dataHomework.correctAnswer.map(() => " "));
+    setStartTime(new Date().getTime());
   }, [dataHomework]);
 
   return (
     <>
       <div className={styles.time_wrapper}>
         <div style={{ fontWeight: "500" }}>Thời gian làm bài</div>
-        <div>4 giờ 3 phút</div>
+        {dataHomework && (
+          <Timer
+            initialTime={
+              dataHomework.config.timeLimit
+                ? dataHomework.config.timeLimit * 60000
+                : 0
+            }
+            countdown={dataHomework.config.timeLimit}
+            isRunning={isTimerRunning}
+          />
+        )}
       </div>
 
       <div className={styles.name_homework_wrapper}>
@@ -72,7 +88,7 @@ function RightBox({ dataHomework }) {
       <div className={styles.answer_wrapper}>
         <div>Phiếu trả lời</div>
         <div className={styles.answer}>
-          {dataHomework.answer.split("").map((el, index) => {
+          {dataHomework.correctAnswer.map((el, index) => {
             return (
               <CubeAnswer
                 key={index}
@@ -202,6 +218,43 @@ CubeAnswer.propTypes = {
   onClick: PropTypes.func,
   selectedIndexAnswer: PropTypes.any,
   answer: PropTypes.any,
+};
+
+function Timer({ initialTime, countdown, isRunning }) {
+  const [time, setTime] = useState(initialTime);
+
+  useEffect(() => {
+    let timer;
+    if (isRunning) {
+      timer = setInterval(() => {
+        if (countdown) {
+          setTime((prevTime) => prevTime - 1000);
+        } else {
+          setTime((prevTime) => prevTime + 1000);
+        }
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isRunning, countdown]);
+
+  const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((time / (1000 * 60)) % 60);
+  const seconds = Math.floor((time / 1000) % 60);
+
+  return (
+    <div>
+      <p>
+        {hours} giờ {minutes} phút {seconds} giây
+      </p>
+    </div>
+  );
+}
+
+Timer.propTypes = {
+  initialTime: PropTypes.any,
+  countdown: PropTypes.any,
+  isRunning: PropTypes.any,
 };
 
 export default RightBox;

@@ -1,12 +1,14 @@
 export const formatTime = (timeInSeconds) => {
   const minutes = Math.floor(timeInSeconds / 60);
   const seconds = timeInSeconds % 60;
-  return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  return `${minutes < 10 ? "0" : ""}${minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
 };
 
 export const convertDurationToString = (duration) => {
   const minutes = Math.floor(duration / 60);
-  const seconds = duration % 60;
+  const seconds = Math.floor(duration % 60);
 
   if (minutes === 0) {
     return `${seconds} giây`;

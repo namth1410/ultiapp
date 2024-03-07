@@ -6,10 +6,9 @@ import { firestore } from "../../../../firebase";
 import RightBox from "./RightBox";
 import styles from "./TestHomework.module.css";
 
-const homeworkId = window.location.pathname.split("/")[4];
-console.log(homeworkId);
-
 function TestHomework() {
+  const homeworkId = window.location.pathname.split("/")[4];
+
   const [dataHomework, setDataHomework] = useState(null);
 
   const memoizedDocuments = useMemo(() => {
@@ -33,6 +32,7 @@ function TestHomework() {
       setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
     };
     getDataHomework();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -42,9 +42,11 @@ function TestHomework() {
           <div className={styles.left_box}>
             <MemoizedDocViewer documents={memoizedDocuments} />
           </div>
-          <div className={styles.right_box}>
-            <RightBox dataHomework={dataHomework} />
-          </div>
+          {dataHomework && (
+            <div className={styles.right_box}>
+              <RightBox dataHomework={dataHomework} />
+            </div>
+          )}
         </>
       )}
     </div>

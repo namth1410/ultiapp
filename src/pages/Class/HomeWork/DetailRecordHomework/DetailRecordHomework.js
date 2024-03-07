@@ -1,20 +1,23 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { Table } from "antd";
 import { doc, getDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useState } from "react";
+import { convertDurationToString, convertISOToCustomFormat } from "ultis/time";
 import { firestore } from "../../../../firebase";
 import styles from "./DetailRecordHomework.module.css";
-import { convertISOToCustomFormat } from "ultis/time";
-import { Table } from "antd";
-
-const splitRecordId = window.location.pathname.split("/");
-const recordId = splitRecordId[splitRecordId.length - 1];
 
 function DetailRecordHomework() {
+  const splitRecordId = window.location.pathname.split("/");
+  const recordId = splitRecordId[splitRecordId.length - 1];
+
   const [dataDetailRecordHomework, setDataDetailRecordHomework] =
     useState(null);
 
   const [dataRecord, setDataRecord] = useState(null);
+  const [countAnswerCorrect, setCountAnswerCorrect] = useState(0);
+  const [countAnswerIncorrect, setCountAnswerIncorrect] = useState(0);
+  const [countAnswerNotDo, setCountAnswerNotDo] = useState(0);
 
   const columns = [
     {
@@ -59,10 +62,10 @@ function DetailRecordHomework() {
   ];
 
   const convertToDataTable = (data) => {
-    return data.correctAnswer.split("").map((el, index) => ({
-      status: [data.answer.split("")[index], el],
+    return data.correctAnswer.map((el, index) => ({
+      status: [data.answer[index], el],
       index: index + 1,
-      answer: data.answer.split("")[index],
+      answer: data.answer[index],
       correct_answer: el,
     }));
   };
@@ -75,19 +78,42 @@ function DetailRecordHomework() {
     ];
   }, [dataDetailRecordHomework?.fileURL]);
 
+  function compareAnswers(answer, correctAnswer) {
+    let correctCount = 0;
+    let wrongCount = 0;
+    let unansweredCount = 0;
+    console.log(answer);
+    console.log(correctAnswer);
+
+    for (let i = 0; i < correctAnswer.length; i++) {
+      if (answer[i] === " ") {
+        unansweredCount++;
+      } else if (answer[i] === correctAnswer[i]) {
+        correctCount++;
+      } else {
+        wrongCount++;
+      }
+    }
+    setCountAnswerCorrect(correctCount);
+    setCountAnswerIncorrect(wrongCount);
+    setCountAnswerNotDo(unansweredCount);
+  }
+
   useEffect(() => {
     const getDataDetailRecordHomework = async () => {
       const recordRef = doc(firestore, "homework_results", recordId);
       const docSnapshot = await getDoc(recordRef);
-      console.log(docSnapshot.data());
-      console.log(docSnapshot.id);
+      const data = docSnapshot.data();
       setDataDetailRecordHomework({
         id: docSnapshot.id,
-        ...docSnapshot.data(),
+        ...data,
       });
-      setDataRecord(convertToDataTable(docSnapshot.data()));
+      compareAnswers(data.answer, data.correctAnswer);
+
+      setDataRecord(convertToDataTable(data));
     };
     getDataDetailRecordHomework();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -103,7 +129,11 @@ function DetailRecordHomework() {
               <div className={styles.a2}>
                 <div className={styles.a3}>
                   <span>Thời gian</span>
-                  <span>45 phút</span>
+                  <span>
+                    {convertDurationToString(
+                      dataDetailRecordHomework.timeSpent / 1000
+                    )}
+                  </span>
                 </div>
 
                 <div className={styles.a3}>
@@ -123,7 +153,7 @@ function DetailRecordHomework() {
                     ></span>{" "}
                     Số câu đúng
                   </span>
-                  <span>2</span>
+                  <span>{countAnswerCorrect}</span>
                 </div>
 
                 <div className={styles.a3}>
@@ -134,7 +164,7 @@ function DetailRecordHomework() {
                     ></span>{" "}
                     Số câu sai
                   </span>
-                  <span>2</span>
+                  <span>{countAnswerIncorrect}</span>
                 </div>
 
                 <div className={styles.a3}>
@@ -145,7 +175,7 @@ function DetailRecordHomework() {
                     ></span>{" "}
                     Số câu chưa làm
                   </span>
-                  <span>40</span>
+                  <span>{countAnswerNotDo}</span>
                 </div>
               </div>
 

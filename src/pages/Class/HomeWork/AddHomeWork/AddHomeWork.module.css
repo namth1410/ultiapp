@@ -73,3 +73,22 @@
     }
   }
 }
+
+.setting_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+  margin-top: 30px;
+
+  .setting {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .setting > span:first-child {
+    color: #65697b;
+  }
+}

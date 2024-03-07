@@ -1,18 +1,47 @@
-.right_box {
-  width: 30%;
+.wrapper {
   display: flex;
   flex-direction: column;
-  padding: 15px 15px 1px 15px;
-  box-sizing: border-box;
+  width: 100%;
 
-  .info_homework_item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    font-size: 14px;
+  .tools {
+    padding: 1rem;
   }
 
-  .info_homework_item > span:first-child {
-    font-weight: 500;
+  .right_box {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 15px 1px 15px;
+    box-sizing: border-box;
+
+    .info_homework_item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .info_homework_item > span:first-child {
+      font-weight: 500;
+    }
+
+    .action_homework_item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 16px;
+      width: 100%;
+      border: none;
+      background-color: #fff;
+      font-family: Gilroy, Arial, Helvetica, sans-serif;
+      border-radius: 6px;
+      text-transform: none;
+      padding: 10px 5px;
+      cursor: pointer;
+    }
+
+    .action_homework_item:hover {
+      background-color: #2022270a;
+    }
   }
 }

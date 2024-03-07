@@ -1,5 +1,5 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { Button, Input, InputNumber, Modal, Spin } from "antd";
+import { Button, Input, InputNumber, Modal } from "antd";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import { useClass } from "contexts/class_context/ClassContext";
@@ -7,9 +7,9 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { auth, firestore } from "../../../../firebase";
 import styles from "./EditHomework.module.css";
-import { toast } from "react-toastify";
 
 function EditHomework() {
   const homeworkId = window.location.pathname.split("/")[4];
@@ -24,7 +24,6 @@ function EditHomework() {
   const [dataHomework, setDataHomework] = useState(null);
   const [nameHomework, setNameHomework] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -91,6 +90,7 @@ function EditHomework() {
       setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
     };
     getDataHomework();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className={styles.wrapper}>
@@ -203,27 +203,6 @@ function EditHomework() {
           >{`Bạn đã tạo ra ${correctAnswer?.length} đáp án`}</p>
         </Modal>
       </div>
-
-      {isLoading && (
-        <>
-          <div className="overlay"></div>
-          <div
-            style={{
-              position: "absolute",
-              top: "40%",
-              left: "50%",
-              translate: "-50% -20%",
-              zIndex: 3000,
-              width: "200px",
-              height: "200px",
-            }}
-          >
-            <Spin size="large">
-              <div className="content" />
-            </Spin>
-          </div>
-        </>
-      )}
     </div>
   );
 }

@@ -19,6 +19,21 @@ export const convertDurationToString = (duration) => {
   }
 };
 
+export const convertDurationToStringV1 = (isoString) => {
+  const duration = (new Date() - new Date(isoString)) / 1000;
+
+  const hours = Math.floor(duration / 3600);
+  const minutes = Math.floor(duration / 60) % 60;
+
+  if (duration < 60) {
+    return "Vừa xong";
+  } else if (duration < 3600) {
+    return `${minutes} phút trước`;
+  } else {
+    return `${hours} giờ trước`;
+  }
+};
+
 export const convertISOToCustomFormat = (isoString) => {
   const date = new Date(isoString);
   const day = date.getDate();

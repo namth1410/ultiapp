@@ -23,6 +23,7 @@ import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
 import TestHomework from "pages/Class/HomeWork/TestHomework/TestHomework";
 import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
 import EditHomework from "pages/Class/HomeWork/EditHomework/EditHomework";
+import Score from "pages/Class/Score/Score";
 
 function App() {
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ function App() {
                 path=":class_id/homework/:homework_id/test"
                 element={<TestHomework />}
               />
+              <Route path=":class_id/score" element={<Score />} />
               <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
             </Route>
 

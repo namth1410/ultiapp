@@ -31,8 +31,8 @@ function HomeWork() {
   const { selectedHomework, setSelectedHomework } = useHomework();
 
   const [homeworkData, setHomeworkData] = useState([]);
-  const [isExpire, setIsExpire] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [canDoHomework, setCanDoHomework] = useState(false);
   const [recordsOfSelectedHomework, setRecordsOfSelectedHomework] =
     useState(null);
   const [isModalDeleteHomeworkOpen, setIsModalDeleteHomeworkOpen] =
@@ -90,16 +90,16 @@ function HomeWork() {
 
       if (timeStart && deadline) {
         if (now < timeStart || now > deadline) {
-          setIsExpire(true);
+          setCanDoHomework(false);
         } else {
-          setIsExpire(false);
+          setCanDoHomework(true);
         }
       } else if (!timeStart && !deadline) {
-        setIsExpire(false);
+        setCanDoHomework(true);
       } else if (!timeStart && now > deadline) {
-        setIsExpire(true);
+        setCanDoHomework(false);
       } else if (!deadline && now < timeStart) {
-        setIsExpire(true);
+        setCanDoHomework(false);
       }
     }
   }, [selectedHomework]);
@@ -117,16 +117,18 @@ function HomeWork() {
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       if (QuerySnapshot.empty) {
         setIsAnswered(false);
+        setCanDoHomework(true);
         setRecordsOfSelectedHomework(null);
         return;
       }
       const records = [];
-
+      setCanDoHomework(
+        QuerySnapshot.size < selectedHomework.config.timesLimitDo
+      );
       QuerySnapshot.forEach((doc) => {
         records.push({ ...doc.data(), id: doc.id });
       });
       setRecordsOfSelectedHomework(records);
-      console.log(records);
 
       setIsAnswered(true);
     });
@@ -229,7 +231,7 @@ function HomeWork() {
                     padding: "15px 30px",
                     height: "auto",
                   }}
-                  disabled={isExpire}
+                  disabled={!canDoHomework}
                   onClick={() => {
                     navigate(
                       `/class/${classId}/homework/${selectedHomework.id}/test`

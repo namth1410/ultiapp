@@ -11,9 +11,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
 import styles from "./Header.module.css";
 
@@ -24,6 +23,7 @@ function Header() {
 
   const needLogin = !localStorage.getItem("ulti_auth");
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
+  const [menuItem, setMenuItem] = useState("");
 
   const items = [
     {
@@ -115,10 +115,17 @@ function Header() {
         })
       );
 
-      navigate("/home"); // Điều hướng sau khi đăng nhập thành công
+      navigate("/class");
     } catch (error) {
       console.error("Đã xảy ra lỗi khi đăng nhập:", error);
     }
+  };
+
+  const handleClickMenu = (e) => {
+    if (needLogin) {
+      e.preventDefault();
+    }
+    console.log("asd");
   };
 
   const handleLogout = () => {
@@ -133,6 +140,11 @@ function Header() {
       });
   };
 
+  useEffect(() => {
+    setMenuItem(window.location.pathname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.location.pathname]);
+
   return (
     <div className={styles.wrapper_header}>
       <div className={styles.header}>
@@ -140,7 +152,7 @@ function Header() {
           <Button
             type="link"
             onClick={() => {
-              navigate("/home");
+              navigate("/class");
             }}
             style={{
               height: "auto",
@@ -152,6 +164,27 @@ function Header() {
               alt="Notifications Icon"
             />
           </Button>
+
+          <div className={styles.menu_item_box}>
+            <Link
+              to="/class"
+              className={`${styles.menu_item} ${
+                menuItem.includes("/class") ? styles.active : ""
+              }`}
+              onClick={handleClickMenu}
+            >
+              <div>Lớp học</div>
+            </Link>
+            <Link
+              to="/quizz"
+              className={`${styles.menu_item} ${
+                menuItem.includes("/quizz") ? styles.active : ""
+              }`}
+              onClick={handleClickMenu}
+            >
+              <div>Quizz</div>
+            </Link>
+          </div>
         </div>
 
         <div className={styles.content_right}>

@@ -1,0 +1,35 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .tools {
+    display: flex;
+    position: sticky;
+    background: white;
+    z-index: 300;
+    padding: 16px 32px;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    gap: 16px;
+    height: 80px;
+  }
+
+  .list_wrapper {
+    .a1_wrapper {
+      display: flex;
+      width: 80%;
+      height: auto;
+      padding: 15px 20px;
+      margin: 20px 0;
+      flex-direction: column;
+
+      .quizzs {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+  }
+}

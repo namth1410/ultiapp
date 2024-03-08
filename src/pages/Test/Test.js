@@ -175,7 +175,7 @@ function Test() {
           />
           <CloseSquareOutlined
             onClick={() => {
-              navigate("/home");
+              navigate("/quizz");
             }}
             style={{ fontSize: "28px" }}
           />

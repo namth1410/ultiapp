@@ -71,7 +71,7 @@ export const handleRefreshToken = async (refreshToken) => {
     return response.data;
   } catch (error) {
     console.error("Error refreshing token:", error);
-    window.location.href = "/home";
+    window.location.href = "/class";
     localStorage.clear();
     throw error;
   }

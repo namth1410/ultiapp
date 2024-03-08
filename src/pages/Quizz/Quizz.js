@@ -287,7 +287,7 @@ function Quizz() {
         <div style={{ display: "flex", gap: "15px" }}>
           <EditOutlined
             onClick={() => {
-              navigate(`/edit-set/${quizz_id}`);
+              navigate(`/quizz/edit-set/${quizz_id}`);
             }}
             style={{
               fontSize: "35px",

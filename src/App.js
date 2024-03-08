@@ -1,13 +1,19 @@
 import { TestProvider } from "contexts/test_context/TestContext";
 
 import { AddHomeWorkProvider } from "contexts/add_homework_context/AddHomeWorkContext";
+import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
 import ClassLayout from "layouts/ClassLayout";
 import MainLayout from "layouts/MainLayout";
 import ChatBox from "pages/ChatBox/ChatBox ";
+import ClassHome from "pages/Class/ClassHome/ClassHome";
 import AddHomeWork from "pages/Class/HomeWork/AddHomeWork/AddHomeWork";
+import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
+import EditHomework from "pages/Class/HomeWork/EditHomework/EditHomework";
 import HomeWork from "pages/Class/HomeWork/HomeWork";
+import TestHomework from "pages/Class/HomeWork/TestHomework/TestHomework";
 import Member from "pages/Class/Member/Member";
 import NewsFeed from "pages/Class/NewsFeed/NewsFeed";
+import Score from "pages/Class/Score/Score";
 import CreateClass from "pages/CreateClass/CreateClass";
 import CreateSet from "pages/CreateSet/CreateSet";
 import EditSet from "pages/EditSet/EditSet";
@@ -19,11 +25,6 @@ import Test from "pages/Test/Test";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
-import TestHomework from "pages/Class/HomeWork/TestHomework/TestHomework";
-import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
-import EditHomework from "pages/Class/HomeWork/EditHomework/EditHomework";
-import Score from "pages/Class/Score/Score";
 
 function App() {
   const navigate = useNavigate();
@@ -44,16 +45,12 @@ function App() {
           </>
         ) : (
           <>
-            <Route path="/home" element={<Home />} />
-            <Route path="/create-set" element={<CreateSet />} />
-            <Route path="/create-class" element={<CreateClass />} />
-            <Route path="/edit-set/:quizz_id" element={<EditSet />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/chat" element={<ChatBox />} />
 
-            <Route index path="/quizz/:quizz_id" element={<Quizz />} />
-
+            <Route path="/class" element={<ClassHome />} />
             <Route path="/class/*" element={<ClassLayout />}>
+              <Route path="create-class" element={<CreateClass />} />
               <Route path=":class_id/newsfeed" element={<NewsFeed />} />
               <Route
                 path=":class_id/homework"
@@ -92,8 +89,12 @@ function App() {
               <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
             </Route>
 
+            <Route path="/quizz" element={<Home />} />
+            <Route path="/quizz/:quizz_id" element={<Quizz />} />
+            <Route path="/quizz/create-set" element={<CreateSet />} />
+            <Route path="/quizz/edit-set/:quizz_id" element={<EditSet />} />
+
             <Route
-              index
               path="/quizz/test/:quizz_id"
               element={
                 <TestProvider>
@@ -101,8 +102,9 @@ function App() {
                 </TestProvider>
               }
             />
-            <Route index element={<Navigate to="/home" />} />
-            <Route index path="/*" element={<Navigate to="/home" />} />
+            <Route path="/*" element={<Navigate to="/class" />} />
+
+            <Route index element={<Navigate to="/class" />} />
           </>
         )}
       </Route>

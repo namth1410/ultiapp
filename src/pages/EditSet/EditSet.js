@@ -109,7 +109,7 @@ function EditSet() {
       progress: undefined,
       theme: "light",
     });
-    navigate("/home");
+    navigate("/quizz");
   };
 
   const showModal = () => {

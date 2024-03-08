@@ -81,27 +81,32 @@ function HomeWork() {
     setHomeworkData(convertToDataTable(dataHomework));
   }, [dataHomework]);
 
+  const checkCanDoHomework = () => {
+    const now = new Date().toISOString();
+    const timeStart = selectedHomework.config.timeStart;
+    const deadline = selectedHomework.config.deadline;
+
+    if (timeStart && deadline) {
+      if (now < timeStart || now > deadline) {
+        setCanDoHomework(false);
+      } else {
+        setCanDoHomework(true);
+      }
+    } else if (!timeStart && !deadline) {
+      setCanDoHomework(true);
+    } else if (!timeStart && now > deadline) {
+      setCanDoHomework(false);
+    } else if (!deadline && now < timeStart) {
+      setCanDoHomework(false);
+    }
+  };
+
   useEffect(() => {
     console.log(selectedHomework);
     if (selectedHomework) {
-      const now = new Date().toISOString();
-      const timeStart = selectedHomework.config.timeStart;
-      const deadline = selectedHomework.config.deadline;
-
-      if (timeStart && deadline) {
-        if (now < timeStart || now > deadline) {
-          setCanDoHomework(false);
-        } else {
-          setCanDoHomework(true);
-        }
-      } else if (!timeStart && !deadline) {
-        setCanDoHomework(true);
-      } else if (!timeStart && now > deadline) {
-        setCanDoHomework(false);
-      } else if (!deadline && now < timeStart) {
-        setCanDoHomework(false);
-      }
+      checkCanDoHomework();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHomework]);
 
   useEffect(() => {
@@ -117,7 +122,7 @@ function HomeWork() {
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       if (QuerySnapshot.empty) {
         setIsAnswered(false);
-        setCanDoHomework(true);
+        checkCanDoHomework();
         setRecordsOfSelectedHomework(null);
         return;
       }
@@ -133,6 +138,7 @@ function HomeWork() {
       setIsAnswered(true);
     });
     return () => unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHomework]);
 
   return (

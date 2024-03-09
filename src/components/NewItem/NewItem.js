@@ -14,6 +14,7 @@ function NewItem({ newfeed }) {
 
   const onDeletePost = async () => {
     deleteDoc(doc(firestore, "newsfeed", newfeed.id));
+    setIsModalOpen(false);
   };
 
   const onComment = async () => {

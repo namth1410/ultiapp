@@ -95,6 +95,7 @@ function FormCreateNews() {
           <CloseCircleFilled
             onClick={() => {
               setImageNewFeed(null);
+              hiddenFileInput.current.value = "";
             }}
           />
           <img alt="img" src={URL.createObjectURL(imageNewFeed)} />
@@ -109,17 +110,25 @@ function FormCreateNews() {
         >
           <Button
             size="large"
-            icon={<FileImageFilled style={{ color: "#1e88e5" }} />}
+            icon={
+              <FileImageFilled
+                style={{ color: imageNewFeed ? "#00000040" : "#1e88e5" }}
+              />
+            }
             style={{
               fontFamily: "Gilroy",
               padding: "15px 30px",
               height: "auto",
               border: "none",
               boxShadow: "none",
-              color: "#1e88e5",
+              color: imageNewFeed ? "#00000040" : "#1e88e5",
               fontWeight: "bold",
+              backgroundColor: "none",
+              background: "none",
             }}
+            disabled={imageNewFeed}
             onClick={() => {
+              console.log("click");
               hiddenFileInput.current.click();
             }}
           >
@@ -131,6 +140,7 @@ function FormCreateNews() {
             accept="image/*"
             ref={hiddenFileInput}
             onChange={(el) => {
+              console.log(el.target.files);
               setImageNewFeed(el.target.files[0]);
             }}
             style={{ display: "none" }}

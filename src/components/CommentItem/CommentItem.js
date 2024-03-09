@@ -30,7 +30,7 @@ function CommentItem({ comment }) {
             objectFit: "cover",
             borderRadius: "50%",
           }}
-          src="https://shub-storage.sgp1.cdn.digitaloceanspaces.com/profile_images/AvatarDefaultPng.png"
+          src={comment.photoURL}
         />
       </div>
 

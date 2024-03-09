@@ -63,9 +63,11 @@ function NewItem({ newfeed }) {
 
       <p style={{ fontWeight: "700", margin: "8px 0" }}>{newfeed.content}</p>
 
-      <div className={styles.image_wrapper}>
-        <img alt="img" src={newfeed.image} />
-      </div>
+      {newfeed.image !== "" && (
+        <div className={styles.image_wrapper}>
+          <img alt="img" src={newfeed.image} />
+        </div>
+      )}
 
       {newfeed.comments && (
         <div className={styles.comment_wrapper}>

@@ -155,7 +155,13 @@ function Quizz() {
         >
           Kiểm tra
         </button>
-        <button>Mini games</button>
+        <button
+          onClick={() => {
+            navigate(`/game/memory/${quizz_id}`);
+          }}
+        >
+          Mini games
+        </button>
       </div>
 
       <div style={{ marginTop: "20px" }}>

@@ -7,7 +7,13 @@ function MainLayout() {
   const contentRef = useRef(null);
   const [visibleHeader, setVisibleHeader] = useState(true);
 
-  const pathDisableHeader = ["/quizz/test", "/homework/add", "/test", "/edit"];
+  const pathDisableHeader = [
+    "/quizz/test",
+    "/homework/add",
+    "/test",
+    "/edit",
+    "/game",
+  ];
 
   useEffect(() => {
     if (

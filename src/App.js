@@ -25,6 +25,8 @@ import Test from "pages/Test/Test";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
+import CardContainer from "games/memory/CardContainer";
+import { MemoryProvider } from "games/memory/MemoryContext";
 
 function App() {
   const navigate = useNavigate();
@@ -102,6 +104,15 @@ function App() {
                 </TestProvider>
               }
             />
+            <Route
+              path="game/memory/:quizz_id"
+              element={
+                <MemoryProvider>
+                  <CardContainer />
+                </MemoryProvider>
+              }
+            />
+
             <Route path="/*" element={<Navigate to="/class" />} />
 
             <Route index element={<Navigate to="/class" />} />

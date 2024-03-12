@@ -39,21 +39,34 @@ const CardContainer = () => {
     <div
       style={{
         width: "100%",
+        height: "-webkit-fill-available",
         backgroundColor: "#242424",
         textAlign: "center",
         boxSizing: "border-box",
       }}
+      className="game_memory"
     >
       <div
-        style={{ color: "#ffffffde", fontSize: "3.2em", paddingTop: "20px" }}
+        style={{
+          color: "#ffffffde",
+          fontSize: "3.2em",
+          paddingTop: "20px",
+          fontFamily: "Rocher",
+          fontPalette: "--Grays",
+        }}
       >
         <button
-          style={{ float: "flex", marginLeft: "20px" }}
+          style={{
+            float: "left",
+            marginLeft: "20px",
+            fontSize: "0.9em",
+            padding: "0.3em 0.6em",
+          }}
           onClick={() => {
             navigate(-1);
           }}
         >
-          🔙
+          <span>🔙</span>
         </button>
         {""}
         Memory Game

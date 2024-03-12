@@ -27,6 +27,8 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import CardContainer from "games/memory/CardContainer";
 import { MemoryProvider } from "games/memory/MemoryContext";
+import SearchWordGame from "games/word_search/SearchWordGame";
+import MenuGame from "pages/MenuGame/MenuGame";
 
 function App() {
   const navigate = useNavigate();
@@ -104,6 +106,9 @@ function App() {
                 </TestProvider>
               }
             />
+
+            <Route path="game/:quizz_id" element={<MenuGame />} />
+
             <Route
               path="game/memory/:quizz_id"
               element={
@@ -111,6 +116,11 @@ function App() {
                   <CardContainer />
                 </MemoryProvider>
               }
+            />
+
+            <Route
+              path="game/searchword/:quizz_id"
+              element={<SearchWordGame />}
             />
 
             <Route path="/*" element={<Navigate to="/class" />} />

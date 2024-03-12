@@ -1,78 +1,76 @@
-.card-container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-gap: 1rem;
-  margin: 20px auto;
-  height: 100%;
-  max-width: 1280px;
-  max-height: 700px;
-}
+.game_memory {
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
+    margin: 20px auto;
+    height: 100%;
+    max-width: 1280px;
+    max-height: 700px;
+  }
 
-.card-container .card {
-  width: 200px;
-  height: 200px;
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid red;
-}
+  .card-container .card {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid red;
+  }
 
-.card-container .card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border: 2px solid #fff;
-  position: relative;
-}
+  .card-container .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    position: relative;
+  }
 
-.card-container .card .front {
-  position: absolute;
-  inset: 0;
-  z-index: 99;
-  cursor: pointer;
-  transition: all ease-in 0.2s;
-  color: #fff;
-  font-size: 2em;
-  text-wrap: wrap;
-  transform: rotateY(90deg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .card-container .card .front {
+    position: absolute;
+    inset: 0;
+    z-index: 99;
+    cursor: pointer;
+    transition: all ease-in 0.2s;
+    color: #fff;
+    font-size: 2em;
+    text-wrap: wrap;
+    transform: rotateY(90deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.card-container .card .flipped .front {
-  transform: rotateY(0deg);
-  transition-delay: 0.2s;
-  cursor: not-allowed;
-}
+  .card-container .card .flipped .front {
+    transform: rotateY(0deg);
+    transition-delay: 0.2s;
+    cursor: not-allowed;
+  }
 
-.card-container .card .back {
-  transition: all 0.2s ease-in;
-  transition-delay: 0.2s;
-}
+  .card-container .card .back {
+    transition: all 0.2s ease-in;
+    transition-delay: 0.2s;
+  }
 
-.card-container .card .flipped .back {
-  transform: rotateY(90deg);
-  transition-delay: 0s;
-}
+  .card-container .card .flipped .back {
+    transform: rotateY(90deg);
+    transition-delay: 0s;
+  }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1.5em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-  color: #fff;
-  margin: 20px 0;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1.5em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    color: #fff;
+    margin: 20px 0;
+  }
+  button:hover {
+    border-color: #646cff;
+  }
 }

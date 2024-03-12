@@ -157,7 +157,7 @@ function Quizz() {
         </button>
         <button
           onClick={() => {
-            navigate(`/game/memory/${quizz_id}`);
+            navigate(`/game/${quizz_id}`);
           }}
         >
           Mini games

@@ -85,8 +85,6 @@ function EditHomework() {
     const getDataHomework = async () => {
       const homeworkRef = doc(firestore, "homework", homeworkId);
       const docSnapshot = await getDoc(homeworkRef);
-      console.log(docSnapshot.data());
-      console.log(docSnapshot.id);
       setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
     };
     getDataHomework();

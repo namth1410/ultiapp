@@ -125,7 +125,6 @@ function Header() {
     if (needLogin) {
       e.preventDefault();
     }
-    console.log("asd");
   };
 
   const handleLogout = () => {
@@ -133,7 +132,6 @@ function Header() {
       .then(() => {
         localStorage.clear();
         navigate("/login");
-        console.log("Signed out successfully");
       })
       .catch((error) => {
         // An error happened.

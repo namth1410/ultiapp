@@ -1,18 +1,22 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { Table } from "antd";
-import { doc, getDoc } from "firebase/firestore";
+import { Select, Table } from "antd";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useState } from "react";
 import { convertDurationToString, convertISOToCustomFormat } from "ultis/time";
-import { firestore } from "../../../../firebase";
+import { auth, firestore } from "../../../../firebase";
 import styles from "./DetailRecordHomework.module.css";
 
 function DetailRecordHomework() {
   const splitRecordId = window.location.pathname.split("/");
   const recordId = splitRecordId[splitRecordId.length - 1];
+  const homeworkId = splitRecordId[4];
 
   const [dataDetailRecordHomework, setDataDetailRecordHomework] =
     useState(null);
+  const [recordsOfHomework, setRecordsOfHomework] = useState(null);
+  const [options, setOptions] = useState([]);
 
   const [dataRecord, setDataRecord] = useState(null);
   const [countAnswerCorrect, setCountAnswerCorrect] = useState(0);
@@ -25,7 +29,6 @@ function DetailRecordHomework() {
       dataIndex: "status",
       key: "status",
       render: (_, { status }) => {
-        console.log(status);
         return (
           <span
             style={{
@@ -82,8 +85,6 @@ function DetailRecordHomework() {
     let correctCount = 0;
     let wrongCount = 0;
     let unansweredCount = 0;
-    console.log(answer);
-    console.log(correctAnswer);
 
     for (let i = 0; i < correctAnswer.length; i++) {
       if (answer[i] === " ") {
@@ -100,19 +101,61 @@ function DetailRecordHomework() {
   }
 
   useEffect(() => {
-    const getDataDetailRecordHomework = async () => {
-      const recordRef = doc(firestore, "homework_results", recordId);
-      const docSnapshot = await getDoc(recordRef);
-      const data = docSnapshot.data();
-      setDataDetailRecordHomework({
-        id: docSnapshot.id,
-        ...data,
-      });
-      compareAnswers(data.answer, data.correctAnswer);
+    if (!dataDetailRecordHomework) return;
+    compareAnswers(
+      dataDetailRecordHomework.answer,
+      dataDetailRecordHomework.correctAnswer
+    );
+    setDataRecord(convertToDataTable(dataDetailRecordHomework));
+  }, [dataDetailRecordHomework]);
 
-      setDataRecord(convertToDataTable(data));
+  useEffect(() => {
+    const getDataRecordsHomework = async () => {
+      const QuerySnapshot = await getDocs(
+        query(
+          collection(firestore, "homework_results"),
+          where("userUid", "==", auth.currentUser.uid),
+          where("homework_id", "==", homeworkId),
+          orderBy("dateCreate", "asc")
+        )
+      );
+
+      if (QuerySnapshot.empty) {
+        setRecordsOfHomework(null);
+        return;
+      }
+      const records = [];
+
+      QuerySnapshot.forEach((doc) => {
+        records.push({ ...doc.data(), id: doc.id });
+      });
+      console.log(records);
+      setOptions(
+        records.map((el, index) => {
+          return {
+            value: index + 1,
+            label: `Lần làm bài ${index + 1}`,
+          };
+        })
+      );
+      setDataDetailRecordHomework(records[0]);
+      setDataRecord(convertToDataTable(records[0]));
+      setRecordsOfHomework(records);
     };
-    getDataDetailRecordHomework();
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is signed in:", user);
+        getDataRecordsHomework();
+      } else {
+        console.log("User is signed out");
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -125,6 +168,19 @@ function DetailRecordHomework() {
           </div>
           <div className={styles.right_box}>
             <div className={styles.scrollbar}>
+              <div className={styles.a0}>
+                <Select
+                  style={{
+                    width: "100%",
+                    marginBottom: "10px",
+                  }}
+                  defaultValue={1}
+                  onChange={(e) => {
+                    setDataDetailRecordHomework(recordsOfHomework[e - 1]);
+                  }}
+                  options={options}
+                />
+              </div>
               <div className={styles.a1}>0/10</div>
               <div className={styles.a2}>
                 <div className={styles.a3}>

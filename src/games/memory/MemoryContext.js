@@ -31,12 +31,6 @@ const MemoryProvider = ({ children }) => {
     return isWin;
   };
 
-  /**
-   * @description
-   * This function is used to start the game
-   * It shuffles the cards and sets the turn to 0
-   * @returns void
-   */
   const shuffleCards = () => {
     const shuffledCards = [...CardArray, ...CardArray]
       .sort(() => Math.random() - 0.5)
@@ -55,14 +49,7 @@ const MemoryProvider = ({ children }) => {
     return array;
   }
 
-  /**
-   * @description
-   * This function is used to handle the click event on the card
-   * It flips the card and checks if the card is a match
-   * @param card
-   */
   const handleCardItemClick = (card) => {
-    console.log(card);
     if (!disabledCards) {
       setCards((prevCard) =>
         prevCard.map((c) => {
@@ -78,11 +65,6 @@ const MemoryProvider = ({ children }) => {
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
   };
 
-  /**
-   * @description
-   * This function is used to reset the cards
-   * @returns void
-   */
   const resetTurn = () => {
     setChoiceOne(null);
     setChoiceTwo(null);
@@ -90,12 +72,6 @@ const MemoryProvider = ({ children }) => {
     setDisabledCards(false);
   };
 
-  /**
-   * @description
-   * This function is used to start the game
-   * It shuffles the cards and sets the turn to 0
-   * @returns void
-   */
   const startGame = () => {
     const _cards = cards.map((el) => ({
       ...el,
@@ -106,11 +82,6 @@ const MemoryProvider = ({ children }) => {
     setTurn(0);
   };
 
-  /**
-   * @description
-   * This function is used to check if the cards are a match
-   * @returns void
-   */
   useEffect(() => {
     if (choiceOne && choiceTwo) {
       setDisabledCards(true);
@@ -141,11 +112,6 @@ const MemoryProvider = ({ children }) => {
     }
   }, [choiceOne, choiceTwo]);
 
-  /**
-   * @description
-   * This function is used to check if the cards are a match
-   * @returns void
-   */
   useEffect(() => {
     shuffleCards();
 
@@ -155,7 +121,6 @@ const MemoryProvider = ({ children }) => {
 
       if (docSnapshot.exists()) {
         const quizzData = { id: docSnapshot.id, ...docSnapshot.data() };
-        console.log(quizzData);
         const _data1 = quizzData.quizz_items.map((el, index) => ({
           ...el,
           isFlipped: false,

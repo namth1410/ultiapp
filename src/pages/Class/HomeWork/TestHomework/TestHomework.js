@@ -20,19 +20,13 @@ function TestHomework() {
   }, [dataHomework?.fileURL]);
 
   useEffect(() => {
-    console.log(dataHomework);
-  }, [dataHomework]);
-
-  useEffect(() => {
     const getDataHomework = async () => {
       const homeworkRef = doc(firestore, "homework", homeworkId);
       const docSnapshot = await getDoc(homeworkRef);
-      console.log(docSnapshot.data());
-      console.log(docSnapshot.id);
       setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
     };
     getDataHomework();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

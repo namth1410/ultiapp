@@ -1,3 +1,4 @@
+import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Input, Modal, Table } from "antd";
 import empty from "assets/img/empty.json";
 import { useClass } from "contexts/class_context/ClassContext";
@@ -12,6 +13,7 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -20,11 +22,12 @@ import { toast } from "react-toastify";
 const { Search } = Input;
 
 function Member() {
-  const { dataClass } = useClass();
+  const { dataClass, classId } = useClass();
 
   const [isModalAddMemberOpen, setIsModalAddMemberOpen] = useState(false);
   const [userSearch, setUserSearch] = useState(null);
   const [dataMembers, setDataMembers] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const columns = [
     {
@@ -33,16 +36,54 @@ function Member() {
       key: "name",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-    },
-    {
       title: "Email",
       dataIndex: "email",
       key: "address",
     },
+    {
+      title: "Xóa",
+      dataIndex: "",
+      key: "x",
+      render: (_, record) => (
+        <button
+          style={{
+            cursor: "pointer",
+            color: "red",
+            backgroundColor: "unset",
+            border: "none",
+          }}
+          onClick={(_) => {
+            removeMemberFromClass(classId, record.key);
+          }}
+        >
+          <DeleteOutlined />
+        </button>
+      ),
+    },
   ];
+
+  const removeMemberFromClass = async (classId, memberId) => {
+    try {
+      const classRef = doc(firestore, "classes", classId);
+
+      await runTransaction(firestore, async (transaction) => {
+        const classDoc = await transaction.get(classRef);
+        if (!classDoc.exists()) {
+          throw new Error("Class document does not exist.");
+        }
+
+        const members = classDoc.data().members || [];
+
+        const updatedMembers = members.filter((id) => id !== memberId);
+
+        transaction.update(classRef, { members: updatedMembers });
+      });
+
+      console.log("Member removed successfully.");
+    } catch (error) {
+      console.error("Error removing member from class:", error);
+    }
+  };
 
   const handleOk = () => {
     setIsModalAddMemberOpen(false);
@@ -54,6 +95,7 @@ function Member() {
   };
 
   const onSearchUser = async (value, _e, info) => {
+    setIsSearching(true);
     const usersRef = collection(firestore, "users");
     const querySnapshot = await getDocs(
       query(usersRef, where("email", "==", value))
@@ -63,6 +105,7 @@ function Member() {
       usersData.push({ id: doc.id, ...doc.data() });
     });
     setUserSearch(usersData[0]);
+    setIsSearching(false);
   };
 
   const onAddUserToClass = async () => {
@@ -70,26 +113,38 @@ function Member() {
     const docSnap = await getDoc(classRef);
     if (docSnap.exists()) {
       const classData = docSnap.data();
-      let dataToAdd = {};
-      if (!classData.members || !Array.isArray(classData.members)) {
-        dataToAdd.members = [userSearch.uid];
+      if (!classData.members?.includes(userSearch.uid)) {
+        let dataToAdd = {};
+        if (!classData.members || !Array.isArray(classData.members)) {
+          dataToAdd.members = [userSearch.uid];
+        } else {
+          dataToAdd.members = [...classData.members, userSearch.uid];
+        }
+        await updateDoc(classRef, dataToAdd);
+        toast.success("Đã thêm mới 1 người", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        handleCancel();
       } else {
-        dataToAdd.members = [...classData.members, userSearch.uid];
+        toast.warning("Người này đã ở trong lớp", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-      await updateDoc(classRef, dataToAdd);
-      toast.success("Đã thêm mới 1 người", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      handleCancel();
     } else {
-      console.log("No such document!");
       toast.error("Lỗi", {
         position: "top-center",
         autoClose: 5000,
@@ -105,9 +160,8 @@ function Member() {
   const onSearch = (value, _e, info) => console.log(info?.source, value);
   const convertToDataTable = (data) => {
     return data.map((el) => ({
-      key: el.id,
+      key: el.uid,
       name: el.displayName,
-      age: 22,
       email: el.email,
     }));
   };
@@ -170,7 +224,7 @@ function Member() {
           />
         ) : (
           <div>
-            <Table columns={columns} dataSource={dataMembers}/>
+            <Table columns={columns} dataSource={dataMembers} />
           </div>
         )}
       </div>
@@ -202,6 +256,7 @@ function Member() {
           onSearch={onSearchUser}
           enterButton
           size="large"
+          loading={isSearching}
         />
         <div
           style={{
@@ -230,7 +285,11 @@ function Member() {
               <span>{userSearch.email}</span>
             </div>
           ) : (
-            <></>
+            <Lottie
+              style={{ width: "40%", margin: "auto", marginTop: "10%" }}
+              animationData={empty}
+              loop={true}
+            />
           )}
         </div>
       </Modal>

@@ -161,7 +161,6 @@ const SearchWordGame = () => {
           });
         });
         setFoundWords(_foundWords);
-        console.log("Word found in words list");
       } else {
         console.log("Word not found in words list");
       }
@@ -302,7 +301,6 @@ const SearchWordGame = () => {
   };
 
   const startGame = () => {
-    console.log(levelRef?.current);
     const _grid = generateGrid();
     setGrid(_grid);
     setGridOrigin(Array.from(_grid, (row) => [...row]));
@@ -394,9 +392,6 @@ const SearchWordGame = () => {
           ref={levelRef}
           defaultValue={8}
           style={{ display: "block" }}
-          onChange={(e) => {
-            console.log(e);
-          }}
         >
           <Radio.Button value={8}>8</Radio.Button>
           <Radio.Button value={12}>12</Radio.Button>

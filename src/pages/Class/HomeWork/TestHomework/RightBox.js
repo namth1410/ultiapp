@@ -46,7 +46,6 @@ function RightBox({ dataHomework }) {
       fileURL: dataHomework.fileURL,
       timeSpent: elapsedTime,
     };
-    console.log(dataToAdd);
     const docRef = await addDoc(
       collection(firestore, "homework_results"),
       dataToAdd
@@ -59,7 +58,6 @@ function RightBox({ dataHomework }) {
 
   useEffect(() => {
     if (!dataHomework) return;
-    console.log(dataHomework);
     setMyAnswer(dataHomework.correctAnswer.map(() => " "));
     setStartTime(new Date().getTime());
   }, [dataHomework]);

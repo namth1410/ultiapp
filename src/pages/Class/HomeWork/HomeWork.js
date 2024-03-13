@@ -58,7 +58,6 @@ function HomeWork() {
   ];
 
   const convertToDataTable = (data) => {
-    console.log(data);
     return data.map((el) => ({
       key: el.id,
       name: el.nameHomework,
@@ -77,7 +76,6 @@ function HomeWork() {
 
   useEffect(() => {
     if (!dataHomework) return;
-    console.log(dataHomework);
     setHomeworkData(convertToDataTable(dataHomework));
   }, [dataHomework]);
 
@@ -116,7 +114,7 @@ function HomeWork() {
       collection(firestore, "homework_results"),
       where("userUid", "==", auth.currentUser.uid),
       where("homework_id", "==", selectedHomework.id),
-      orderBy("dateCreate", "desc")
+      orderBy("dateCreate", "asc")
     );
 
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -278,7 +276,12 @@ function HomeWork() {
                   <DesktopOutlined />
                 </button>
 
-                <button className={styles.action_homework_item}>
+                <button
+                  className={styles.action_homework_item}
+                  onClick={() => {
+                    navigate(`${selectedHomework.id}/detail`);
+                  }}
+                >
                   <span>Chi tiết</span>
                   <PartitionOutlined />
                 </button>

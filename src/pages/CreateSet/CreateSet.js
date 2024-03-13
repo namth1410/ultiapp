@@ -5,6 +5,7 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { auth, firestore, storage } from "../../firebase";
 import styles from "./CreateSet.module.css";
 
@@ -53,7 +54,6 @@ function CreateSet() {
           question.image.fileList[0].thumbUrl,
           "data_url"
         );
-        console.log("Uploaded a data_url string!");
 
         const downloadURL = await getDownloadURL(snapshot.ref);
         imageListURL.push(downloadURL);
@@ -64,6 +64,13 @@ function CreateSet() {
   };
 
   const onFinish = async (values) => {
+    if (values.quizz_items.length < 5) {
+      Swal.fire({
+        icon: "error",
+        title: "1 Quizz phải có ít nhất 5 thuật ngữ",
+      });
+      return;
+    }
     setIsLoading(true);
     await uploadImageList(values);
     let _quizz_items = values.quizz_items.map((el, index) => ({

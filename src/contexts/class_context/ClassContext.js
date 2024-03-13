@@ -8,6 +8,7 @@ const ClassContext = createContext();
 
 export const ClassProvider = ({ children }) => {
   const [dataClass, setDataClass] = useState(null);
+  const [creatorId, setCreatorId] = useState(null);
   const [dataHomework, setDataHomework] = useState(null);
 
   const classId = window.location.pathname.split("/")[2];
@@ -19,7 +20,7 @@ export const ClassProvider = ({ children }) => {
       if (docSnapshot.exists()) {
         const classData = { id: docSnapshot.id, ...docSnapshot.data() };
         setDataClass(classData);
-        console.log(classData);
+        setCreatorId(classData.uidCreator);
       } else {
         console.log("Không tìm thấy class với id đã cho");
       }
@@ -60,6 +61,7 @@ export const ClassProvider = ({ children }) => {
 
   const contextValue = useMemo(
     () => ({
+      creatorId,
       classId,
       dataClass,
       setDataClass,

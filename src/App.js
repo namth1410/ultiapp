@@ -29,6 +29,7 @@ import CardContainer from "games/memory/CardContainer";
 import { MemoryProvider } from "games/memory/MemoryContext";
 import SearchWordGame from "games/word_search/SearchWordGame";
 import MenuGame from "pages/MenuGame/MenuGame";
+import DetailHomeWork from "pages/Class/HomeWork/DetailHomeWork/DetailHomeWork";
 
 function App() {
   const navigate = useNavigate();
@@ -84,6 +85,10 @@ function App() {
                     <AddHomeWork />
                   </AddHomeWorkProvider>
                 }
+              />
+              <Route
+                path=":class_id/homework/:homework_id/detail"
+                element={<DetailHomeWork />}
               />
               <Route
                 path=":class_id/homework/:homework_id/test"

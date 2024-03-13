@@ -7,10 +7,14 @@ import { useState } from "react";
 import { convertDurationToStringV1 } from "ultis/time";
 import { auth, firestore } from "../../firebase";
 import styles from "./NewItem.module.css";
+import { useClass } from "contexts/class_context/ClassContext";
 
 function NewItem({ newfeed }) {
+  const { creatorId } = useClass();
+
   const [commentDraft, setCommentDraft] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHiddenComment, setIsHiddenComment] = useState(false);
 
   const onDeletePost = async () => {
     deleteDoc(doc(firestore, "newsfeed", newfeed.id));
@@ -52,7 +56,8 @@ function NewItem({ newfeed }) {
           </div>
         </div>
 
-        {newfeed.uidCreator === auth.currentUser.uid && (
+        {(newfeed.uidCreator === auth.currentUser.uid ||
+          auth.currentUser.uid === creatorId) && (
           <DeleteFilled
             onClick={() => {
               setIsModalOpen(true);
@@ -75,6 +80,22 @@ function NewItem({ newfeed }) {
           <p>
             <MessageOutlined /> {`${newfeed.comments.length} bình luận`}
           </p>
+
+          <button
+            onClick={() => {
+              setIsHiddenComment(!isHiddenComment);
+            }}
+            style={{
+              backgroundColor: "unset",
+              border: "none",
+              cursor: "pointer",
+              textDecoration: "underline",
+              fontFamily: "Gilroy",
+              fontSize: "16px",
+            }}
+          >
+            {isHiddenComment ? "Hiện bình luận" : "Ẩn bình luận"}
+          </button>
         </div>
       )}
 
@@ -101,7 +122,7 @@ function NewItem({ newfeed }) {
         ></Button>
       </div>
 
-      {newfeed?.comments && (
+      {newfeed?.comments && !isHiddenComment && (
         <div className={styles.comments}>
           {newfeed.comments.map((comment) => {
             return <CommentItem key={comment} comment={comment} />;

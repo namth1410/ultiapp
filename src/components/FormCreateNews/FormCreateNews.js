@@ -19,7 +19,6 @@ function FormCreateNews() {
   const [isLoading, setIsLoading] = useState(false);
 
   const uploadFile = async () => {
-    console.log(imageNewFeed);
     const now = new Date().toISOString();
     const storageRef = ref(storage, `Newsfeed/${classId}/${now}`);
 
@@ -128,7 +127,6 @@ function FormCreateNews() {
             }}
             disabled={imageNewFeed}
             onClick={() => {
-              console.log("click");
               hiddenFileInput.current.click();
             }}
           >
@@ -140,7 +138,6 @@ function FormCreateNews() {
             accept="image/*"
             ref={hiddenFileInput}
             onChange={(el) => {
-              console.log(el.target.files);
               setImageNewFeed(el.target.files[0]);
             }}
             style={{ display: "none" }}

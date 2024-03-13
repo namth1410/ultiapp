@@ -107,7 +107,6 @@ function AddHomeWork() {
       wayGetScore: wayGetScore,
       timesLimitDo: timesLimitDo,
     };
-    console.log(config);
     const dataToAdd = {
       dateCreate: new Date().toISOString(),
       uidCreator: auth.currentUser.uid,
@@ -119,7 +118,6 @@ function AddHomeWork() {
       nameHomework: nameHomeworkInputRef.current.input.value,
       config: config,
     };
-    console.log(dataToAdd);
 
     const docRef = await addDoc(collection(firestore, "homework"), dataToAdd);
     console.log(docRef);

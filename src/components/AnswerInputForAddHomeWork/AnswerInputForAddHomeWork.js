@@ -13,10 +13,7 @@ function AnswerInputForAddHomeWork({ props }) {
 
   const handleTypeAnswer = (value) => {
     let newAnswer = [...correctAnswer];
-    console.log(index);
-    console.log(correctAnswer);
     newAnswer[index] = value.toUpperCase();
-    console.log(newAnswer);
     setCorrectAnswer(newAnswer);
   };
 

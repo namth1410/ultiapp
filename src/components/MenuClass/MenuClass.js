@@ -28,7 +28,7 @@ function MenuClass() {
     getItem("Thành viên", "member", <WindowsFilled />),
     getItem("Vai trò lớp", "3", <WindowsFilled />),
     getItem("Bài tập", "homework", <WindowsFilled />),
-    getItem("Bảng điểm", "5", <FileFilled />),
+    getItem("Bảng điểm", "score", <FileFilled />),
     getItem("Tài liệu", "6", <SnippetsFilled />),
   ];
 
@@ -43,12 +43,12 @@ function MenuClass() {
       setSelectedKeys(["member"]);
     } else if (window.location.pathname.includes("/3")) {
       setSelectedKeys(["3"]);
-    } else if (window.location.pathname.includes("/5")) {
-      setSelectedKeys(["5"]);
+    } else if (window.location.pathname.includes("/score")) {
+      setSelectedKeys(["score"]);
     } else {
       setSelectedKeys(["6"]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.pathname]);
 
   return (
@@ -62,7 +62,6 @@ function MenuClass() {
           width: 256,
         }}
         onClick={(e) => {
-          console.log(e);
           const parts = window.location.pathname.split("/");
           parts[parts.length - 1] = e.key;
           const newPath = parts.join("/");

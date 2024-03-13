@@ -10,7 +10,6 @@ import styles from "./DetailRecordHomework.module.css";
 
 function DetailRecordHomework() {
   const splitRecordId = window.location.pathname.split("/");
-  const recordId = splitRecordId[splitRecordId.length - 1];
   const homeworkId = splitRecordId[4];
 
   const [dataDetailRecordHomework, setDataDetailRecordHomework] =

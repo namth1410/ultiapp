@@ -30,6 +30,8 @@ import { MemoryProvider } from "games/memory/MemoryContext";
 import SearchWordGame from "games/word_search/SearchWordGame";
 import MenuGame from "pages/MenuGame/MenuGame";
 import DetailHomeWork from "pages/Class/HomeWork/DetailHomeWork/DetailHomeWork";
+import Speaking from "pages/Speaking/Speaking";
+import PracticeSpeaking from "pages/Speaking/PracticeSpeaking/PracticeSpeaking";
 
 function App() {
   const navigate = useNavigate();
@@ -127,6 +129,9 @@ function App() {
               path="game/searchword/:quizz_id"
               element={<SearchWordGame />}
             />
+
+            <Route path="speaking" element={<Speaking />} />
+            <Route path="speaking/practice/:topic_id" element={<PracticeSpeaking />} />
 
             <Route path="/*" element={<Navigate to="/class" />} />
 

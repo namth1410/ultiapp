@@ -182,6 +182,15 @@ function Header() {
             >
               <div>Quizz</div>
             </Link>
+            <Link
+              to="/speaking"
+              className={`${styles.menu_item} ${
+                menuItem.includes("/speaking") ? styles.active : ""
+              }`}
+              onClick={handleClickMenu}
+            >
+              <div>Luyện nói</div>
+            </Link>
           </div>
         </div>
 

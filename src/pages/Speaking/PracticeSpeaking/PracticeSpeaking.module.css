@@ -1,0 +1,213 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  .left_box {
+    position: relative;
+    height: 100%;
+    background: #b1d5fc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    width: min(6 * 1 * 448vmin / 56, 448 * 100vw / 1920);
+    transition: width 0.2s ease-out;
+
+    .wordlist {
+      display: grid;
+      gap: min(6 * 1 * 16vmin / 56, 16 * 100vw / 1920);
+      padding: min(6 * 1 * 24vmin / 56, 24 * 100vw / 1920);
+    }
+  }
+
+  .right_box {
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    background: #ffffff;
+
+    .word_detail_content {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: overlay;
+      padding: min(6 * 1 * 24vmin / 56, 24 * 100vw / 1920)
+        min(6 * 1 * 24vmin / 56, 24 * 100vw / 1920)
+        min(6 * 1 * 100vmin / 56, 100 * 100vw / 1920)
+        min(6 * 1 * 24vmin / 56, 24 * 100vw / 1920);
+
+      .word_detail_content_group {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0 100px;
+        padding: 0 min(6 * 1 * 100vmin / 56, 100 * 100vw / 1920);
+        line-height: 1;
+        height: min(6 * 1 * 300vmin / 56, 300 * 100vw / 1920);
+
+        .word_image_preview {
+          text-align: center;
+          object-fit: contain;
+          width: min(6 * 1 * 366vmin / 56, 366 * 100vw / 1920);
+          image-rendering: pixelated;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          img {
+            width: fit-content;
+            height: fit-content;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border: min(6 * 1 * 6.18vmin / 56, 6.18 * 100vw / 1920) solid #fff;
+            box-shadow: 0
+              min(6 * 1 * 1.8539326191vmin / 56, 1.8539326191 * 100vw / 1920)
+              min(6 * 1 * 4.9438209534vmin / 56, 4.9438209534 * 100vw / 1920) 0
+              gray;
+          }
+        }
+
+        .word_detail_content_group_right {
+          flex: 1;
+          padding-left: min(6 * 1 * 100vmin / 56, 100 * 100vw / 1920);
+
+          .word_pronunciation {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            width: fit-content;
+            position: relative;
+            margin: auto;
+
+            .word_pronunciation_audio {
+              cursor: url(https://img.hoclieu.vn/hoclieu/shared-image/volume_mouse.png)
+                  12 0,
+                pointer;
+              position: absolute;
+              transform: translate(-100%);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              left: max(6 * -24vmin / 56, -24 * 100vw / 1920);
+              width: min(6 * 56vmin / 56, 56 * 100vw / 1920);
+              height: min(6 * 56vmin / 56, 56 * 100vw / 1920);
+              transition: transform 0.2s ease-in-out;
+              border-radius: 50%;
+              background-color: #ee9500;
+              border: none;
+            }
+
+            .word_col {
+              display: grid;
+              gap: 2px;
+              gap: min(6 * 20vmin vmin / 56, 20 * 100vw / 1920);
+              position: relative;
+
+              .word {
+                font-weight: 600;
+                color: #ee9500;
+                font-size: min(6 * 60vmin / 56, 60 * 100vw / 1920);
+                line-height: 1;
+                text-align: center;
+                display: block;
+                white-space: unset;
+              }
+
+              .word_phonetics {
+                text-align: center;
+                font-style: normal;
+                font-weight: 400;
+                color: #adb5bd;
+                font-size: min(6 * 35vmin / 56, 35 * 100vw / 1920);
+              }
+            }
+
+            .word_type_and_record {
+              position: absolute;
+              left: calc(100% + min(6 * 12vmin / 56, 12 * 100vw / 1920));
+              display: flex;
+              align-items: center;
+              gap: min(6 * 24vmin / 56, 24 * 100vw / 1920);
+
+              .word_type {
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: lowercase;
+                color: #adb5bd;
+                font-size: min(6 * 40vmin / 56, 40 * 100vw / 1920);
+                height: min(6 * 50vmin / 56, 50 * 100vw / 1920);
+                display: flex;
+                align-items: flex-end;
+                white-space: nowrap;
+              }
+
+              .word_record {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: min(6 * 56vmin / 56, 56 * 100vw / 1920);
+                height: min(6 * 56vmin / 56, 56 * 100vw / 1920);
+                border: none;
+              }
+
+              .word_record:hover {
+                box-shadow: 0 0 0 min(6 * 8vmin / 56, 8 * 100vw / 1920)
+                  rgba(0, 0, 0, 0.1);
+                border-radius: 50%;
+                cursor: pointer;
+              }
+            }
+          }
+
+          .word_meaning {
+            text-align: center;
+            font-style: normal;
+            font-weight: 600;
+            color: #212529;
+            font-size: min(6 * 40vmin / 56, 40 * 100vw / 1920);
+            margin-top: min(6 * 40vmin / 56, 40 * 100vw / 1920);
+          }
+        }
+      }
+    }
+  }
+
+  .word_item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: #ffffff;
+    border-radius: 8px;
+    user-select: none;
+    padding: min(6 * 1 * 8vmin / 56, 8 * 100vw / 1920);
+    gap: min(6 * 1 * 8vmin / 56, 8 * 100vw / 1920);
+    max-width: 100%;
+    overflow: hidden;
+    min-height: min(6 * 1 * 67vmin / 56, 67 * 100vw / 1920);
+    height: auto;
+
+    .word_label {
+      font-weight: 600;
+      color: #212529;
+      font-size: min(6 * 30vmin / 56, 30 * 100vw / 1920);
+      line-height: 1;
+    }
+
+    .word_label_type {
+      color: #959595;
+      font-size: min(6 * 24vmin / 56, 24 * 100vw / 1920);
+    }
+  }
+
+  .selected_word,
+  .word_item:hover {
+    box-shadow: 0 0 0 min(6 * 5vmin / 56, 5 * 100vw / 1920) #165b9d;
+  }
+}

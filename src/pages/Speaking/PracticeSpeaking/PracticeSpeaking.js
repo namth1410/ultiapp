@@ -4,13 +4,18 @@ import { ReactComponent as PlaySvg } from "assets/img/play.svg";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import { firestore } from "../../../firebase";
 import styles from "./PracticeSpeaking.module.css";
 
 function PracticeSpeaking() {
+  const recognition = new window.webkitSpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
   const [audio] = useState(new Audio());
   const topic = window.location.pathname.split("/")[3];
-  const recognition = new window.webkitSpeechRecognition();
 
   let chunks = [];
 
@@ -30,10 +35,24 @@ function PracticeSpeaking() {
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
+    console.log(transcript);
+    if (transcript === selectedWord.term) {
+      Swal.fire({
+        title: "Good job!",
+        text: "You clicked the button!",
+        icon: "success",
+      });
+      stopRecognition();
+    }
     // Xử lý transcript, có thể hiển thị lên giao diện
   };
 
+  recognition.onerror = function (event) {
+    console.log(event);
+  };
+
   function startRecognition() {
+    console.log("check");
     recognition.start();
   }
 
@@ -43,11 +62,9 @@ function PracticeSpeaking() {
 
   function startRecording() {
     if (isRecording) {
-      console.log(mediaRecorder);
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
         setIsRecording(false);
-        console.log("da dung");
         chunks = [];
       }
       return;
@@ -58,7 +75,6 @@ function PracticeSpeaking() {
         setIsRecording(true);
         setAudioUrl(null);
         let _mediaRecorder = new MediaRecorder(stream);
-
         _mediaRecorder.start();
 
         _mediaRecorder.ondataavailable = (e) => {
@@ -69,15 +85,16 @@ function PracticeSpeaking() {
           const blob = new Blob(chunks, { type: "audio/wav" });
           setAudioUrl(URL.createObjectURL(blob));
         };
-        setMediaRecorder(_mediaRecorder)
+        setMediaRecorder(_mediaRecorder);
+        startRecognition();
       })
       .catch((error) => {
         console.error("Error accessing microphone:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Không tìm thấy mic",
+        });
       });
-  }
-
-  function stopRecording() {
-
   }
 
   const handleWordRecordClick = () => {
@@ -90,6 +107,16 @@ function PracticeSpeaking() {
       }
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (mediaRecorder?.stream) {
+        mediaRecorder.stream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
+  }, [mediaRecorder]);
 
   useEffect(() => {
     const getWords = async () => {
@@ -109,6 +136,7 @@ function PracticeSpeaking() {
     };
 
     getWords();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -140,7 +168,7 @@ function PracticeSpeaking() {
                 />
               </div>
 
-              <div className={styles.word_detail_content_group_right}>
+              <div className={`${styles.word_detail_content_group_right}`}>
                 <div className={styles.word_pronunciation}>
                   <button
                     className={styles.word_pronunciation_audio}
@@ -161,7 +189,9 @@ function PracticeSpeaking() {
                   <div className={styles.word_type_and_record}>
                     <div className={styles.word_type}>(n)</div>
                     <div
-                      className={styles.word_record}
+                      className={`${styles.word_record} ${
+                        isRecording ? styles.listening_playing : ""
+                      }`}
                       onClick={startRecording}
                     >
                       <MicrophoneSvg />
@@ -182,6 +212,12 @@ function PracticeSpeaking() {
                 </div>
               </div>
             </div>
+
+            {audioUrl && (
+              <audio controls>
+                <source src={audioUrl} type="audio/wav"></source>
+              </audio>
+            )}
           </div>
         </div>
       )}
@@ -194,8 +230,9 @@ const WordItem = ({ item, selectedWord, setSelectedWord }) => {
   return (
     <button
       style={{ border: "none" }}
-      className={`${styles.word_item} ${selectedWord?.term === item.term ? styles.selected_word : ""
-        }`}
+      className={`${styles.word_item} ${
+        selectedWord?.term === item.term ? styles.selected_word : ""
+      }`}
       onClick={() => {
         setSelectedWord(item);
       }}

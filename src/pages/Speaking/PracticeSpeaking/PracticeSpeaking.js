@@ -4,16 +4,15 @@ import { ReactComponent as PlaySvg } from "assets/img/play.svg";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import Swal from "sweetalert2";
 import { firestore } from "../../../firebase";
 import styles from "./PracticeSpeaking.module.css";
 
 function PracticeSpeaking() {
-  const recognition = new window.webkitSpeechRecognition();
-  recognition.lang = "en-US";
-  recognition.continuous = false;
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+  const { transcript, resetTranscript } = useSpeechRecognition();
   const [audio] = useState(new Audio());
   const topic = window.location.pathname.split("/")[3];
 
@@ -39,44 +38,27 @@ function PracticeSpeaking() {
     synth.speak(u);
   };
 
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    console.log(transcript);
-    if (transcript === selectedWord.term) {
-      Swal.fire({
-        title: "Good job!",
-        text: "You clicked the button!",
-        icon: "success",
-      });
-      stopRecognition();
-    }
-  };
-
-  recognition.onerror = function (event) {
-    console.log(event);
-  };
-
-  function startRecognition() {
-    console.log("check");
-    recognition.start();
-  }
-
-  function stopRecognition() {
-    recognition.stop();
-  }
-
   function startRecording() {
     if (isRecording) {
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
         setIsRecording(false);
+        SpeechRecognition.stopListening();
         chunks = [];
+        if (transcript.toLowerCase() === selectedWord.term.toLowerCase()) {
+          Swal.fire({
+            title: "Good job!",
+            text: " Bạn đã phát âm đúng rồi!",
+            icon: "success",
+          });
+        }
       }
       return;
     }
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
+        resetTranscript();
         setIsRecording(true);
         setAudioUrl(null);
         let _mediaRecorder = new MediaRecorder(stream);
@@ -91,7 +73,7 @@ function PracticeSpeaking() {
           setAudioUrl(URL.createObjectURL(blob));
         };
         setMediaRecorder(_mediaRecorder);
-        startRecognition();
+        SpeechRecognition.startListening({ continuous: true });
       })
       .catch((error) => {
         console.error("Error accessing microphone:", error);
@@ -101,17 +83,6 @@ function PracticeSpeaking() {
         });
       });
   }
-
-  const handleWordRecordClick = () => {
-    if (audioUrl) {
-      audio.src = audioUrl;
-      if (audio.paused) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
-    }
-  };
 
   useEffect(() => {
     setAudioUrl(null);
@@ -141,7 +112,6 @@ function PracticeSpeaking() {
       } else {
         const a = querySnapshot.docs[0].data();
         setWords(a.words);
-        console.log(a.words);
         setSelectedWord(a.words[0]);
       }
     };
@@ -217,10 +187,7 @@ function PracticeSpeaking() {
                       <MicrophoneSvg />
                     </div>
                     {audioUrl && (
-                      <div
-                        className={styles.word_record}
-                        onClick={handleWordRecordClick}
-                      >
+                      <div className={styles.word_record}>
                         <PlaySvg />
                       </div>
                     )}
@@ -244,7 +211,7 @@ function PracticeSpeaking() {
                   Giọng đọc
                 </span>
                 <select
-                className={styles.select}
+                  className={styles.select}
                   style={{
                     padding: "10px",
                     borderRadius: "10px",

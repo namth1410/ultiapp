@@ -1,7 +1,6 @@
-import { Radio } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Text } from "react-konva";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -14,8 +13,6 @@ const SearchWordGame = () => {
   const { quizz_id } = useParams();
 
   const navigate = useNavigate();
-
-  const levelRef = useRef(null);
 
   const [words, setWords] = useState([]);
   const [quizzItems, setQuizzItems] = useState([]);

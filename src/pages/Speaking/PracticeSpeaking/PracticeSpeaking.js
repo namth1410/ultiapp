@@ -13,7 +13,6 @@ import styles from "./PracticeSpeaking.module.css";
 
 function PracticeSpeaking() {
   const { transcript, resetTranscript } = useSpeechRecognition();
-  const [audio] = useState(new Audio());
   const topic = window.location.pathname.split("/")[3];
 
   let chunks = [];

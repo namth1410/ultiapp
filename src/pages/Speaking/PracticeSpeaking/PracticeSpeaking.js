@@ -228,6 +228,8 @@ function PracticeSpeaking() {
               </div>
             </div>
 
+            <p>{transcript}</p>
+
             {audioUrl && (
               <audio controls>
                 <source src={audioUrl} type="audio/wav"></source>

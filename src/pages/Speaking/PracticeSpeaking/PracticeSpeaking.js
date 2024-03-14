@@ -12,10 +12,10 @@ function PracticeSpeaking() {
   const topic = window.location.pathname.split("/")[3];
   const recognition = new window.webkitSpeechRecognition();
 
-  let mediaRecorder;
   let chunks = [];
 
   const [words, setWords] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
   const [selectedWord, setSelectedWord] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -43,7 +43,13 @@ function PracticeSpeaking() {
 
   function startRecording() {
     if (isRecording) {
-      stopRecording();
+      console.log(mediaRecorder);
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        setIsRecording(false);
+        console.log("da dung");
+        chunks = [];
+      }
       return;
     }
     navigator.mediaDevices
@@ -51,17 +57,19 @@ function PracticeSpeaking() {
       .then((stream) => {
         setIsRecording(true);
         setAudioUrl(null);
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.start();
+        let _mediaRecorder = new MediaRecorder(stream);
 
-        mediaRecorder.ondataavailable = (e) => {
+        _mediaRecorder.start();
+
+        _mediaRecorder.ondataavailable = (e) => {
           chunks.push(e.data);
         };
 
-        mediaRecorder.onstop = () => {
+        _mediaRecorder.onstop = () => {
           const blob = new Blob(chunks, { type: "audio/wav" });
           setAudioUrl(URL.createObjectURL(blob));
         };
+        setMediaRecorder(_mediaRecorder)
       })
       .catch((error) => {
         console.error("Error accessing microphone:", error);
@@ -69,12 +77,7 @@ function PracticeSpeaking() {
   }
 
   function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state === "recording") {
-      mediaRecorder.stop();
-      setIsRecording(false);
-      console.log("da dung");
-      chunks = [];
-    }
+
   }
 
   const handleWordRecordClick = () => {
@@ -191,9 +194,8 @@ const WordItem = ({ item, selectedWord, setSelectedWord }) => {
   return (
     <button
       style={{ border: "none" }}
-      className={`${styles.word_item} ${
-        selectedWord?.term === item.term ? styles.selected_word : ""
-      }`}
+      className={`${styles.word_item} ${selectedWord?.term === item.term ? styles.selected_word : ""
+        }`}
       onClick={() => {
         setSelectedWord(item);
       }}

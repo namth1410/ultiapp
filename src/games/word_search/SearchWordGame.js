@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { auth, firestore } from "../../firebase";
 
-const gridSize = 8;
+const gridSize = 16;
 
 const SearchWordGame = () => {
   const { quizz_id } = useParams();
@@ -104,7 +104,6 @@ const SearchWordGame = () => {
     const _words = _quizzItems.map((el) => el.term.toUpperCase());
     setWords(_words);
     setQuizzItems(_quizzItems);
-
     for (const word of _words) {
       let placed = false;
       while (!placed) {
@@ -124,7 +123,6 @@ const SearchWordGame = () => {
         }
       }
     }
-
     fillEmptyCells(grid);
 
     return grid;
@@ -386,18 +384,6 @@ const SearchWordGame = () => {
       >
         Chơi mới
       </button>
-
-      {
-        <Radio.Group
-          ref={levelRef}
-          defaultValue={8}
-          style={{ display: "block" }}
-        >
-          <Radio.Button value={8}>8</Radio.Button>
-          <Radio.Button value={12}>12</Radio.Button>
-          <Radio.Button value={16}>16</Radio.Button>
-        </Radio.Group>
-      }
 
       <div
         style={{

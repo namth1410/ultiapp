@@ -24,12 +24,18 @@ function PracticeSpeaking() {
   const [selectedWord, setSelectedWord] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [voice, setVoice] = useState(null);
+
+  const handleVoiceChange = (event) => {
+    const voices = window.speechSynthesis.getVoices();
+    setVoice(voices.find((v) => v.name === event.target.value));
+  };
 
   const listenWord = () => {
     const synth = window.speechSynthesis;
     const u = new SpeechSynthesisUtterance(selectedWord.term);
-    const voices = synth.getVoices();
-    u.voice = voices[0];
+
+    u.voice = voice;
     synth.speak(u);
   };
 
@@ -44,7 +50,6 @@ function PracticeSpeaking() {
       });
       stopRecognition();
     }
-    // Xử lý transcript, có thể hiển thị lên giao diện
   };
 
   recognition.onerror = function (event) {
@@ -109,6 +114,12 @@ function PracticeSpeaking() {
   };
 
   useEffect(() => {
+    setAudioUrl(null);
+    setIsRecording(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWord]);
+
+  useEffect(() => {
     return () => {
       if (mediaRecorder?.stream) {
         mediaRecorder.stream.getTracks().forEach((track) => {
@@ -136,6 +147,15 @@ function PracticeSpeaking() {
     };
 
     getWords();
+
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+
+    setVoice(voices[0]);
+
+    return () => {
+      synth.cancel();
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -210,6 +230,35 @@ function PracticeSpeaking() {
                 <div className={styles.word_meaning}>
                   {selectedWord.definition}
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <div style={{ marginTop: "20px" }}>
+                <span
+                  style={{
+                    color: "var(--text-color-primary)",
+                    marginRight: "10px",
+                  }}
+                >
+                  Giọng đọc
+                </span>
+                <select
+                className={styles.select}
+                  style={{
+                    padding: "10px",
+                    borderRadius: "10px",
+                    fontFamily: "Gilroy",
+                  }}
+                  value={voice?.name}
+                  onChange={handleVoiceChange}
+                >
+                  {window.speechSynthesis.getVoices().map((voice) => (
+                    <option key={voice.name} value={voice.name}>
+                      {voice.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

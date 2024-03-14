@@ -160,8 +160,7 @@
               .listening_playing {
                 border-radius: 50%;
                 animation: crescendo 1s alternate infinite ease-in;
-                box-shadow: 0px 0px 0px 4px #d8d8d8,
-                  0px 0px 0px 10px #dbdbdbb4;
+                box-shadow: 0px 0px 0px 4px #d8d8d8, 0px 0px 0px 10px #dbdbdbb4;
 
                 circle {
                   fill: #ff9029;
@@ -220,6 +219,10 @@
   .selected_word,
   .word_item:hover {
     box-shadow: 0 0 0 min(6 * 5vmin / 56, 5 * 100vw / 1920) #165b9d;
+  }
+
+  .select {
+    outline: none;
   }
 }
 

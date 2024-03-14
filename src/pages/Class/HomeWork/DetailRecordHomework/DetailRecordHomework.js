@@ -128,7 +128,6 @@ function DetailRecordHomework() {
       QuerySnapshot.forEach((doc) => {
         records.push({ ...doc.data(), id: doc.id });
       });
-      console.log(records);
       setOptions(
         records.map((el, index) => {
           return {

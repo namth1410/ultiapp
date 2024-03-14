@@ -28,6 +28,7 @@ function Speaking() {
   ]);
   useEffect(() => {
     console.log(images);
+    setData(["Animals", "Colors", "Grocery", "Hours", "Jobs", "Weather"]);
   }, []);
 
   return (

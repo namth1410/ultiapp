@@ -290,7 +290,11 @@ function AddHomeWork() {
                   [...Array(countAnswer)].map((_, index) => (
                     <AnswerInputForAddHomeWork
                       key={index}
-                      props={{ index, answer: correctAnswer?.[index] }}
+                      props={{
+                        index,
+                        answer: correctAnswer?.[index],
+                        score: (10 / correctAnswer.length).toFixed(2),
+                      }}
                     />
                   ))}
               </div>

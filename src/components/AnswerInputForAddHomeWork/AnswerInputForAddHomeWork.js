@@ -3,7 +3,7 @@ import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext
 import PropTypes from "prop-types";
 
 function AnswerInputForAddHomeWork({ props }) {
-  const { index } = props;
+  const { index, score } = props;
   const { correctAnswer, setCorrectAnswer, selectedAnswer, setSelectedAnswer } =
     useAddHomeWork();
 
@@ -71,7 +71,7 @@ function AnswerInputForAddHomeWork({ props }) {
           >
             Điểm
           </span>
-          <Input />
+          <Input value={score} />
         </div>
       </div>
     </button>
@@ -81,6 +81,7 @@ function AnswerInputForAddHomeWork({ props }) {
 AnswerInputForAddHomeWork.propTypes = {
   props: PropTypes.any,
   index: PropTypes.any,
+  score: PropTypes.any,
 };
 
 export default AnswerInputForAddHomeWork;

@@ -179,7 +179,13 @@ function DetailRecordHomework() {
                   options={options}
                 />
               </div>
-              <div className={styles.a1}>0/10</div>
+              <div className={styles.a1}>
+                {`${(
+                  (countAnswerCorrect /
+                    dataDetailRecordHomework.answer.length) *
+                  10
+                ).toFixed(1)} điểm`}
+              </div>
               <div className={styles.a2}>
                 <div className={styles.a3}>
                   <span>Thời gian</span>

@@ -346,6 +346,7 @@ const SearchWordGame = () => {
         backgroundColor: "#242424",
         textAlign: "center",
         boxSizing: "border-box",
+        overflow: "auto",
       }}
       className="game_memory"
     >

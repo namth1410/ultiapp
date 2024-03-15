@@ -33,6 +33,9 @@ import TestOnline from "pages/TestOnline/TestOnline";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
+import PreTest from "pages/TestOnline/PreTest/PreTest";
+import Exam from "pages/TestOnline/Test/Test";
+import { ExamProvider } from "pages/TestOnline/ExamContext";
 
 function App() {
   const navigate = useNavigate();
@@ -138,6 +141,15 @@ function App() {
             />
 
             <Route path="online" element={<TestOnline />} />
+            <Route path="online/:name_test" element={<PreTest />} />
+            <Route
+              path="online/:name_test/exam"
+              element={
+                <ExamProvider>
+                  <Exam />
+                </ExamProvider>
+              }
+            />
 
             <Route path="/*" element={<Navigate to="/class" />} />
 

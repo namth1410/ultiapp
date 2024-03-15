@@ -42,6 +42,7 @@
       overflow: hidden;
       background: #fff;
       width: 100%;
+      cursor: pointer;
 
       img {
         width: 300px;

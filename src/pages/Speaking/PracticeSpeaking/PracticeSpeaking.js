@@ -140,6 +140,7 @@ function PracticeSpeaking() {
                 item={el}
                 selectedWord={selectedWord}
                 setSelectedWord={setSelectedWord}
+                resetTranscript={resetTranscript}
               />
             );
           })}
@@ -242,7 +243,7 @@ function PracticeSpeaking() {
   );
 }
 
-const WordItem = ({ item, selectedWord, setSelectedWord }) => {
+const WordItem = ({ item, selectedWord, setSelectedWord, resetTranscript }) => {
   const { term, wordType } = item;
   return (
     <button
@@ -252,6 +253,7 @@ const WordItem = ({ item, selectedWord, setSelectedWord }) => {
       }`}
       onClick={() => {
         setSelectedWord(item);
+        resetTranscript();
       }}
     >
       <span className={styles.word_label}>{term}</span>
@@ -266,6 +268,7 @@ WordItem.propTypes = {
   wordType: PropTypes.any,
   selectedWord: PropTypes.any,
   setSelectedWord: PropTypes.any,
+  resetTranscript: PropTypes.any,
 };
 
 export default PracticeSpeaking;

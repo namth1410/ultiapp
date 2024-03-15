@@ -61,6 +61,8 @@ const CardContainer = () => {
             marginLeft: "20px",
             fontSize: "0.9em",
             padding: "0.3em 0.6em",
+            position: "absolute",
+            left: "10px",
           }}
           onClick={() => {
             navigate(-1);

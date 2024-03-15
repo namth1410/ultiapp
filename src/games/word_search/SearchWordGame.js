@@ -6,8 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { auth, firestore } from "../../firebase";
-
-const gridSize = 16;
+import { Radio } from "antd";
 
 const SearchWordGame = () => {
   const { quizz_id } = useParams();
@@ -24,7 +23,22 @@ const SearchWordGame = () => {
   const [foundWordsV1, setFoundWordsV1] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  // const [gridSize, setGridSize] = useState(8);
+  const [gridSize, setGridSize] = useState(8);
+
+  const optionsLevel = [
+    {
+      label: 8,
+      value: 8,
+    },
+    {
+      label: 12,
+      value: 12,
+    },
+    {
+      label: 16,
+      value: 16,
+    },
+  ];
 
   const selectWordFromQuizz = () => {
     const a = dataQuizz.quizz_items;
@@ -365,6 +379,8 @@ const SearchWordGame = () => {
             marginLeft: "20px",
             fontSize: "0.9em",
             padding: "0.3em 0.6em",
+            position: "absolute",
+            left: "10px",
           }}
           onClick={() => {
             navigate(-1);
@@ -382,6 +398,27 @@ const SearchWordGame = () => {
       >
         Chơi mới
       </button>
+
+      <div style={{ display: "block", marginBottom: "20px" }}>
+        <span
+          style={{
+            color: "#fff",
+            marginRight: "10px",
+            fontSize: "20px",
+          }}
+        >
+          Level
+        </span>
+        <Radio.Group
+          options={optionsLevel}
+          value={gridSize}
+          optionType="button"
+          buttonStyle="solid"
+          onChange={(e) => {
+            setGridSize(e.target.value);
+          }}
+        />
+      </div>
 
       <div
         style={{

@@ -32,6 +32,7 @@ function HomeWork() {
 
   const [homeworkData, setHomeworkData] = useState([]);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [hasReview, setHasReview] = useState(false);
   const [canDoHomework, setCanDoHomework] = useState(false);
   const [recordsOfSelectedHomework, setRecordsOfSelectedHomework] =
     useState(null);
@@ -103,6 +104,7 @@ function HomeWork() {
     console.log(selectedHomework);
     if (selectedHomework) {
       checkCanDoHomework();
+      setHasReview(selectedHomework.config.hasReview);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHomework]);
@@ -254,6 +256,7 @@ function HomeWork() {
                       height: "auto",
                       marginTop: "20px",
                     }}
+                    disabled={!hasReview}
                     onClick={() => {
                       navigate(
                         `/class/${classId}/homework/${selectedHomework.id}/detail/${recordsOfSelectedHomework[0].id}`

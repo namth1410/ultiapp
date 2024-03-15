@@ -1,5 +1,16 @@
+import dayjs from "dayjs";
+import { SettingOutlined } from "@ant-design/icons";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { Button, Input, InputNumber, Modal } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  DatePicker,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Switch,
+} from "antd";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import { useClass } from "contexts/class_context/ClassContext";
@@ -24,6 +35,22 @@ function EditHomework() {
   const [dataHomework, setDataHomework] = useState(null);
   const [nameHomework, setNameHomework] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
+
+  const [hasTimeLimit, setHasTimeLimit] = useState(false);
+  const [hasTimeStart, setHasTimeStart] = useState(false);
+  const [hasDeadline, setHasDeadline] = useState(false);
+  const [hasReview, setHasReview] = useState(false);
+
+  const [timeLimit, setTimeLimit] = useState(null);
+  const [timeStartShow, setTimeStartShow] = useState(null);
+  const [timeStart, setTimeStart] = useState(null);
+  const [deadlineShow, setDeadlineShow] = useState(null);
+  const [deadline, setDeadline] = useState(null);
+  const [wayGetScore, setWayGetScore] = useState(
+    "Lấy điểm lần làm bài đầu tiên"
+  );
+  const [timesLimitDo, setTimesLimitDo] = useState(1);
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -47,6 +74,15 @@ function EditHomework() {
     const homeworkRef = doc(firestore, "homework", dataHomework.id);
     const docSnap = await getDoc(homeworkRef);
     if (docSnap.exists()) {
+      const config = {
+        hasReview: hasReview,
+        timeLimit: timeLimit,
+        timeStart: timeStart,
+        deadline: deadline,
+        wayGetScore: wayGetScore,
+        timesLimitDo: timesLimitDo,
+      };
+
       const dataToAdd = {
         dateCreate: new Date().toISOString(),
         uidCreator: auth.currentUser.uid,
@@ -56,7 +92,10 @@ function EditHomework() {
         correctAnswer: correctAnswer,
         class: classId,
         nameHomework: nameHomeworkInputRef.current.input.value,
+        config: config,
       };
+
+      console.log(dataToAdd);
 
       await updateDoc(homeworkRef, dataToAdd);
       toast.success("Đã cập nhật bài tập", {
@@ -75,7 +114,32 @@ function EditHomework() {
 
   useEffect(() => {
     if (!dataHomework) return;
+    console.log(dataHomework);
     setCountAnswer(dataHomework.correctAnswer.length);
+
+    setHasTimeLimit(!!dataHomework.config.timeLimit);
+    setTimeLimit(dataHomework.config.timeLimit);
+    setHasTimeStart(!!dataHomework.config.timeStart);
+    !!dataHomework.config.timeStart &&
+      setTimeStartShow(
+        dayjs(
+          dayjs(dataHomework.config.timeStart).format("YYYY-MM-DD HH:mm:ss"),
+          "YYYY-MM-DD HH:mm:ss"
+        )
+      );
+    setHasDeadline(!!dataHomework.config.deadline);
+
+    !!dataHomework.config.deadline &&
+      setDeadlineShow(
+        dayjs(
+          dayjs(dataHomework.config.deadline).format("YYYY-MM-DD HH:mm:ss"),
+          "YYYY-MM-DD HH:mm:ss"
+        )
+      );
+    setHasReview(!!dataHomework.config.hasReview);
+    setWayGetScore(dataHomework.config.wayGetScore);
+    setTimesLimitDo(dataHomework.config.timesLimitDo);
+
     setCorrectAnswer(dataHomework.correctAnswer.join(""));
     setNameHomework(dataHomework.nameHomework);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,6 +208,14 @@ function EditHomework() {
                   </div>
                   <Button
                     type="primary"
+                    shape="circle"
+                    icon={<SettingOutlined />}
+                    onClick={() => {
+                      setIsSettingModalOpen(true);
+                    }}
+                  />
+                  <Button
+                    type="primary"
                     size="large"
                     style={{
                       fontFamily: "Gilroy",
@@ -199,6 +271,178 @@ function EditHomework() {
               marginLeft: "10px",
             }}
           >{`Bạn đã tạo ra ${correctAnswer?.length} đáp án`}</p>
+        </Modal>
+
+        <Modal
+          title="Cài đặt bài tập"
+          open={isSettingModalOpen}
+          onOk={() => {
+            setIsSettingModalOpen(false);
+          }}
+          onCancel={() => {
+            setIsSettingModalOpen(false);
+          }}
+          footer={[
+            <Button
+              type="primary"
+              style={{
+                width: "100%",
+                fontFamily: "Gilroy",
+                padding: "10px 5px",
+                height: "auto",
+                fontSize: "18px",
+              }}
+              onClick={() => {
+                setIsSettingModalOpen(false);
+              }}
+              key={1}
+            >
+              OK
+            </Button>,
+          ]}
+        >
+          <div className={styles.setting_wrapper}>
+            <div className={styles.setting}>
+              <span>Thời gian làm bài (phút)</span>
+              <Switch
+                value={hasTimeLimit}
+                onChange={(e) => {
+                  setHasTimeLimit(e);
+                  if (e) setTimeLimit(30);
+                }}
+              />
+            </div>
+
+            {hasTimeLimit && (
+              <InputNumber
+                size="large"
+                min={1}
+                max={100000}
+                defaultValue={30}
+                value={timeLimit}
+                style={{ width: "100%" }}
+                onChange={(e) => {
+                  setTimeLimit(e);
+                }}
+              />
+            )}
+
+            <div className={styles.setting}>
+              <span>Thời gian bắt đầu</span>
+              <Switch
+                onChange={(e) => {
+                  setHasTimeStart(e);
+                }}
+                value={hasTimeStart}
+              />
+            </div>
+
+            {hasTimeStart && (
+              <ConfigProvider>
+                <DatePicker
+                  style={{ width: "100%" }}
+                  showTime
+                  onChange={(_, time) => {
+                    setTimeStart(new Date(time).toISOString());
+                    setTimeStartShow(dayjs(time, "YYYY-MM-DD HH:mm:ss"));
+                  }}
+                  value={timeStartShow}
+                />
+              </ConfigProvider>
+            )}
+
+            <div className={styles.setting}>
+              <span>Hạn chót nộp bài</span>
+              <Switch
+                onChange={(e) => {
+                  setHasDeadline(e);
+                }}
+                value={hasDeadline}
+              />
+            </div>
+
+            {hasDeadline && (
+              <ConfigProvider>
+                <DatePicker
+                  style={{ width: "100%" }}
+                  showTime
+                  onChange={(_, time) => {
+                    console.log(time);
+                    setDeadline(new Date(time).toISOString());
+                    setDeadlineShow(dayjs(time, "YYYY-MM-DD HH:mm:ss"));
+                    console.log(dayjs(time, "YYYY-MM-DD HH:mm:ss"));
+                  }}
+                  value={deadlineShow}
+                />
+              </ConfigProvider>
+            )}
+
+            <div className={styles.setting}>
+              <span>Không xem lại</span>
+              <Switch
+                onChange={(e) => {
+                  setHasReview(e);
+                }}
+                value={!hasReview}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                width: "100%",
+                flexDirection: "column",
+                gap: "5px",
+                marginTop: "10px",
+              }}
+            >
+              <span>Thiết lập bảng điểm</span>
+              <Select
+                value={wayGetScore}
+                style={{
+                  width: "100%",
+                }}
+                options={[
+                  {
+                    value: "Lấy điểm lần làm bài đầu tiên",
+                    label: "Lấy điểm lần làm bài đầu tiên",
+                  },
+                  {
+                    value: "Lấy điểm lần làm bài mới nhất",
+                    label: "Lấy điểm lần làm bài mới nhất",
+                  },
+                  {
+                    value: "Lấy điểm lần làm bài cao nhất",
+                    label: "Lấy điểm lần làm bài cao nhất",
+                  },
+                ]}
+                onChange={(e) => {
+                  setWayGetScore(e);
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                width: "100%",
+                flexDirection: "column",
+                gap: "5px",
+              }}
+            >
+              <span>Số lần làm bài</span>
+              <InputNumber
+                size="large"
+                min={1}
+                max={100000}
+                defaultValue={1}
+                onChange={(e) => {
+                  setTimesLimitDo(e);
+                }}
+                value={timesLimitDo}
+              />
+            </div>
+          </div>
         </Modal>
       </div>
     </div>

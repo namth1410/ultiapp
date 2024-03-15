@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { firestore } from "../../firebase";
 import "./TestOnline.css";
 import styles from "./TestOnline.module.css";
+import { useNavigate } from "react-router-dom";
 
 function TestOnline() {
+  const navigate = useNavigate();
   const items = [
     {
       label: <div className={styles.menu_item}>ETS 2024</div>,
@@ -88,7 +90,7 @@ function TestOnline() {
       {examsToShow && (
         <div className={styles.container}>
           {examsToShow.map((test) => (
-            <TestItem props={test} />
+            <TestItem props={test} navigate={navigate} />
           ))}
         </div>
       )}
@@ -96,10 +98,15 @@ function TestOnline() {
   );
 }
 
-const TestItem = ({ props }) => {
+const TestItem = ({ props, navigate }) => {
   const { name } = props;
   return (
-    <div className={styles.test_item}>
+    <div
+      className={styles.test_item}
+      onClick={() => {
+        navigate("asd/exam");
+      }}
+    >
       <img
         alt="img"
         src="https://zenlishtoeic.vn/wp-content/uploads/2023/06/zenlish-test-full-dau-vao.png"

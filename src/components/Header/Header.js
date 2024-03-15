@@ -191,6 +191,15 @@ function Header() {
             >
               <div>Luyện nói</div>
             </Link>
+            <Link
+              to="/online"
+              className={`${styles.menu_item} ${
+                menuItem.includes("/online") ? styles.active : ""
+              }`}
+              onClick={handleClickMenu}
+            >
+              <div>Luyện đề</div>
+            </Link>
           </div>
         </div>
 

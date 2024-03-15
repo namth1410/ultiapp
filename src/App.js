@@ -2,11 +2,15 @@ import { TestProvider } from "contexts/test_context/TestContext";
 
 import { AddHomeWorkProvider } from "contexts/add_homework_context/AddHomeWorkContext";
 import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
+import CardContainer from "games/memory/CardContainer";
+import { MemoryProvider } from "games/memory/MemoryContext";
+import SearchWordGame from "games/word_search/SearchWordGame";
 import ClassLayout from "layouts/ClassLayout";
 import MainLayout from "layouts/MainLayout";
 import ChatBox from "pages/ChatBox/ChatBox ";
 import ClassHome from "pages/Class/ClassHome/ClassHome";
 import AddHomeWork from "pages/Class/HomeWork/AddHomeWork/AddHomeWork";
+import DetailHomeWork from "pages/Class/HomeWork/DetailHomeWork/DetailHomeWork";
 import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
 import EditHomework from "pages/Class/HomeWork/EditHomework/EditHomework";
 import HomeWork from "pages/Class/HomeWork/HomeWork";
@@ -19,19 +23,16 @@ import CreateSet from "pages/CreateSet/CreateSet";
 import EditSet from "pages/EditSet/EditSet";
 import Home from "pages/Home/Home";
 import Login from "pages/Login";
+import MenuGame from "pages/MenuGame/MenuGame";
 import Quizz from "pages/Quizz/Quizz";
 import Signup from "pages/Signup";
+import PracticeSpeaking from "pages/Speaking/PracticeSpeaking/PracticeSpeaking";
+import Speaking from "pages/Speaking/Speaking";
 import Test from "pages/Test/Test";
+import TestOnline from "pages/TestOnline/TestOnline";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import CardContainer from "games/memory/CardContainer";
-import { MemoryProvider } from "games/memory/MemoryContext";
-import SearchWordGame from "games/word_search/SearchWordGame";
-import MenuGame from "pages/MenuGame/MenuGame";
-import DetailHomeWork from "pages/Class/HomeWork/DetailHomeWork/DetailHomeWork";
-import Speaking from "pages/Speaking/Speaking";
-import PracticeSpeaking from "pages/Speaking/PracticeSpeaking/PracticeSpeaking";
 
 function App() {
   const navigate = useNavigate();
@@ -131,7 +132,12 @@ function App() {
             />
 
             <Route path="speaking" element={<Speaking />} />
-            <Route path="speaking/practice/:topic_id" element={<PracticeSpeaking />} />
+            <Route
+              path="speaking/practice/:topic_id"
+              element={<PracticeSpeaking />}
+            />
+
+            <Route path="online" element={<TestOnline />} />
 
             <Route path="/*" element={<Navigate to="/class" />} />
 

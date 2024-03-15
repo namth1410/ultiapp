@@ -1,5 +1,7 @@
-import { Spin } from "antd";
+import { Modal, Spin } from "antd";
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useExam } from "../ExamContext";
 import Part1 from "../Part1/Part1";
@@ -8,6 +10,8 @@ import Part3 from "../Part3/Part3";
 import styles from "./Test.module.css";
 
 function Exam() {
+  const navigate = useNavigate();
+
   const indexToPart = () => {
     if (indexQuestion < 6) {
       return 1;
@@ -20,9 +24,13 @@ function Exam() {
     }
   };
 
-  const { indexQuestion, isReady, setIsReady, onSubmit, answer } = useExam();
+  const { indexQuestion, isReady, setIsReady, onSubmit, answer, dataExam } =
+    useExam();
   const [part, setPart] = useState(indexToPart());
   const [isLoading, setIsLoading] = useState(false);
+  const [isRunning, setIsRunning] = useState(true);
+  const [isModalResultOpen, setIsModalResultOpen] = useState(false);
+  const [result, setResult] = useState(null);
 
   useEffect(() => {
     setPart(indexToPart());
@@ -57,16 +65,28 @@ function Exam() {
               }).then((result) => {
                 if (result.isConfirmed) {
                   setIsLoading(true);
-                  onSubmit().then(setIsLoading(false));
+                  setIsRunning(false);
+                  onSubmit().then((_result) => {
+                    setIsLoading(false);
+                    setIsModalResultOpen(true);
+                    setResult(_result);
+                  });
                 } else if (result.isDenied) {
                   return;
                 }
               });
-              onSubmit(answer);
             }}
           >
             Nộp bài
           </button>
+
+          {dataExam && (
+            <Timer
+              initialTime={120 * 60000}
+              countdown={true}
+              isRunning={isRunning}
+            />
+          )}
           <div
             style={{
               padding: "25px 40px",
@@ -75,15 +95,15 @@ function Exam() {
               borderRadius: "8px",
             }}
           >
-            0/200
+            {`${answer.filter((el) => el !== 0).length}/100`}
           </div>
         </div>
 
-        {isReady ? (
+        {isReady && !!dataExam ? (
           <div>
             {indexQuestion < 6 && <Part1 />}
             {indexQuestion < 31 && indexQuestion > 5 && <Part2 />}
-            {indexQuestion > 31 && <Part3 />}
+            {indexQuestion >= 31 && <Part3 />}
           </div>
         ) : (
           <div>
@@ -97,6 +117,53 @@ function Exam() {
           </div>
         )}
       </div>
+
+      <Modal
+        title="Hòan thành bài kiểm tra"
+        open={isModalResultOpen}
+        onOk={() => {
+          setIsModalResultOpen(false);
+          navigate("/online");
+        }}
+        onCancel={() => {
+          setIsModalResultOpen(false);
+          navigate("/online");
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            fontSize: "16px",
+          }}
+        >
+          <div>
+            <span>Số câu đúng: </span>
+            <span>{`${result?.countCorrect}/100`}</span>
+          </div>
+
+          <div>
+            <span>Part 1: </span>
+            <span>{`${result?.countCorrectPart1}/6`}</span>
+          </div>
+
+          <div>
+            <span>Part 2: </span>
+            <span>{`${result?.countCorrectPart2}/25`}</span>
+          </div>
+
+          <div>
+            <span>Part 3: </span>
+            <span>{`${result?.countCorrectPart3}/39`}</span>
+          </div>
+
+          <div>
+            <span>Part 4: </span>
+            <span>{`${result?.countCorrectPart4}/30`}</span>
+          </div>
+        </div>
+      </Modal>
 
       {isLoading && (
         <>
@@ -121,5 +188,59 @@ function Exam() {
     </div>
   );
 }
+
+function Timer({ initialTime, countdown, isRunning }) {
+  const [time, setTime] = useState(initialTime);
+
+  useEffect(() => {
+    let timer;
+    if (isRunning) {
+      timer = setInterval(() => {
+        if (countdown) {
+          setTime((prevTime) => prevTime - 1000);
+        } else {
+          setTime((prevTime) => prevTime + 1000);
+        }
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isRunning, countdown]);
+
+  const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((time / (1000 * 60)) % 60);
+  const seconds = Math.floor((time / 1000) % 60);
+
+  const hoursStr = String(hours).padStart(2, "0");
+  const minutesStr = String(minutes).padStart(2, "0");
+  const secondsStr = String(seconds).padStart(2, "0");
+
+  return (
+    <div
+      style={{
+        border: "none",
+        padding: "15px 20px",
+        color: "#fff",
+        fontSize: "20px",
+        backgroundColor: "var(--blue)",
+        borderRadius: "8px",
+        cursor: "pointer",
+        fontFamily: "Gilroy",
+        width: "80px",
+        textAlign: "center",
+      }}
+    >
+      <p>
+        {hoursStr}:{minutesStr}:{secondsStr}
+      </p>
+    </div>
+  );
+}
+
+Timer.propTypes = {
+  initialTime: PropTypes.any,
+  countdown: PropTypes.any,
+  isRunning: PropTypes.any,
+};
 
 export default Exam;

@@ -4,11 +4,15 @@ import { useExam } from "../ExamContext";
 import styles from "./Part3.module.css";
 
 function Part3() {
-  const { onChooseAnswer, indexQuestion } = useExam();
-  const [selectedValue, setSelectedValue] = useState(null);
+  const { onChooseAnswer, indexQuestion, dataExam } = useExam();
+  const [selectedValue1, setSelectedValue1] = useState(null);
+  const [selectedValue2, setSelectedValue2] = useState(null);
+  const [selectedValue3, setSelectedValue3] = useState(null);
 
   useEffect(() => {
-    setSelectedValue(null);
+    setSelectedValue1(null);
+    setSelectedValue2(null);
+    setSelectedValue3(null);
   }, [indexQuestion]);
 
   return (
@@ -19,64 +23,55 @@ function Part3() {
         </div>
       </div>
       <div className={styles.item_flex}>
-        <div className={styles.exe_pro}>
-          <h3 style={{ fontFamily: "Gilroy" }}>{`${
-            indexQuestion + 1
-          }. Where is the conversation most likely taking place?`}</h3>
-          <Radio.Group
-            name="radiogroup"
-            onChange={(e) => {
-              setSelectedValue(e.target.value);
-              onChooseAnswer(indexQuestion, e.target.value);
-            }}
-            value={selectedValue}
-          >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+        {Array.from({ length: 3 }, (_, index) => (
+          <div key={index} className={styles.exe_pro}>
+            <h3 style={{ fontFamily: "Gilroy" }}>{`${
+              dataExam.questions[indexQuestion - 31 + index].question
+            }`}</h3>
+            <Radio.Group
+              name="radiogroup"
+              onChange={(e) => {
+                index === 1
+                  ? setSelectedValue1(e.target.value)
+                  : index === 2
+                  ? setSelectedValue2(e.target.value)
+                  : setSelectedValue3(e.target.value);
+                onChooseAnswer(indexQuestion + index, e.target.value);
+              }}
+              value={
+                index === 1
+                  ? selectedValue1
+                  : index === 2
+                  ? selectedValue2
+                  : selectedValue3
+              }
             >
-              <Radio
+              <div
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "500",
-                  fontFamily: "Gilroy",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
                 }}
-                value={1}
               >
-                A. In an electronics store
-              </Radio>
-              <Radio
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "500",
-                  fontFamily: "Gilroy",
-                }}
-                value={2}
-              >
-                B. In a coffee shop
-              </Radio>
-              <Radio
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "500",
-                  fontFamily: "Gilroy",
-                }}
-                value={3}
-              >
-                C. In a supermarket
-              </Radio>
-              <Radio
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "500",
-                  fontFamily: "Gilroy",
-                }}
-                value={4}
-              >
-                D. In an art supply store
-              </Radio>
-            </div>
-          </Radio.Group>
-        </div>
+                {dataExam.questions[indexQuestion - 31 + index].answers.map(
+                  (answer, ansIndex) => (
+                    <Radio
+                      key={ansIndex}
+                      style={{
+                        fontSize: "20px",
+                        fontWeight: "500",
+                        fontFamily: "Gilroy",
+                      }}
+                      value={ansIndex + 1}
+                    >
+                      {answer}
+                    </Radio>
+                  )
+                )}
+              </div>
+            </Radio.Group>
+          </div>
+        ))}
       </div>
     </div>
   );

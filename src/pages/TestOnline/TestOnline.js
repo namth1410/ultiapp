@@ -1,5 +1,9 @@
 import { Menu } from "antd";
-import { useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { firestore } from "../../firebase";
+import "./TestOnline.css";
 import styles from "./TestOnline.module.css";
 
 function TestOnline() {
@@ -26,10 +30,49 @@ function TestOnline() {
   ];
 
   const [testSelected, setTestSelected] = useState("ets2024");
+  const [exams, setExams] = useState(null);
+  const [examsToShow, setExamsToShow] = useState(null);
+
   const onClick = (e) => {
     console.log("click ", e);
     setTestSelected(e.key);
   };
+
+  useEffect(() => {
+    if (!exams) return;
+    setExamsToShow(
+      exams.filter((el) => el.name.includes(testSelected.toUpperCase()))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testSelected]);
+
+  useEffect(() => {
+    const getExam = async (uid) => {
+      const examRef = collection(firestore, "testonline");
+      const querySnapshot = await getDocs(examRef);
+
+      const examData = [];
+      querySnapshot?.forEach((doc) => {
+        examData.push({ id: doc.id, ...doc.data() });
+      });
+      setExams(examData);
+      setExamsToShow(
+        examData.filter((el) => el.name.includes(testSelected.toUpperCase()))
+      );
+    };
+    getExam();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useEffect(() => {
+  //   const a = async () => {
+  //     const dataToAdd = { correct_answer: correct_answer };
+  //     const quizzRef = doc(firestore, "testonline", "YHv3lmwvA9t6PjCZBFEm");
+  //     await updateDoc(quizzRef, dataToAdd);
+  //   };
+
+  //   a();
+  // }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -42,16 +85,19 @@ function TestOnline() {
         />
       </div>
 
-      <div className={styles.container}>
-        <TestItem />
-        <TestItem />
-        <TestItem />
-      </div>
+      {examsToShow && (
+        <div className={styles.container}>
+          {examsToShow.map((test) => (
+            <TestItem props={test} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-const TestItem = () => {
+const TestItem = ({ props }) => {
+  const { name } = props;
   return (
     <div className={styles.test_item}>
       <img
@@ -66,7 +112,7 @@ const TestItem = () => {
             textTransform: "uppercase",
           }}
         >
-          Test đầu vào
+          {name}
         </div>
         <div style={{ fontSize: "14px", color: "#bbbbbb", fontWeight: "500" }}>
           17812 lượt hoàn thành
@@ -86,6 +132,11 @@ const TestItem = () => {
       </div>
     </div>
   );
+};
+
+TestItem.propTypes = {
+  props: PropTypes.any,
+  name: PropTypes.any,
 };
 
 export default TestOnline;

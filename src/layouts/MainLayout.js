@@ -13,6 +13,7 @@ function MainLayout() {
     "/test",
     "/edit",
     "/game",
+    "/exam"
   ];
 
   useEffect(() => {

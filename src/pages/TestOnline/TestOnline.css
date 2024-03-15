@@ -1,0 +1,3 @@
+.ant-menu-item-selected > span > div {
+  background-color: var(--blue) !important;
+}

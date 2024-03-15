@@ -1,7 +1,10 @@
 .wrapper {
   padding: 0 40px;
+  overflow: auto;
+  overflow-x: hidden;
 
   .menu {
+    animation: slideInFromRight 0.5s ease-in-out forwards;
     padding-left: 8px;
     margin-bottom: 15px;
     ul {
@@ -30,10 +33,17 @@
     border: none !important;
   }
 
+  .menu > ul > li .ant-menu-item-selected {
+    background-color: red;
+  }
+
   .container {
     display: flex;
     flex-direction: column;
     row-gap: 15px;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: slideInFromBottom 0.5s ease-in-out forwards;
 
     .test_item {
       display: flex;
@@ -77,5 +87,27 @@
         text-decoration: underline;
       }
     }
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

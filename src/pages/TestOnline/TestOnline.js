@@ -1,10 +1,8 @@
 import { Menu } from "antd";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./TestOnline.module.css";
-import axios from "axios";
 
 function TestOnline() {
-  const [audioUrl, setAudioUrl] = useState(null);
   const items = [
     {
       label: <div className={styles.menu_item}>ETS 2024</div>,
@@ -33,23 +31,6 @@ function TestOnline() {
     setTestSelected(e.key);
   };
 
-  useEffect(() => {
-    axios
-      .get(
-        "https://zenlishtoeic.vn/wp-content/uploads/2023/06/zenlish-32-34.mp3",
-        {
-          responseType: "blob", // yêu cầu kiểu dữ liệu là Blob
-        }
-      )
-      .then((response) => {
-        const audioUrl = URL.createObjectURL(new Blob([response.data]));
-        setAudioUrl(audioUrl);
-        console.log(audioUrl);
-      })
-      .catch((error) => {
-        console.error("Error downloading audio:", error);
-      });
-  }, []);
   return (
     <div className={styles.wrapper}>
       <div className={styles.menu}>
@@ -62,16 +43,6 @@ function TestOnline() {
       </div>
 
       <div className={styles.container}>
-        <a
-          href="https://zenlishtoeic.vn/wp-content/uploads/2023/06/zenlish-32-34.mp3"
-          download="zenlish_audio.mp3"
-        >
-          Download Audio fixed
-        </a>
-        <a href={audioUrl} download="zenlish_audio.mp3">
-          Download Audio
-        </a>
-
         <TestItem />
         <TestItem />
         <TestItem />

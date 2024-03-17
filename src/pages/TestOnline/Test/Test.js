@@ -109,6 +109,10 @@ function Exam() {
               )}
             </div>
           ) : (
+            <></>
+          )}
+
+          {isShowKey && isReady && (
             <button
               style={{
                 border: "none",
@@ -145,7 +149,7 @@ function Exam() {
             </button>
           )}
 
-          {dataExam && !isShowKey && (
+          {dataExam && !isShowKey && isReady && (
             <Timer
               initialTime={120 * 60000}
               countdown={true}

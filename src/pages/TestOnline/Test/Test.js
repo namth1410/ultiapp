@@ -84,7 +84,7 @@ function Exam() {
                   Câu trước
                 </button>
               )}
-              {indexQuestion !== 99 && (
+              {indexQuestion !== 97 && (
                 <button
                   style={{
                     border: "none",

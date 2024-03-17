@@ -112,7 +112,7 @@ function Exam() {
             <></>
           )}
 
-          {isShowKey && isReady && (
+          {!isShowKey && isReady && (
             <button
               style={{
                 border: "none",

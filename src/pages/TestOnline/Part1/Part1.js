@@ -12,18 +12,34 @@ function Part1() {
     answer,
     convertKeyStringToInt,
     checkKey,
+    urlList,
   } = useExam();
   const [selectedValue, setSelectedValue] = useState(null);
+  const [audioSrc, setAudioSrc] = useState(null);
 
   useEffect(() => {
     setSelectedValue(null);
+    isShowKey && setAudioSrc(urlList[indexQuestion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
+
+  useEffect(() => {
+    if (isShowKey) {
+      setAudioSrc(urlList[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isShowKey]);
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.item_flex}>
         <div className={styles.exe_pro}>
           <h3>Câu hỏi</h3>
+          {isShowKey && (
+            <audio key={audioSrc} controls>
+              <source src={audioSrc} type="audio/wav"></source>
+            </audio>
+          )}
           <div>
             <img alt="img" src={dataExam.data[indexQuestion].image} />
           </div>

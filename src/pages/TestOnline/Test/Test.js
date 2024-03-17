@@ -1,4 +1,4 @@
-import { Modal, Spin } from "antd";
+import { Button, Modal, Spin } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +24,17 @@ function Exam() {
     }
   };
 
-  const { indexQuestion, isReady, setIsReady, onSubmit, answer, dataExam } =
-    useExam();
+  const {
+    indexQuestion,
+    setIndexQuestion,
+    isReady,
+    setIsReady,
+    onSubmit,
+    answer,
+    dataExam,
+    isShowKey,
+    setIsShowKey,
+  } = useExam();
   const [part, setPart] = useState(indexToPart());
   const [isLoading, setIsLoading] = useState(false);
   const [isRunning, setIsRunning] = useState(true);
@@ -45,48 +54,125 @@ function Exam() {
             style={{ color: "var(--blue)", fontSize: "26px" }}
           >{`PART ${part}`}</div>
 
-          <button
-            style={{
-              border: "none",
-              padding: "15px 20px",
-              color: "#fff",
-              fontSize: "20px",
-              backgroundColor: "var(--blue)",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontFamily: "Gilroy",
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Bạn có muốn nộp bài không?",
-                showDenyButton: true,
-                confirmButtonText: "Nộp",
-                denyButtonText: `Hủy`,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  setIsLoading(true);
-                  setIsRunning(false);
-                  onSubmit().then((_result) => {
-                    setIsLoading(false);
-                    setIsModalResultOpen(true);
-                    setResult(_result);
-                  });
-                } else if (result.isDenied) {
-                  return;
-                }
-              });
-            }}
-          >
-            Nộp bài
-          </button>
+          {isShowKey ? (
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              {indexQuestion !== 0 && (
+                <button
+                  style={{
+                    border: "none",
+                    padding: "15px 20px",
+                    color: "#fff",
+                    fontSize: "20px",
+                    backgroundColor: "var(--blue)",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontFamily: "Gilroy",
+                  }}
+                  onClick={() => {
+                    if (indexQuestion > 30) {
+                      setIndexQuestion(indexQuestion - 3);
+                    } else {
+                      setIndexQuestion(indexQuestion - 1);
+                    }
+                  }}
+                >
+                  Câu trước
+                </button>
+              )}
+              {indexQuestion !== 99 && (
+                <button
+                  style={{
+                    border: "none",
+                    padding: "15px 20px",
+                    color: "#fff",
+                    fontSize: "20px",
+                    backgroundColor: "var(--blue)",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontFamily: "Gilroy",
+                  }}
+                  onClick={() => {
+                    if (indexQuestion > 30) {
+                      setIndexQuestion(indexQuestion + 3);
+                    } else {
+                      setIndexQuestion(indexQuestion + 1);
+                    }
+                  }}
+                >
+                  Câu tiếp
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              style={{
+                border: "none",
+                padding: "15px 20px",
+                color: "#fff",
+                fontSize: "20px",
+                backgroundColor: "var(--blue)",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontFamily: "Gilroy",
+              }}
+              onClick={() => {
+                Swal.fire({
+                  title: "Bạn có muốn nộp bài không?",
+                  showDenyButton: true,
+                  confirmButtonText: "Nộp",
+                  denyButtonText: `Hủy`,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    setIsLoading(true);
+                    setIsRunning(false);
+                    onSubmit().then((_result) => {
+                      setIsLoading(false);
+                      setIsModalResultOpen(true);
+                      setResult(_result);
+                    });
+                  } else if (result.isDenied) {
+                    return;
+                  }
+                });
+              }}
+            >
+              Nộp bài
+            </button>
+          )}
 
-          {dataExam && (
+          {dataExam && !isShowKey && (
             <Timer
               initialTime={120 * 60000}
               countdown={true}
               isRunning={isRunning}
             />
           )}
+
+          {dataExam && isShowKey && (
+            <button
+              style={{
+                border: "none",
+                padding: "15px 20px",
+                color: "#fff",
+                fontSize: "20px",
+                backgroundColor: "var(--blue)",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontFamily: "Gilroy",
+              }}
+              onClick={() => {
+                navigate("/online");
+              }}
+            >
+              Thoát
+            </button>
+          )}
+
           <div
             style={{
               padding: "25px 40px",
@@ -129,6 +215,20 @@ function Exam() {
           setIsModalResultOpen(false);
           navigate("/online");
         }}
+        footer={(_, { OkBtn }) => (
+          <>
+            <Button
+              onClick={() => {
+                setIsShowKey(true);
+                setIndexQuestion(0);
+                setIsModalResultOpen(false);
+              }}
+            >
+              Xem đáp án
+            </Button>
+            <OkBtn />
+          </>
+        )}
       >
         <div
           style={{

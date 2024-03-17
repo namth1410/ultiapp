@@ -1,10 +1,18 @@
 import { Radio } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useExam } from "../ExamContext";
 import styles from "./Part1.module.css";
 
 function Part1() {
-  const { onChooseAnswer, indexQuestion } = useExam();
+  const {
+    onChooseAnswer,
+    indexQuestion,
+    dataExam,
+    isShowKey,
+    answer,
+    convertKeyStringToInt,
+    checkKey,
+  } = useExam();
   const [selectedValue, setSelectedValue] = useState(null);
 
   useEffect(() => {
@@ -17,10 +25,7 @@ function Part1() {
         <div className={styles.exe_pro}>
           <h3>Câu hỏi</h3>
           <div>
-            <img
-              alt="img"
-              src="https://zenlishtoeic.vn/wp-content/uploads/2023/06/zenlish-1-3.png"
-            />
+            <img alt="img" src={dataExam.data[indexQuestion].image} />
           </div>
         </div>
       </div>
@@ -33,25 +38,72 @@ function Part1() {
               setSelectedValue(e.target.value);
               onChooseAnswer(indexQuestion, e.target.value);
             }}
-            value={selectedValue}
+            value={isShowKey ? answer[indexQuestion] : selectedValue}
+            disabled={isShowKey}
           >
             <div
               style={{ display: "flex", flexDirection: "column", gap: "10px" }}
             >
               <Radio style={{ fontSize: "20px" }} value={1}>
-                A
+                A {isShowKey && checkKey(1)}
               </Radio>
               <Radio style={{ fontSize: "20px" }} value={2}>
-                B
+                B {isShowKey && checkKey(2)}
               </Radio>
               <Radio style={{ fontSize: "20px" }} value={3}>
-                C
+                C {isShowKey && checkKey(3)}
               </Radio>
               <Radio style={{ fontSize: "20px" }} value={4}>
-                D
+                D {isShowKey && checkKey(4)}
               </Radio>
             </div>
           </Radio.Group>
+
+          {isShowKey && (
+            <div
+              style={{
+                marginTop: "10px",
+              }}
+              className={styles.explanation}
+            >
+              <div>{`${indexQuestion + 1}.`}</div>
+              {dataExam.data[indexQuestion].answer.map((el, index) => (
+                <React.Fragment key={index}>
+                  <p
+                    style={{
+                      fontWeight:
+                        convertKeyStringToInt(
+                          dataExam.correct_answer[indexQuestion]
+                        ) === index
+                          ? "bold"
+                          : "500",
+                    }}
+                  >
+                    {el}
+                  </p>
+                  <br />
+                </React.Fragment>
+              ))}
+              <div>{`${indexQuestion + 1}.`}</div>
+              {dataExam.data[indexQuestion].answerVN.map((el, index) => (
+                <React.Fragment key={index}>
+                  <p
+                    style={{
+                      fontWeight:
+                        convertKeyStringToInt(
+                          dataExam.correct_answer[indexQuestion]
+                        ) === index
+                          ? "bold"
+                          : "500",
+                    }}
+                  >
+                    {el}
+                  </p>
+                  <br />
+                </React.Fragment>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

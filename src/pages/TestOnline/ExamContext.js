@@ -1,3 +1,4 @@
+import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 import PropTypes from "prop-types";
@@ -14,6 +15,7 @@ export const ExamProvider = ({ children }) => {
   const [urlList, setUrlList] = useState();
   const [isReady, setIsReady] = useState(false);
   const [dataExam, setDataExam] = useState(null);
+  const [isShowKey, setIsShowKey] = useState(false);
 
   const onChooseAnswer = (indexQues, value) => {
     console.log(indexQues, value);
@@ -47,7 +49,7 @@ export const ExamProvider = ({ children }) => {
       let countCorrectPart2 = 0;
       let countCorrectPart3 = 0;
       let countCorrectPart4 = 0;
-      let _answer = [answer];
+      let _answer = [...answer];
 
       for (let i = 0; i < _answer.length; i++) {
         if (_answer[i] === 1) {
@@ -56,8 +58,10 @@ export const ExamProvider = ({ children }) => {
           _answer[i] = "B";
         } else if (_answer[i] === 3) {
           _answer[i] = "C";
-        } else {
+        } else if (_answer[i] === 4) {
           _answer[i] = "D";
+        } else {
+          _answer[i] = "";
         }
       }
 
@@ -100,8 +104,39 @@ export const ExamProvider = ({ children }) => {
     }
   };
 
+  const convertKeyStringToInt = (key) => {
+    if (key === "A") {
+      return 0;
+    } else if (key === "B") {
+      return 1;
+    } else if (key === "C") {
+      return 2;
+    } else {
+      return 3;
+    }
+  };
+
+  const checkKey = (value) => {
+    if (answer[indexQuestion] === value) {
+      if (
+        convertKeyStringToInt(dataExam.correct_answer[indexQuestion]) + 1 ===
+        value
+      ) {
+        return <CheckCircleFilled style={{ color: "#00b8ff" }} />;
+      } else {
+        return <CloseCircleFilled style={{ color: "#ff0000" }} />;
+      }
+    } else if (
+      convertKeyStringToInt(dataExam.correct_answer[indexQuestion]) + 1 ===
+      value
+    ) {
+      return <CheckCircleFilled style={{ color: "#00b8ff" }} />;
+    }
+    return <></>;
+  };
+
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || isShowKey) return;
 
     audio.src = urlList?.[indexQuestion];
     if (indexQuestion >= 31) {
@@ -196,9 +231,13 @@ export const ExamProvider = ({ children }) => {
       setIsReady,
       onSubmit,
       dataExam,
+      isShowKey,
+      setIsShowKey,
+      convertKeyStringToInt,
+      checkKey,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [indexQuestion, isReady, answer, dataExam]
+    [indexQuestion, isReady, answer, dataExam, isShowKey]
   );
 
   return (

@@ -270,6 +270,50 @@ function Exam() {
             </button>
           )}
 
+          {(part > 4 && !isShowKey) && (
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              {canBack && (
+                <button
+                  className={styles.back_btn}
+                  style={{
+                    border: "none",
+                    color: "#fff",
+                    fontSize: "20px",
+                    backgroundColor: "var(--blue)",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontFamily: "Gilroy",
+                  }}
+                  onClick={handleBackQuestion}
+                >
+                  Câu trước
+                </button>
+              )}
+              {canNext && (
+                <button
+                  className={styles.next_btn}
+                  style={{
+                    border: "none",
+                    color: "#fff",
+                    fontSize: "20px",
+                    backgroundColor: "var(--blue)",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontFamily: "Gilroy",
+                  }}
+                  onClick={handleNextQuestion}
+                >
+                  Câu tiếp
+                </button>
+              )}
+            </div>
+          )}
+
           {dataExam && !isShowKey && isReady && (
             <Timer
               initialTime={120 * 60000}

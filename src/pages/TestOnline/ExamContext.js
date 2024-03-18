@@ -56,6 +56,9 @@ export const ExamProvider = ({ children }) => {
       let countCorrectPart2 = 0;
       let countCorrectPart3 = 0;
       let countCorrectPart4 = 0;
+      let countCorrectPart5 = 0;
+      let countCorrectPart6 = 0;
+      let countCorrectPart7 = 0;
       let _answer = [...answer];
 
       for (let i = 0; i < _answer.length; i++) {
@@ -82,8 +85,14 @@ export const ExamProvider = ({ children }) => {
             countCorrectPart2++;
           } else if (i < 70) {
             countCorrectPart3++;
-          } else {
+          } else if (i < 100) {
             countCorrectPart4++;
+          } else if (i < 130) {
+            countCorrectPart5++;
+          } else if (i < 146) {
+            countCorrectPart6++;
+          } else {
+            countCorrectPart7++;
           }
         } else {
           countIncorrect++;
@@ -97,6 +106,9 @@ export const ExamProvider = ({ children }) => {
         countCorrectPart2: countCorrectPart2,
         countCorrectPart3: countCorrectPart3,
         countCorrectPart4: countCorrectPart4,
+        countCorrectPart5: countCorrectPart5,
+        countCorrectPart6: countCorrectPart6,
+        countCorrectPart7: countCorrectPart7,
       };
 
       resolve(result);

@@ -372,6 +372,21 @@ function Exam() {
             <span>Part 4: </span>
             <span>{`${result?.countCorrectPart4}/30`}</span>
           </div>
+
+          <div>
+            <span>Part 5: </span>
+            <span>{`${result?.countCorrectPart5}/30`}</span>
+          </div>
+
+          <div>
+            <span>Part 6: </span>
+            <span>{`${result?.countCorrectPart6}/16`}</span>
+          </div>
+
+          <div>
+            <span>Part 7: </span>
+            <span>{`${result?.countCorrectPart7}/54`}</span>
+          </div>
         </div>
       </Modal>
 

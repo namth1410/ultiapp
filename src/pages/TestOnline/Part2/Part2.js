@@ -11,6 +11,7 @@ function Part2() {
     dataExam,
     convertKeyStringToInt,
     checkKey,
+    audioSrc,
   } = useExam();
   const [selectedValue, setSelectedValue] = useState(null);
 
@@ -23,6 +24,11 @@ function Part2() {
       <div className={styles.item_flex}>
         <div className={styles.exe_pro}>
           <h3>Câu hỏi</h3>
+          {isShowKey && (
+            <audio key={audioSrc} controls>
+              <source src={audioSrc} type="audio/wav"></source>
+            </audio>
+          )}
         </div>
       </div>
       <div className={styles.item_flex}>

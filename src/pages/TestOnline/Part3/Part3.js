@@ -10,6 +10,7 @@ function Part3() {
     dataExam,
     isShowKey,
     convertKeyStringToInt,
+    audioSrc,
   } = useExam();
   const [selectedValue1, setSelectedValue1] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
@@ -26,6 +27,11 @@ function Part3() {
       <div className={styles.item_flex}>
         <div className={styles.exe_pro}>
           <h3>Câu hỏi</h3>
+          {isShowKey && (
+            <audio key={audioSrc} controls>
+              <source src={audioSrc} type="audio/wav"></source>
+            </audio>
+          )}
           {(dataExam.data[indexQuestion].image !== "" ||
             dataExam.data[indexQuestion].image) && (
             <div>

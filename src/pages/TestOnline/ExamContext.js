@@ -23,6 +23,7 @@ export const ExamProvider = ({ children }) => {
   const [isReady, setIsReady] = useState(false);
   const [dataExam, setDataExam] = useState(null);
   const [isShowKey, setIsShowKey] = useState(false);
+  const [audioSrc, setAudioSrc] = useState(null);
 
   const onChooseAnswer = (indexQues, value) => {
     console.log(indexQues, value);
@@ -154,6 +155,11 @@ export const ExamProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    if (isShowKey) {
+      if (indexQuestion >= 31) {
+        setAudioSrc(urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)]);
+      }
+    }
     if (!isReady || isShowKey || indexQuestion > 99) return;
 
     audio.src = urlList?.[indexQuestion];
@@ -163,6 +169,19 @@ export const ExamProvider = ({ children }) => {
     audio.play();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
+
+  useEffect(() => {
+    if (isShowKey) {
+      if (indexQuestion < 6) {
+        setAudioSrc(urlList[0]);
+      } else if (indexQuestion < 31) {
+        setAudioSrc(urlList[6]);
+      } else if (indexQuestion < 100) {
+        setAudioSrc(urlList[32]);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isShowKey]);
 
   useEffect(() => {
     if (!isReady) return;
@@ -248,9 +267,10 @@ export const ExamProvider = ({ children }) => {
       convertKeyStringToInt,
       checkKey,
       urlList,
+      audioSrc,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [indexQuestion, isReady, answer, dataExam, isShowKey]
+    [indexQuestion, isReady, answer, dataExam, isShowKey, audioSrc]
   );
 
   return (

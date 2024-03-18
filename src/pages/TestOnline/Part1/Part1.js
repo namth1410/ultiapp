@@ -12,23 +12,14 @@ function Part1() {
     answer,
     convertKeyStringToInt,
     checkKey,
-    urlList,
+    audioSrc,
   } = useExam();
   const [selectedValue, setSelectedValue] = useState(null);
-  const [audioSrc, setAudioSrc] = useState(null);
 
   useEffect(() => {
     setSelectedValue(null);
-    isShowKey && setAudioSrc(urlList[indexQuestion]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
-
-  useEffect(() => {
-    if (isShowKey) {
-      setAudioSrc(urlList[0]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isShowKey]);
 
   return (
     <div className={styles.wrapper}>

@@ -84,7 +84,7 @@ function Part1() {
             >
               <div>{`${indexQuestion + 1}.`}</div>
               {dataExam.data[indexQuestion].answer.map((el, index) => (
-                <React.Fragment key={index}>
+                <React.Fragment key={el}>
                   <p
                     style={{
                       fontWeight:
@@ -102,7 +102,7 @@ function Part1() {
               ))}
               <div>{`${indexQuestion + 1}.`}</div>
               {dataExam.data[indexQuestion].answerVN.map((el, index) => (
-                <React.Fragment key={index}>
+                <React.Fragment key={el}>
                   <p
                     style={{
                       fontWeight:

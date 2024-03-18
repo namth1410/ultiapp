@@ -1,9 +1,9 @@
 import { Radio } from "antd";
 import React, { useEffect, useState } from "react";
 import { useExam } from "../ExamContext";
-import styles from "./Part3.module.css";
+import styles from "./Part6.module.css";
 
-function Part3() {
+function Part6() {
   const {
     onChooseAnswer,
     indexQuestion,
@@ -36,11 +36,11 @@ function Part3() {
       </div>
       <div className={styles.item_flex}>
         {!isShowKey &&
-          Array.from({ length: 3 }, (_, index) => (
+          Array.from({ length: 4 }, (_, index) => (
             <div key={index} className={styles.exe_pro}>
               <h3 style={{ fontFamily: "Gilroy" }}>{`${
-                dataExam.data[indexQuestion + index].question
-              }`}</h3>
+                indexQuestion + 1 + index
+              }.`}</h3>
               <Radio.Group
                 name="radiogroup"
                 onChange={(e) => {
@@ -88,7 +88,7 @@ function Part3() {
           ))}
 
         {isShowKey &&
-          Array.from({ length: 3 }, (_, index) => (
+          Array.from({ length: 4 }, (_, index) => (
             <div
               style={{
                 marginTop: "10px",
@@ -96,7 +96,7 @@ function Part3() {
               key={_}
               className={styles.exe_pro}
             >
-              <div>{`${dataExam.data[indexQuestion + index].question}`}</div>
+              <div>{`${indexQuestion + 1 + index}.`}</div>
               {dataExam.data[indexQuestion + index].answer.map((el, _index) => (
                 <React.Fragment key={index}>
                   <p
@@ -114,18 +114,12 @@ function Part3() {
                   <br />
                 </React.Fragment>
               ))}
-              <div>{`${indexQuestion + 1 + index}.`}</div>
-              {dataExam.data[indexQuestion + index].answerVN.map(
+              {dataExam.data[indexQuestion + index].explain.map(
                 (el, _index) => (
                   <React.Fragment key={index}>
                     <p
                       style={{
-                        fontWeight:
-                          convertKeyStringToInt(
-                            dataExam.correct_answer[indexQuestion + index]
-                          ) === _index
-                            ? "bold"
-                            : "500",
+                        fontWeight: 500,
                       }}
                     >
                       {el}
@@ -136,27 +130,9 @@ function Part3() {
               )}
             </div>
           ))}
-
-        {isShowKey && (
-          <div style={{ marginTop: "10px" }} className={styles.exe_pro}>
-            <div>{`${indexQuestion + 1} - ${indexQuestion + 3}`}</div>
-            {dataExam.data[indexQuestion].paragraph.map((el, index) => (
-              <React.Fragment key={el}>
-                <p
-                  style={{
-                    fontWeight: 500,
-                  }}
-                >
-                  {el}
-                </p>
-                <br />
-              </React.Fragment>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-export default Part3;
+export default Part6;

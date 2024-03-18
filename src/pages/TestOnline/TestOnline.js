@@ -68,7 +68,7 @@ function TestOnline() {
 
   // useEffect(() => {
   //   const a = async () => {
-  //     const dataToAdd = { data: correct_answer, correct_answer: b };
+  //     const dataToAdd = { data: data, correct_answer: correct_answer };
   //     const quizzRef = doc(firestore, "testonline", "YHv3lmwvA9t6PjCZBFEm");
   //     await updateDoc(quizzRef, dataToAdd);
   //   };
@@ -135,7 +135,14 @@ const TestItem = ({ props, navigate }) => {
           }}
         >
           <button>Test ngay</button>
-          <button>Chọn từng part</button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`${id}`);
+            }}
+          >
+            Chọn từng part
+          </button>
         </div>
       </div>
     </div>

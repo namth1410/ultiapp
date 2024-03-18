@@ -1,13 +1,12 @@
 import { Table } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./PreTest.module.css";
 
-const countsLis = [6, 25, 39, 30];
-const countsRead = [30, 16, 54];
+const countsLis = [6, 25, 39, 30, 30, 16, 54];
 const dataListen = [];
-const dataRead = [];
 
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 7; i++) {
   dataListen.push({
     key: i,
     name: `PART ${i + 1}`,
@@ -15,20 +14,19 @@ for (let i = 0; i < 4; i++) {
   });
 }
 
-for (let i = 0; i < 3; i++) {
-  dataRead.push({
-    key: i,
-    name: `PART ${i + 5}`,
-    count: countsRead[i],
-  });
-}
-
 function PreTest() {
+  const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [parts, setParts] = useState(null);
 
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
+    newSelectedRowKeys.sort(function (a, b) {
+      return a - b;
+    });
+    let _newSelectedRowKeys = [...newSelectedRowKeys];
+    _newSelectedRowKeys = _newSelectedRowKeys.map((el) => el + 1);
+    setParts(_newSelectedRowKeys.join(""));
   };
   const columns = [
     {
@@ -75,7 +73,9 @@ function PreTest() {
 
         <div className={styles.content}>
           <div className={styles.listening}>
-            <div style={{ fontSize: "20px" }}>Listening</div>
+            <div style={{ fontSize: "20px" }}>
+              Listening (Part 1 - 4) & Reading (Part 5 - 7)
+            </div>
             <Table
               pagination={{
                 position: ["none", "none"],
@@ -85,24 +85,16 @@ function PreTest() {
               dataSource={dataListen}
             />
           </div>
-
-          <div className={styles.listening}>
-            <div style={{ fontSize: "20px" }}>Reading</div>
-            <Table
-              pagination={{
-                position: ["none", "none"],
-              }}
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={dataRead}
-            />
-          </div>
         </div>
 
         <div className={styles.footer}>
-            <button>
-                Bắt đầu
-            </button>
+          <button
+            onClick={() => {
+              navigate(`exam?parts=${parts}`);
+            }}
+          >
+            Bắt đầu
+          </button>
         </div>
       </div>
     </div>

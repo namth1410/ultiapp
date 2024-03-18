@@ -7,11 +7,16 @@ import { useExam } from "../ExamContext";
 import Part1 from "../Part1/Part1";
 import Part2 from "../Part2/Part2";
 import Part3 from "../Part3/Part3";
+import Part5 from "../Part5/Part5";
+import Part6 from "../Part6/Part6";
+import Part7 from "../Part7/Part7";
 import styles from "./Test.module.css";
 
 function Exam() {
   const navigate = useNavigate();
-
+  const counts = [0, 6, 31, 70, 100, 130, 146, 200];
+  let urlParams = new URLSearchParams(window.location.search);
+  let parts = urlParams.get("parts")?.split("").map(Number);
   const indexToPart = () => {
     if (indexQuestion < 6) {
       return 1;
@@ -19,8 +24,14 @@ function Exam() {
       return 2;
     } else if (indexQuestion < 70) {
       return 3;
-    } else {
+    } else if (indexQuestion < 100) {
       return 4;
+    } else if (indexQuestion < 130) {
+      return 5;
+    } else if (indexQuestion < 146) {
+      return 6;
+    } else {
+      return 7;
     }
   };
 
@@ -39,10 +50,114 @@ function Exam() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRunning, setIsRunning] = useState(true);
   const [isModalResultOpen, setIsModalResultOpen] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+  const [canBack, setCanBack] = useState(false);
   const [result, setResult] = useState(null);
+
+  const isPivotTopFunc = () => {
+    let addTo = 0;
+    if (part === 3 || part === 4) {
+      addTo = 2;
+    } else if (part === 6) {
+      addTo = 3;
+    } else if (part === 7) {
+      addTo = dataExam.data[indexQuestion].to - 1;
+    }
+    let isPivot = false;
+    if (parts) {
+      counts.forEach((el, index) => {
+        if (index > 0) {
+          if (el - 1 === indexQuestion + addTo) {
+            isPivot = true;
+            return;
+          }
+        }
+      });
+    }
+    return isPivot;
+  };
+
+  const isPivotBottomFunc = () => {
+    let isPivot = false;
+    if (parts) {
+      counts.forEach((el, index) => {
+        if (index > 0) {
+          if (el === indexQuestion) {
+            isPivot = true;
+            return;
+          }
+        }
+      });
+    }
+    return isPivot;
+  };
+
+  const handleNextQuestion = () => {
+    const isPivot = isPivotTopFunc();
+    if (isPivot) {
+      const i = parts.findIndex((el) => el === part);
+      setIndexQuestion(counts[parts[i + 1] - 1]);
+    } else {
+      if (indexQuestion < 30) {
+        setIndexQuestion(indexQuestion + 1);
+      } else if (indexQuestion < 100) {
+        setIndexQuestion(indexQuestion + 3);
+      } else if (indexQuestion < 130) {
+        setIndexQuestion(indexQuestion + 1);
+      } else if (indexQuestion < 146) {
+        setIndexQuestion(indexQuestion + 4);
+      } else {
+        setIndexQuestion(indexQuestion + dataExam.data[indexQuestion].to);
+      }
+    }
+  };
+
+  const handleBackQuestion = () => {
+    const isPivot = isPivotBottomFunc();
+    if (isPivot) {
+      const i = parts.findIndex((el) => el === part);
+      if (parts[i - 1] === 1) {
+        setIndexQuestion(5);
+      } else if (parts[i - 1] === 2) {
+        setIndexQuestion(30);
+      } else if (parts[i - 1] === 3) {
+        setIndexQuestion(67);
+      } else if (parts[i - 1] === 4) {
+        setIndexQuestion(97);
+      } else if (parts[i - 1] === 5) {
+        setIndexQuestion(129);
+      } else if (parts[i - 1] === 6) {
+        setIndexQuestion(142);
+      }
+    } else {
+      if (indexQuestion < 30) {
+        setIndexQuestion(indexQuestion - 1);
+      } else if (indexQuestion < 100) {
+        setIndexQuestion(indexQuestion - 3);
+      } else if (indexQuestion < 130) {
+        setIndexQuestion(indexQuestion - 1);
+      } else if (indexQuestion < 146) {
+        setIndexQuestion(indexQuestion - 4);
+      } else {
+        setIndexQuestion(indexQuestion - dataExam.data[indexQuestion - 1].to);
+      }
+    }
+  };
 
   useEffect(() => {
     setPart(indexToPart());
+    if (isPivotTopFunc() && part === parts[parts.length - 1]) {
+      setCanNext(false);
+    } else {
+      setCanNext(true);
+    }
+
+    if (isPivotBottomFunc() && indexToPart() === parts[0]) {
+      setCanBack(false);
+    } else {
+      setCanBack(true);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
 
@@ -61,11 +176,11 @@ function Exam() {
                 gap: "10px",
               }}
             >
-              {indexQuestion !== 0 && (
+              {canBack && (
                 <button
+                  className={styles.back_btn}
                   style={{
                     border: "none",
-                    padding: "15px 20px",
                     color: "#fff",
                     fontSize: "20px",
                     backgroundColor: "var(--blue)",
@@ -73,22 +188,16 @@ function Exam() {
                     cursor: "pointer",
                     fontFamily: "Gilroy",
                   }}
-                  onClick={() => {
-                    if (indexQuestion > 30) {
-                      setIndexQuestion(indexQuestion - 3);
-                    } else {
-                      setIndexQuestion(indexQuestion - 1);
-                    }
-                  }}
+                  onClick={handleBackQuestion}
                 >
                   Câu trước
                 </button>
               )}
-              {indexQuestion !== 97 && (
+              {canNext && (
                 <button
+                  className={styles.next_btn}
                   style={{
                     border: "none",
-                    padding: "15px 20px",
                     color: "#fff",
                     fontSize: "20px",
                     backgroundColor: "var(--blue)",
@@ -96,13 +205,7 @@ function Exam() {
                     cursor: "pointer",
                     fontFamily: "Gilroy",
                   }}
-                  onClick={() => {
-                    if (indexQuestion > 30) {
-                      setIndexQuestion(indexQuestion + 3);
-                    } else {
-                      setIndexQuestion(indexQuestion + 1);
-                    }
-                  }}
+                  onClick={handleNextQuestion}
                 >
                   Câu tiếp
                 </button>
@@ -192,8 +295,11 @@ function Exam() {
         {isReady && !!dataExam ? (
           <div>
             {indexQuestion < 6 && <Part1 />}
-            {indexQuestion < 31 && indexQuestion > 5 && <Part2 />}
-            {indexQuestion >= 31 && <Part3 />}
+            {indexQuestion >= 6 && indexQuestion < 31 && <Part2 />}
+            {indexQuestion >= 31 && indexQuestion < 100 && <Part3 />}
+            {indexQuestion >= 100 && indexQuestion < 130 && <Part5 />}
+            {indexQuestion >= 130 && indexQuestion < 146 && <Part6 />}
+            {indexQuestion >= 146 && indexQuestion < 200 && <Part7 />}
           </div>
         ) : (
           <div>
@@ -224,7 +330,7 @@ function Exam() {
             <Button
               onClick={() => {
                 setIsShowKey(true);
-                setIndexQuestion(0);
+                setIndexQuestion(counts[parts[0] - 1]);
                 setIsModalResultOpen(false);
               }}
             >

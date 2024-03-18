@@ -8,6 +8,11 @@ import { firestore, storage } from "../../firebase";
 const ExamContext = createContext();
 
 export const ExamProvider = ({ children }) => {
+  let urlParams = new URLSearchParams(window.location.search);
+  let parts = urlParams.get("parts")?.split("").map(Number);
+
+  const counts = [0, 6, 31, 70, 100, 130, 146];
+
   const examId = window.location.pathname.split("/")[2];
 
   const [audio] = useState(new Audio());
@@ -138,7 +143,7 @@ export const ExamProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!isReady || isShowKey) return;
+    if (!isReady || isShowKey || indexQuestion > 99) return;
 
     audio.src = urlList?.[indexQuestion];
     if (indexQuestion >= 31) {
@@ -150,7 +155,9 @@ export const ExamProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isReady) return;
-    audio.play();
+    if (indexQuestion < 100) {
+      audio.play();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
 
@@ -181,14 +188,12 @@ export const ExamProvider = ({ children }) => {
               _urlList.push(url);
               downloadedCount++;
               if (downloadedCount === totalItems) {
-                // Sắp xếp danh sách URL
                 _urlList.sort((url1, url2) => {
                   const number1 = extractNumberFromUrl(url1);
                   const number2 = extractNumberFromUrl(url2);
                   return number1 - number2;
                 });
                 setUrlList(_urlList);
-                console.log("Sorted URL List:", _urlList);
               }
             })
             .catch((error) => {
@@ -211,6 +216,7 @@ export const ExamProvider = ({ children }) => {
       }
     };
     getDataExam();
+    parts && setIndexQuestion(counts[parts[0] - 1]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

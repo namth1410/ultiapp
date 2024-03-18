@@ -49,7 +49,6 @@ export const ExamProvider = ({ children }) => {
     audio.removeEventListener("ended", endedEventHandler);
 
     return new Promise((resolve, reject) => {
-      console.log(answer);
       let countCorrect = 0;
       let countIncorrect = 0;
       let countCorrectPart1 = 0;
@@ -223,6 +222,7 @@ export const ExamProvider = ({ children }) => {
       if (docSnapshot.exists()) {
         const examData = { id: docSnapshot.id, ...docSnapshot.data() };
         setDataExam(examData);
+        console.log(examData);
       } else {
         setDataExam(null);
       }

@@ -94,11 +94,11 @@ function Exam() {
 
   const handleNextQuestion = () => {
     const isPivot = isPivotTopFunc();
-    if (isPivot) {
+    if (isPivot && parts) {
       const i = parts.findIndex((el) => el === part);
       setIndexQuestion(counts[parts[i + 1] - 1]);
     } else {
-      if (indexQuestion < 30) {
+      if (indexQuestion < 31) {
         setIndexQuestion(indexQuestion + 1);
       } else if (indexQuestion < 100) {
         setIndexQuestion(indexQuestion + 3);
@@ -114,7 +114,7 @@ function Exam() {
 
   const handleBackQuestion = () => {
     const isPivot = isPivotBottomFunc();
-    if (isPivot) {
+    if (isPivot && parts) {
       const i = parts.findIndex((el) => el === part);
       if (parts[i - 1] === 1) {
         setIndexQuestion(5);
@@ -130,7 +130,7 @@ function Exam() {
         setIndexQuestion(142);
       }
     } else {
-      if (indexQuestion < 30) {
+      if (indexQuestion < 31) {
         setIndexQuestion(indexQuestion - 1);
       } else if (indexQuestion < 100) {
         setIndexQuestion(indexQuestion - 3);
@@ -146,16 +146,30 @@ function Exam() {
 
   useEffect(() => {
     setPart(indexToPart());
-    if (isPivotTopFunc() && part === parts[parts.length - 1]) {
-      setCanNext(false);
-    } else {
-      setCanNext(true);
-    }
+    if (parts) {
+      if (isPivotTopFunc() && part === parts[parts.length - 1]) {
+        setCanNext(false);
+      } else {
+        setCanNext(true);
+      }
 
-    if (isPivotBottomFunc() && indexToPart() === parts[0]) {
-      setCanBack(false);
+      if (isPivotBottomFunc() && indexToPart() === parts[0]) {
+        setCanBack(false);
+      } else {
+        setCanBack(true);
+      }
     } else {
-      setCanBack(true);
+      if (indexQuestion === 195) {
+        setCanNext(false);
+      } else {
+        setCanNext(true);
+      }
+
+      if (indexQuestion === 0) {
+        setCanBack(false);
+      } else {
+        setCanBack(true);
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

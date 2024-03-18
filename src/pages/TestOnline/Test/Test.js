@@ -132,12 +132,18 @@ function Exam() {
     } else {
       if (indexQuestion < 31) {
         setIndexQuestion(indexQuestion - 1);
+      } else if (indexQuestion === 31) {
+        setIndexQuestion(30);
       } else if (indexQuestion < 100) {
         setIndexQuestion(indexQuestion - 3);
+      } else if (indexQuestion === 100) {
+        setIndexQuestion(97);
       } else if (indexQuestion < 130) {
         setIndexQuestion(indexQuestion - 1);
       } else if (indexQuestion < 146) {
         setIndexQuestion(indexQuestion - 4);
+      } else if (indexQuestion === 146) {
+        setIndexQuestion(142);
       } else {
         setIndexQuestion(indexQuestion - dataExam.data[indexQuestion - 1].to);
       }

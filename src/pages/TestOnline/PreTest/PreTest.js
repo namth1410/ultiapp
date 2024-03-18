@@ -1,7 +1,8 @@
 import { Table } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./PreTest.module.css";
+import { toast } from "react-toastify";
 
 const countsLis = [6, 25, 39, 30, 30, 16, 54];
 const dataListen = [];
@@ -28,6 +29,9 @@ function PreTest() {
     _newSelectedRowKeys = _newSelectedRowKeys.map((el) => el + 1);
     setParts(_newSelectedRowKeys.join(""));
   };
+  useEffect(() => {
+    console.log(parts);
+  }, [parts]);
   const columns = [
     {
       title: "Tên part",
@@ -90,7 +94,20 @@ function PreTest() {
         <div className={styles.footer}>
           <button
             onClick={() => {
-              navigate(`exam?parts=${parts}`);
+              if (parts === "" || !parts) {
+                toast.warning("Bạn chưa chọn part nào!", {
+                  position: "top-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              } else {
+                navigate(`exam?parts=${parts}`);
+              }
             }}
           >
             Bắt đầu

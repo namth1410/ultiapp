@@ -141,7 +141,7 @@ function App() {
             />
 
             <Route path="online" element={<TestOnline />} />
-            <Route path="online/:id_test" element={<PreTest />} />
+            <Route path="online/:id_test/:name_test" element={<PreTest />} />
             <Route
               path="online/:id_test/:name_test/exam"
               element={

@@ -138,7 +138,7 @@ const TestItem = ({ props, navigate }) => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`${id}`);
+              navigate(`${id}/${nameTest}`);
             }}
           >
             Chọn từng part

@@ -330,7 +330,7 @@ function Exam() {
             <Button
               onClick={() => {
                 setIsShowKey(true);
-                setIndexQuestion(counts[parts[0] - 1]);
+                setIndexQuestion(counts[parts?.[0] - 1] || 0);
                 setIsModalResultOpen(false);
               }}
             >

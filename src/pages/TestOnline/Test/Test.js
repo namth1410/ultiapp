@@ -66,11 +66,9 @@ function Exam() {
     let isPivot = false;
     if (parts) {
       counts.forEach((el, index) => {
-        if (index > 0) {
-          if (el - 1 === indexQuestion + addTo) {
-            isPivot = true;
-            return;
-          }
+        if (el - 1 === indexQuestion + addTo) {
+          isPivot = true;
+          return;
         }
       });
     }

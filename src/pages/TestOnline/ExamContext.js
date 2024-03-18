@@ -14,6 +14,7 @@ export const ExamProvider = ({ children }) => {
   const counts = [0, 6, 31, 70, 100, 130, 146];
 
   const examId = window.location.pathname.split("/")[2];
+  const examName = window.location.pathname.split("/")[3];
 
   const [audio] = useState(new Audio());
 
@@ -206,7 +207,7 @@ export const ExamProvider = ({ children }) => {
   useEffect(() => {
     let downloadedCount = 0;
     let _urlList = [];
-    const storageRef = ref(storage, "ETS2024/Test1");
+    const storageRef = ref(storage, examName.replace("-", "/"));
 
     listAll(storageRef)
       .then((result) => {

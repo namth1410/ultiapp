@@ -270,7 +270,7 @@ function Exam() {
             </button>
           )}
 
-          {(part > 4 && !isShowKey) && (
+          {(part > 4 && !isShowKey && isReady) && (
             <div
               style={{
                 display: "flex",

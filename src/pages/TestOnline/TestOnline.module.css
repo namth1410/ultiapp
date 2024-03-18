@@ -54,13 +54,26 @@
       width: 100%;
       cursor: pointer;
 
-      img {
+      .img {
         width: 300px;
         height: 150px;
         -ms-flex-negative: 0;
         flex-shrink: 0;
         object-fit: cover;
         object-position: center;
+        background: rgb(2, 0, 36);
+        background: linear-gradient(
+          90deg,
+          rgba(2, 0, 36, 1) 0%,
+          rgba(81, 160, 255, 1) 36%,
+          rgba(0, 212, 255, 1) 100%
+        );
+
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
       }
     }
 

@@ -101,17 +101,17 @@ function TestOnline() {
 const TestItem = ({ props, navigate }) => {
   const { id, name } = props;
   console.log(props);
+  const _nameTest = name.split("-");
+  const nameTest = _nameTest[1].trim() + "-" + _nameTest[0].trim();
+
   return (
     <div
       className={styles.test_item}
       onClick={() => {
-        navigate(`${id}/exam`);
+        navigate(`${id}/${nameTest}/exam`);
       }}
     >
-      <img
-        alt="img"
-        src="https://zenlishtoeic.vn/wp-content/uploads/2023/06/zenlish-test-full-dau-vao.png"
-      />
+      <div className={styles.img}>{name}</div>
       <div className={styles.item_info}>
         <div
           style={{

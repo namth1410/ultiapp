@@ -99,12 +99,13 @@ function TestOnline() {
 }
 
 const TestItem = ({ props, navigate }) => {
-  const { name } = props;
+  const { id, name } = props;
+  console.log(props);
   return (
     <div
       className={styles.test_item}
       onClick={() => {
-        navigate("asd/exam");
+        navigate(`${id}/exam`);
       }}
     >
       <img
@@ -143,6 +144,7 @@ const TestItem = ({ props, navigate }) => {
 
 TestItem.propTypes = {
   props: PropTypes.any,
+  id: PropTypes.any,
   name: PropTypes.any,
 };
 

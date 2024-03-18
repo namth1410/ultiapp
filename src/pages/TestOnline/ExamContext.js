@@ -1,5 +1,5 @@
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 import PropTypes from "prop-types";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -8,6 +8,8 @@ import { firestore, storage } from "../../firebase";
 const ExamContext = createContext();
 
 export const ExamProvider = ({ children }) => {
+  const examId = window.location.pathname.split("/")[2];
+
   const [audio] = useState(new Audio());
 
   const [indexQuestion, setIndexQuestion] = useState(0);
@@ -199,25 +201,17 @@ export const ExamProvider = ({ children }) => {
       });
 
     const getDataExam = async () => {
-      const QuerySnapshot = await getDocs(
-        query(
-          collection(firestore, "testonline"),
-          where("name", "==", "TEST1 - ETS2024")
-        )
-      );
-
-      if (QuerySnapshot.empty) {
+      const examRef = doc(firestore, "testonline", examId);
+      const docSnapshot = await getDoc(examRef);
+      if (docSnapshot.exists()) {
+        const examData = { id: docSnapshot.id, ...docSnapshot.data() };
+        setDataExam(examData);
+      } else {
         setDataExam(null);
-        return;
       }
-      const records = [];
-
-      QuerySnapshot.forEach((doc) => {
-        records.push({ ...doc.data(), id: doc.id });
-      });
-      setDataExam(records[0]);
     };
     getDataExam();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const contextValue = useMemo(

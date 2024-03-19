@@ -349,8 +349,17 @@ function Exam() {
             {indexQuestion >= 146 && indexQuestion < 200 && <Part7 />}
           </div>
         ) : (
-          <div>
+          <div
+            style={{
+              width: "100%",
+              height: "600px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <button
+              className={styles.start_btn}
               onClick={() => {
                 setIsReady(true);
               }}

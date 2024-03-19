@@ -334,6 +334,9 @@ function Exam() {
               color: "#fff",
               borderRadius: "8px",
             }}
+            onClick={() => {
+              setIndexQuestion(indexQuestion + 1);
+            }}
           >
             {`${answer.filter((el) => el !== 0).length}/200`}
           </div>

@@ -16,9 +16,29 @@ export const ExamProvider = ({ children }) => {
   const examId = window.location.pathname.split("/")[2];
   const examName = window.location.pathname.split("/")[3];
 
+  const indexToPart = () => {
+    if (indexQuestion < 6) {
+      return 1;
+    } else if (indexQuestion < 31) {
+      return 2;
+    } else if (indexQuestion < 70) {
+      return 3;
+    } else if (indexQuestion < 100) {
+      return 4;
+    } else if (indexQuestion < 130) {
+      return 5;
+    } else if (indexQuestion < 146) {
+      return 6;
+    } else {
+      return 7;
+    }
+  };
+
   const [audio] = useState(new Audio());
+  const pivotListen = [5, 30, 69, 99];
 
   const [indexQuestion, setIndexQuestion] = useState(0);
+  const [part, setPart] = useState(indexToPart());
   const [answer, setAnswer] = useState(Array.from({ length: 100 }, () => 0));
   const [urlList, setUrlList] = useState();
   const [isReady, setIsReady] = useState(false);
@@ -46,9 +66,13 @@ export const ExamProvider = ({ children }) => {
     return -1;
   }
 
+  const getPartNext = () => {
+    const i = parts.findIndex((el) => el === part);
+    return parts[i + 1];
+  };
+
   const onSubmit = () => {
     audio.pause();
-    audio.removeEventListener("ended", endedEventHandler);
 
     return new Promise((resolve, reject) => {
       let countCorrect = 0;
@@ -116,14 +140,6 @@ export const ExamProvider = ({ children }) => {
     });
   };
 
-  const endedEventHandler = () => {
-    if (indexQuestion < 31) {
-      setIndexQuestion((pre) => pre + 1);
-    } else {
-      setIndexQuestion((pre) => pre + 3);
-    }
-  };
-
   const convertKeyStringToInt = (key) => {
     if (key === "A") {
       return 0;
@@ -156,6 +172,7 @@ export const ExamProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    setPart(indexToPart());
     if (isShowKey) {
       if (indexQuestion >= 31) {
         setAudioSrc(urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)]);
@@ -164,12 +181,43 @@ export const ExamProvider = ({ children }) => {
       }
     }
     if (!isReady || isShowKey || indexQuestion > 99) return;
+    const endedEventHandler = () => {
+      if (pivotListen.includes(indexQuestion)) {
+        if (getPartNext() === 4) {
+          setIndexQuestion(70);
+        } else if (getPartNext() === 3) {
+          setIndexQuestion(31);
+        } else if (getPartNext() === 2) {
+          setIndexQuestion(6);
+        } else if (getPartNext() === 5) {
+          setIndexQuestion(100);
+        } else if (getPartNext() === 6) {
+          setIndexQuestion(130);
+        } else if (getPartNext() === 7) {
+          setIndexQuestion(146);
+        }
+      } else {
+        if (indexQuestion < 31) {
+          setIndexQuestion((prev) => prev + 1);
+        } else {
+          setIndexQuestion((prev) => prev + 3);
+        }
+      }
+    };
 
+    audio.addEventListener("ended", endedEventHandler);
+
+    // Xóa bỏ sự kiện khi component bị unmount
+
+    audio.pause();
     audio.src = urlList?.[indexQuestion];
     if (indexQuestion >= 31) {
       audio.src = urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)];
     }
     audio.play();
+    return () => {
+      audio.removeEventListener("ended", endedEventHandler);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
 
@@ -197,7 +245,6 @@ export const ExamProvider = ({ children }) => {
   useEffect(() => {
     if (!urlList) return;
     audio.src = urlList[0];
-    audio.addEventListener("ended", endedEventHandler);
 
     return () => {
       audio.pause();

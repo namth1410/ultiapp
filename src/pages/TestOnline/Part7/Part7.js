@@ -14,11 +14,15 @@ function Part7() {
   const [selectedValue1, setSelectedValue1] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
   const [selectedValue3, setSelectedValue3] = useState(null);
+  const [selectedValue4, setSelectedValue4] = useState(null);
+  const [selectedValue5, setSelectedValue5] = useState(null);
 
   useEffect(() => {
     setSelectedValue1(null);
     setSelectedValue2(null);
     setSelectedValue3(null);
+    setSelectedValue4(null);
+    setSelectedValue5(null);
   }, [indexQuestion]);
 
   return (
@@ -52,7 +56,11 @@ function Part7() {
                       ? setSelectedValue1(e.target.value)
                       : index === 2
                       ? setSelectedValue2(e.target.value)
-                      : setSelectedValue3(e.target.value);
+                      : index === 3
+                      ? setSelectedValue3(e.target.value)
+                      : index === 4
+                      ? setSelectedValue4(e.target.value)
+                      : setSelectedValue5(e.target.value);
                     onChooseAnswer(indexQuestion + index, e.target.value);
                   }}
                   disabled={isShowKey}
@@ -61,7 +69,11 @@ function Part7() {
                       ? selectedValue1
                       : index === 2
                       ? selectedValue2
-                      : selectedValue3
+                      : index === 3
+                      ? selectedValue3
+                      : index === 4
+                      ? selectedValue4
+                      : selectedValue5
                   }
                 >
                   <div

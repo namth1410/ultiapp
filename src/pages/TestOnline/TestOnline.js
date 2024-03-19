@@ -1,11 +1,13 @@
 import { Menu } from "antd";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { firestore } from "../../firebase";
 import "./TestOnline.css";
 import styles from "./TestOnline.module.css";
+import data from "./data.json";
+import correct_answer from "./correct_answer.json";
 
 function TestOnline() {
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ function TestOnline() {
   // useEffect(() => {
   //   const a = async () => {
   //     const dataToAdd = { data: data, correct_answer: correct_answer };
-  //     const quizzRef = doc(firestore, "testonline", "YHv3lmwvA9t6PjCZBFEm");
+  //     const quizzRef = doc(firestore, "testonline", "F2YqO57XoT6aoors03yU");
   //     await updateDoc(quizzRef, dataToAdd);
   //   };
 

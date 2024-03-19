@@ -37,6 +37,7 @@ const Login = () => {
             fontFamily: "Gilroy",
             width: "fit-content",
             marginTop: "20px",
+            display: "none",
           }}
         >
           Đăng ký miễn phí

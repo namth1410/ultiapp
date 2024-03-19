@@ -320,7 +320,7 @@ function Header() {
             <>
               <Button
                 size="large"
-                type="text"
+                type="primary"
                 style={{
                   fontFamily: "Gilroy",
                   border: "none",
@@ -333,7 +333,11 @@ function Header() {
               <Button
                 size="large"
                 type="primary"
-                style={{ background: "#ffcd1f", fontFamily: "Gilroy" }}
+                style={{
+                  background: "#ffcd1f",
+                  fontFamily: "Gilroy",
+                  display: "none",
+                }}
               >
                 Đăng ký
               </Button>

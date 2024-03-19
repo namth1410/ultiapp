@@ -300,7 +300,7 @@ function Exam() {
                 gap: "10px",
               }}
             >
-              {canBack && (
+              {canBack && indexQuestion > 100 && (
                 <button
                   className={styles.back_btn}
                   style={{

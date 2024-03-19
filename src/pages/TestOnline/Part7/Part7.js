@@ -5,6 +5,7 @@ import styles from "./Part7.module.css";
 
 function Part7() {
   const {
+    answer,
     onChooseAnswer,
     indexQuestion,
     dataExam,
@@ -18,11 +19,22 @@ function Part7() {
   const [selectedValue5, setSelectedValue5] = useState(null);
 
   useEffect(() => {
-    setSelectedValue1(null);
-    setSelectedValue2(null);
-    setSelectedValue3(null);
-    setSelectedValue4(null);
-    setSelectedValue5(null);
+    setSelectedValue1(
+      answer[indexQuestion] === 0 ? null : answer[indexQuestion]
+    );
+    setSelectedValue2(
+      answer[indexQuestion + 1] === 0 ? null : answer[indexQuestion + 1]
+    );
+    setSelectedValue3(
+      answer[indexQuestion + 2] === 0 ? null : answer[indexQuestion + 2]
+    );
+    setSelectedValue4(
+      answer[indexQuestion + 3] === 0 ? null : answer[indexQuestion + 3]
+    );
+    setSelectedValue5(
+      answer[indexQuestion + 4] === 0 ? null : answer[indexQuestion + 4]
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
 
   return (

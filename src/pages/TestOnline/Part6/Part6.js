@@ -5,6 +5,7 @@ import styles from "./Part6.module.css";
 
 function Part6() {
   const {
+    answer,
     onChooseAnswer,
     indexQuestion,
     dataExam,
@@ -17,10 +18,19 @@ function Part6() {
   const [selectedValue4, setSelectedValue4] = useState(null);
 
   useEffect(() => {
-    setSelectedValue1(null);
-    setSelectedValue2(null);
-    setSelectedValue3(null);
-    setSelectedValue4(null);
+    setSelectedValue1(
+      answer[indexQuestion] === 0 ? null : answer[indexQuestion]
+    );
+    setSelectedValue2(
+      answer[indexQuestion + 1] === 0 ? null : answer[indexQuestion + 1]
+    );
+    setSelectedValue3(
+      answer[indexQuestion + 2] === 0 ? null : answer[indexQuestion + 2]
+    );
+    setSelectedValue4(
+      answer[indexQuestion + 3] === 0 ? null : answer[indexQuestion + 3]
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
 
   return (

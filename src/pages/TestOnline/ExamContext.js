@@ -39,7 +39,7 @@ export const ExamProvider = ({ children }) => {
 
   const [indexQuestion, setIndexQuestion] = useState(0);
   const [part, setPart] = useState(indexToPart());
-  const [answer, setAnswer] = useState(Array.from({ length: 100 }, () => 0));
+  const [answer, setAnswer] = useState(Array.from({ length: 200 }, () => 0));
   const [urlList, setUrlList] = useState();
   const [isReady, setIsReady] = useState(false);
   const [dataExam, setDataExam] = useState(null);

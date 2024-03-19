@@ -4,12 +4,23 @@ import { useExam } from "../ExamContext";
 import styles from "./Part5.module.css";
 
 function Part5() {
-  const { isShowKey, onChooseAnswer, indexQuestion, dataExam, checkKey } =
-    useExam();
+  const {
+    answer,
+    isShowKey,
+    onChooseAnswer,
+    indexQuestion,
+    dataExam,
+    checkKey,
+  } = useExam();
   const [selectedValue, setSelectedValue] = useState(null);
 
   useEffect(() => {
-    setSelectedValue(null);
+    if (answer[indexQuestion] === 0) {
+      setSelectedValue(null);
+    } else {
+      setSelectedValue(answer[indexQuestion]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
 
   return (

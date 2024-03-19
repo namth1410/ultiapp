@@ -198,10 +198,8 @@ function Exam() {
                 <button
                   className={styles.back_btn}
                   style={{
-                    border: "none",
-                    color: "#fff",
+                    color: "var(--blue)",
                     fontSize: "20px",
-                    backgroundColor: "var(--blue)",
                     borderRadius: "8px",
                     cursor: "pointer",
                     fontFamily: "Gilroy",
@@ -215,10 +213,8 @@ function Exam() {
                 <button
                   className={styles.next_btn}
                   style={{
-                    border: "none",
-                    color: "#fff",
+                    color: "var(--blue)",
                     fontSize: "20px",
-                    backgroundColor: "var(--blue)",
                     borderRadius: "8px",
                     cursor: "pointer",
                     fontFamily: "Gilroy",
@@ -235,13 +231,10 @@ function Exam() {
 
           {!isShowKey && isReady && (
             <button
+              className={styles.submit_btn}
               style={{
                 border: "none",
-                padding: "15px 20px",
-                color: "#fff",
                 fontSize: "20px",
-                backgroundColor: "var(--blue)",
-                borderRadius: "8px",
                 cursor: "pointer",
                 fontFamily: "Gilroy",
               }}
@@ -270,7 +263,7 @@ function Exam() {
             </button>
           )}
 
-          {(part > 4 && !isShowKey && isReady) && (
+          {part > 4 && !isShowKey && isReady && (
             <div
               style={{
                 display: "flex",
@@ -281,10 +274,8 @@ function Exam() {
                 <button
                   className={styles.back_btn}
                   style={{
-                    border: "none",
-                    color: "#fff",
+                    color: "var(--blue)",
                     fontSize: "20px",
-                    backgroundColor: "var(--blue)",
                     borderRadius: "8px",
                     cursor: "pointer",
                     fontFamily: "Gilroy",
@@ -298,10 +289,8 @@ function Exam() {
                 <button
                   className={styles.next_btn}
                   style={{
-                    border: "none",
-                    color: "#fff",
+                    color: "var(--blue)",
                     fontSize: "20px",
-                    backgroundColor: "var(--blue)",
                     borderRadius: "8px",
                     cursor: "pointer",
                     fontFamily: "Gilroy",
@@ -324,13 +313,9 @@ function Exam() {
 
           {dataExam && isShowKey && (
             <button
+              className={styles.exit_btn}
               style={{
-                border: "none",
-                padding: "15px 20px",
-                color: "#fff",
                 fontSize: "20px",
-                backgroundColor: "var(--blue)",
-                borderRadius: "8px",
                 cursor: "pointer",
                 fontFamily: "Gilroy",
               }}
@@ -350,7 +335,7 @@ function Exam() {
               borderRadius: "8px",
             }}
           >
-            {`${answer.filter((el) => el !== 0).length}/100`}
+            {`${answer.filter((el) => el !== 0).length}/200`}
           </div>
         </div>
 

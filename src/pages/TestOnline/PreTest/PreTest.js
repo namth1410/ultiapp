@@ -93,6 +93,7 @@ function PreTest() {
 
         <div className={styles.footer}>
           <button
+          className={styles.start_btn}
             onClick={() => {
               if (parts === "" || !parts) {
                 toast.warning("Bạn chưa chọn part nào!", {

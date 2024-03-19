@@ -64,26 +64,26 @@ function Part7() {
                 <Radio.Group
                   name="radiogroup"
                   onChange={(e) => {
-                    index === 1
+                    index === 0
                       ? setSelectedValue1(e.target.value)
-                      : index === 2
+                      : index === 1
                       ? setSelectedValue2(e.target.value)
-                      : index === 3
+                      : index === 2
                       ? setSelectedValue3(e.target.value)
-                      : index === 4
+                      : index === 3
                       ? setSelectedValue4(e.target.value)
                       : setSelectedValue5(e.target.value);
                     onChooseAnswer(indexQuestion + index, e.target.value);
                   }}
                   disabled={isShowKey}
                   value={
-                    index === 1
+                    index === 0
                       ? selectedValue1
-                      : index === 2
+                      : index === 1
                       ? selectedValue2
-                      : index === 3
+                      : index === 2
                       ? selectedValue3
-                      : index === 4
+                      : index === 3
                       ? selectedValue4
                       : selectedValue5
                   }

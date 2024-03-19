@@ -300,21 +300,25 @@ function Exam() {
                 gap: "10px",
               }}
             >
-              {canBack && indexQuestion > 100 && (
-                <button
-                  className={styles.back_btn}
-                  style={{
-                    color: "var(--blue)",
-                    fontSize: "20px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontFamily: "Gilroy",
-                  }}
-                  onClick={handleBackQuestion}
-                >
-                  Câu trước
-                </button>
-              )}
+              {canBack &&
+                !(
+                  isPivotBottomFunc() &&
+                  parts[parts.findIndex((el) => el === part) - 1] < 5
+                ) && (
+                  <button
+                    className={styles.back_btn}
+                    style={{
+                      color: "var(--blue)",
+                      fontSize: "20px",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      fontFamily: "Gilroy",
+                    }}
+                    onClick={handleBackQuestion}
+                  >
+                    Câu trước
+                  </button>
+                )}
               {canNext && (
                 <button
                   className={styles.next_btn}

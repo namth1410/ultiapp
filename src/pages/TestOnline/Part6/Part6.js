@@ -18,6 +18,12 @@ function Part6() {
   const [selectedValue4, setSelectedValue4] = useState(null);
 
   useEffect(() => {
+    console.log(answer);
+    console.log(indexQuestion);
+    console.log(answer[indexQuestion]);
+    console.log(answer[indexQuestion + 1]);
+    console.log(answer[indexQuestion + 2]);
+    console.log(answer[indexQuestion + 3]);
     setSelectedValue1(
       answer[indexQuestion] === 0 ? null : answer[indexQuestion]
     );
@@ -56,22 +62,22 @@ function Part6() {
               <Radio.Group
                 name="radiogroup"
                 onChange={(e) => {
-                  index === 1
+                  index === 0
                     ? setSelectedValue1(e.target.value)
-                    : index === 2
+                    : index === 1
                     ? setSelectedValue2(e.target.value)
-                    : index === 3
+                    : index === 2
                     ? setSelectedValue3(e.target.value)
                     : setSelectedValue4(e.target.value);
                   onChooseAnswer(indexQuestion + index, e.target.value);
                 }}
                 disabled={isShowKey}
                 value={
-                  index === 1
+                  index === 0
                     ? selectedValue1
-                    : index === 2
+                    : index === 1
                     ? selectedValue2
-                    : index === 3
+                    : index === 2
                     ? selectedValue3
                     : selectedValue4
                 }

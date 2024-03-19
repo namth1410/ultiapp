@@ -71,7 +71,7 @@ function TestOnline() {
   // useEffect(() => {
   //   const a = async () => {
   //     const dataToAdd = { data: data, correct_answer: correct_answer };
-  //     const quizzRef = doc(firestore, "testonline", "F2YqO57XoT6aoors03yU");
+  //     const quizzRef = doc(firestore, "testonline", "aB64bYR0ukxspXRRH8sS");
   //     await updateDoc(quizzRef, dataToAdd);
   //   };
 
@@ -86,6 +86,7 @@ function TestOnline() {
           selectedKeys={[testSelected]}
           mode="horizontal"
           items={items}
+          disabled={!exams}
         />
       </div>
 

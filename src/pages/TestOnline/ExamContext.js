@@ -73,7 +73,6 @@ export const ExamProvider = ({ children }) => {
 
   const onSubmit = () => {
     audio.pause();
-
     return new Promise((resolve, reject) => {
       let countCorrect = 0;
       let countIncorrect = 0;
@@ -171,8 +170,33 @@ export const ExamProvider = ({ children }) => {
     return <></>;
   };
 
+  const endedEventHandler = () => {
+    if (pivotListen.includes(indexQuestion)) {
+      if (getPartNext() === 4) {
+        setIndexQuestion(70);
+      } else if (getPartNext() === 3) {
+        setIndexQuestion(31);
+      } else if (getPartNext() === 2) {
+        setIndexQuestion(6);
+      } else if (getPartNext() === 5) {
+        setIndexQuestion(100);
+      } else if (getPartNext() === 6) {
+        setIndexQuestion(130);
+      } else if (getPartNext() === 7) {
+        setIndexQuestion(146);
+      }
+    } else {
+      if (indexQuestion < 31) {
+        setIndexQuestion((prev) => prev + 1);
+      } else {
+        setIndexQuestion((prev) => prev + 3);
+      }
+    }
+  };
+
   useEffect(() => {
     setPart(indexToPart());
+
     if (isShowKey) {
       if (indexQuestion >= 31) {
         setAudioSrc(urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)]);
@@ -181,6 +205,13 @@ export const ExamProvider = ({ children }) => {
       }
     }
     if (!isReady || isShowKey || indexQuestion > 99) return;
+    audio.pause();
+    audio.src = urlList?.[indexQuestion];
+    if (indexQuestion >= 31) {
+      audio.src = urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)];
+    }
+    audio.play();
+
     const endedEventHandler = () => {
       if (pivotListen.includes(indexQuestion)) {
         if (getPartNext() === 4) {
@@ -206,15 +237,6 @@ export const ExamProvider = ({ children }) => {
     };
 
     audio.addEventListener("ended", endedEventHandler);
-
-    // Xóa bỏ sự kiện khi component bị unmount
-
-    audio.pause();
-    audio.src = urlList?.[indexQuestion];
-    if (indexQuestion >= 31) {
-      audio.src = urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)];
-    }
-    audio.play();
     return () => {
       audio.removeEventListener("ended", endedEventHandler);
     };
@@ -245,6 +267,7 @@ export const ExamProvider = ({ children }) => {
   useEffect(() => {
     if (!urlList) return;
     audio.src = urlList[0];
+    audio.addEventListener("ended", endedEventHandler);
 
     return () => {
       audio.pause();
@@ -323,7 +346,7 @@ export const ExamProvider = ({ children }) => {
       audioSrc,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [indexQuestion, isReady, answer, dataExam, isShowKey, audioSrc]
+    [indexQuestion, isReady, answer, dataExam, isShowKey, audioSrc, urlList]
   );
 
   return (

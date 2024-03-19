@@ -1,8 +1,10 @@
 import { Button, Modal, Spin } from "antd";
+import { addDoc, collection } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { auth, firestore } from "../../../firebase";
 import { useExam } from "../ExamContext";
 import Part1 from "../Part1/Part1";
 import Part2 from "../Part2/Part2";
@@ -13,6 +15,8 @@ import Part7 from "../Part7/Part7";
 import styles from "./Test.module.css";
 
 function Exam() {
+  const nameExam = window.location.pathname.split("/")[3];
+
   const navigate = useNavigate();
   const counts = [0, 6, 31, 70, 100, 130, 146, 200];
   let urlParams = new URLSearchParams(window.location.search);
@@ -45,6 +49,7 @@ function Exam() {
     dataExam,
     isShowKey,
     setIsShowKey,
+    urlList,
   } = useExam();
   const [part, setPart] = useState(indexToPart());
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +58,7 @@ function Exam() {
   const [canNext, setCanNext] = useState(false);
   const [canBack, setCanBack] = useState(false);
   const [result, setResult] = useState(null);
+  const [duration, setDuration] = useState(null);
 
   const isPivotTopFunc = () => {
     let addTo = 0;
@@ -178,6 +184,30 @@ function Exam() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
+
+  useEffect(() => {
+    if (duration) {
+      const addToDb = async () => {
+        const dataToAdd = {
+          nameExam: nameExam,
+          duration: duration,
+          result: result,
+          dateCreate: new Date().toISOString(),
+          uidCreator: auth.currentUser.uid,
+          nameCreator: auth.currentUser.displayName,
+          photoURL: auth.currentUser.photoURL,
+        };
+        const docRef = await addDoc(
+          collection(firestore, "zenlish_results"),
+          dataToAdd
+        );
+        console.log(docRef);
+      };
+
+      addToDb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [duration]);
 
   return (
     <div className={styles.wrapper}>
@@ -308,6 +338,8 @@ function Exam() {
               initialTime={120 * 60000}
               countdown={true}
               isRunning={isRunning}
+              isSubmiting={isLoading}
+              setDuration={setDuration}
             />
           )}
 
@@ -366,6 +398,7 @@ function Exam() {
               onClick={() => {
                 setIsReady(true);
               }}
+              disabled={!urlList}
             >
               Bắt đầu
             </button>
@@ -473,7 +506,13 @@ function Exam() {
   );
 }
 
-function Timer({ initialTime, countdown, isRunning }) {
+function Timer({
+  initialTime,
+  countdown,
+  isRunning,
+  isSubmiting,
+  setDuration,
+}) {
   const [time, setTime] = useState(initialTime);
 
   useEffect(() => {
@@ -490,6 +529,13 @@ function Timer({ initialTime, countdown, isRunning }) {
 
     return () => clearInterval(timer);
   }, [isRunning, countdown]);
+
+  useEffect(() => {
+    if (isSubmiting) {
+      setDuration(initialTime - time);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmiting]);
 
   const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
   const minutes = Math.floor((time / (1000 * 60)) % 60);
@@ -525,6 +571,8 @@ Timer.propTypes = {
   initialTime: PropTypes.any,
   countdown: PropTypes.any,
   isRunning: PropTypes.any,
+  isSubmiting: PropTypes.any,
+  setDuration: PropTypes.any,
 };
 
 export default Exam;

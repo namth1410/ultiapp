@@ -2,6 +2,8 @@
   padding: 0 40px;
   overflow: auto;
   overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
 
   .menu {
     animation: slideInFromRight 0.5s ease-in-out forwards;
@@ -26,6 +28,21 @@
 
     .menu_item:hover {
       background-color: #4f83fc;
+    }
+
+    .menu_item_spec {
+      background-color: #f8a0a0;
+      color: #fff;
+      transition: background-color 0.25s;
+      padding: 15px 20px;
+      font-style: italic;
+      font-size: 18px;
+      transform: skew(-15deg);
+      position: relative;
+    }
+
+    .menu_item_spec:hover {
+      background-color: #fc4f4f;
     }
   }
 
@@ -100,6 +117,11 @@
         text-decoration: underline;
       }
     }
+  }
+
+  .result_wrapper {
+    display: flex;
+    width: 100%;
   }
 }
 

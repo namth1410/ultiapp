@@ -6,6 +6,20 @@ export const formatTime = (timeInSeconds) => {
   }${seconds}`;
 };
 
+export const convertDurationToStringV2 = (duration) => {
+  const hours = Math.floor(duration / 3600);
+  const minutes = Math.floor(duration / 60);
+  const seconds = Math.floor(duration % 60);
+
+  if (hours > 0) {
+    return `${hours} giờ ${minutes} phút ${seconds} giây`;
+  } else if (minutes > 0) {
+    return `${minutes} phút ${seconds} giây`;
+  } else {
+    return `${seconds} giây`;
+  }
+};
+
 export const convertDurationToString = (duration) => {
   const minutes = Math.floor(duration / 60);
   const seconds = Math.floor(duration % 60);

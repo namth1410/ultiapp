@@ -1,6 +1,6 @@
 import { Menu, Table } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +55,7 @@ function TestOnline() {
       title: "Nộp bài lúc",
       dataIndex: "dateCreate",
       key: "dateCreate",
+      sorter: (a, b) => a.dateCreate.localeCompare(b.dateCreate),
     },
     {
       title: "Thời gian làm",
@@ -257,7 +258,11 @@ function TestOnline() {
     const getDataZenlisResults = async (id) => {
       const quizzsRef = collection(firestore, "zenlish_results");
       const querySnapshot = await getDocs(
-        query(quizzsRef, where("uidCreator", "==", id))
+        query(
+          quizzsRef,
+          where("uidCreator", "==", id),
+          orderBy("dateCreate", "desc")
+        )
       );
       if (querySnapshot.empty) {
         setZenlishResults(null);

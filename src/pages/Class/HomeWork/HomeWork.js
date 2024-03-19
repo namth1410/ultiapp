@@ -227,7 +227,7 @@ function HomeWork() {
               </span>
             </div>
 
-            {dataClass?.uidCreator === auth?.currentUser?.uid ? (
+            {dataClass?.uidCreator !== auth?.currentUser?.uid ? (
               <>
                 <Button
                   type="primary"

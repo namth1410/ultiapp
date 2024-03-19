@@ -105,12 +105,88 @@ function TestOnline() {
       align: "center",
     },
     {
-      title: "Tổng",
-      dataIndex: "total",
-      key: "total",
+      title: "LC",
+      dataIndex: "lc",
+      key: "lc",
+      align: "center",
+    },
+    {
+      title: "RC",
+      dataIndex: "rc",
+      key: "rc",
+      align: "center",
+    },
+    {
+      title: "Tổng điểm",
+      dataIndex: "score",
+      key: "score",
       align: "center",
     },
   ];
+
+  const convertToScoreLC = (totalCorrect) => {
+    if (totalCorrect < 7) {
+      return 5;
+    } else if (totalCorrect < 26) {
+      return (totalCorrect - 5) * 5;
+    } else if (totalCorrect < 35) {
+      return (totalCorrect - 4) * 5;
+    } else if (totalCorrect < 44) {
+      return (totalCorrect - 3) * 5;
+    } else if (totalCorrect < 47) {
+      return (totalCorrect - 2) * 5;
+    } else if (totalCorrect === 47) {
+      return 230;
+    } else if (totalCorrect < 57) {
+      return totalCorrect * 5;
+    } else if (totalCorrect < 96) {
+      return (totalCorrect + 1) * 5;
+    } else {
+      return 495;
+    }
+  };
+
+  const convertToScoreRC = (totalCorrect) => {
+    if (totalCorrect < 16) {
+      return 5;
+    } else if (totalCorrect < 25) {
+      return (totalCorrect - 14) * 5;
+    } else if (totalCorrect < 28) {
+      return (totalCorrect - 13) * 5;
+    } else if (totalCorrect < 33) {
+      return (totalCorrect - 12) * 5;
+    } else if (totalCorrect < 38) {
+      return (totalCorrect - 11) * 5;
+    } else if (totalCorrect < 41) {
+      return (totalCorrect - 10) * 5;
+    } else if (totalCorrect < 46) {
+      return (totalCorrect - 9) * 5;
+    } else if (totalCorrect < 49) {
+      return (totalCorrect - 8) * 5;
+    } else if (totalCorrect < 56) {
+      return (totalCorrect - 7) * 5;
+    } else if (totalCorrect < 61) {
+      return (totalCorrect - 6) * 5;
+    } else if (totalCorrect < 64) {
+      return (totalCorrect - 5) * 5;
+    } else if (totalCorrect < 67) {
+      return (totalCorrect - 4) * 5;
+    } else if (totalCorrect < 72) {
+      return (totalCorrect - 3) * 5;
+    } else if (totalCorrect < 77) {
+      return (totalCorrect - 2) * 5;
+    } else if (totalCorrect < 89) {
+      return (totalCorrect - 1) * 5;
+    } else if (totalCorrect < 92) {
+      return totalCorrect * 5;
+    } else if (totalCorrect < 94) {
+      return (totalCorrect + 1) * 5;
+    } else if (totalCorrect < 97) {
+      return (totalCorrect + 2) * 5;
+    } else {
+      return 495;
+    }
+  };
 
   const convertToDataTable = (data) => {
     return data.map((el) => ({
@@ -124,7 +200,29 @@ function TestOnline() {
       part5: el.result.countCorrectPart5,
       part6: el.result.countCorrectPart6,
       part7: el.result.countCorrectPart7,
-      total: el.result.countCorrect,
+      lc: convertToScoreLC(
+        el.result.countCorrectPart1 +
+          el.result.countCorrectPart2 +
+          el.result.countCorrectPart3 +
+          el.result.countCorrectPart4
+      ),
+      rc: convertToScoreRC(
+        el.result.countCorrectPart5 +
+          el.result.countCorrectPart6 +
+          el.result.countCorrectPart7
+      ),
+      score:
+        convertToScoreLC(
+          el.result.countCorrectPart1 +
+            el.result.countCorrectPart2 +
+            el.result.countCorrectPart3 +
+            el.result.countCorrectPart4
+        ) +
+        convertToScoreRC(
+          el.result.countCorrectPart5 +
+            el.result.countCorrectPart6 +
+            el.result.countCorrectPart7
+        ),
     }));
   };
 

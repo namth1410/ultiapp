@@ -159,6 +159,8 @@ export const ExamProvider = ({ children }) => {
     if (isShowKey) {
       if (indexQuestion >= 31) {
         setAudioSrc(urlList?.[Math.floor(31 + (indexQuestion - 31) / 3)]);
+      } else {
+        audio.src = urlList?.[indexQuestion];
       }
     }
     if (!isReady || isShowKey || indexQuestion > 99) return;

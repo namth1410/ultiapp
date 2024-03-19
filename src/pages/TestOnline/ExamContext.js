@@ -226,6 +226,9 @@ export const ExamProvider = ({ children }) => {
                   const number2 = extractNumberFromUrl(url2);
                   return number1 - number2;
                 });
+                _urlList.sort((a, b) => a.localeCompare(b));
+
+                console.log(_urlList);
                 setUrlList(_urlList);
               }
             })

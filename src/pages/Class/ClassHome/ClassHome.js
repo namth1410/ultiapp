@@ -164,7 +164,7 @@ function ClassHome() {
           enterButton="Tìm kiếm"
           size="large"
           onSearch={(e) => {
-            onSearch(e);
+            onSearch(e.trim());
           }}
         />
         <Select

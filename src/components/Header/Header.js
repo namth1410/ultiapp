@@ -1,5 +1,5 @@
-import { UserOutlined } from "@ant-design/icons";
-import { Button, Divider, Dropdown, Space } from "antd";
+import { BellFilled, UserOutlined } from "@ant-design/icons";
+import { Badge, Button, Divider, Dropdown, Space } from "antd";
 import Logo from "assets/img/logo.svg";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import {
@@ -7,23 +7,28 @@ import {
   collection,
   doc,
   getDocs,
+  onSnapshot,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, firestore } from "../../firebase";
+import { convertISOToCustomFormat } from "ultis/time";
+import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Header.module.css";
 
 const provider = new GoogleAuthProvider();
 
 function Header() {
   const navigate = useNavigate();
+  const currentUser = useAuth();
 
   const needLogin = !localStorage.getItem("ulti_auth");
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
   const [menuItem, setMenuItem] = useState("");
+  const [notificationsUnRead, setNotificationsUnRead] = useState(null);
+  const [notificationsRead, setNotificationsRead] = useState(null);
 
   const items = [
     {
@@ -139,6 +144,41 @@ function Header() {
   };
 
   useEffect(() => {
+    if (currentUser == null) {
+      return;
+    }
+    const unsubscribe = onSnapshot(
+      query(
+        collection(firestore, "notifications"),
+        where("receiver", "array-contains", `${currentUser.uid}$unread`)
+      ),
+      (snapshot) => {
+        const _notifications = snapshot.docs.map((doc) => {
+          return { id: doc.id, ...doc.data() };
+        });
+        setNotificationsUnRead(_notifications);
+      }
+    );
+
+    const unsubscribe1 = onSnapshot(
+      query(
+        collection(firestore, "notifications"),
+        where("receiver", "array-contains", `${currentUser.uid}`)
+      ),
+      (snapshot) => {
+        const _notifications = snapshot.docs.map((doc) => doc.data());
+        setNotificationsRead(_notifications);
+      }
+    );
+
+    // Return a function to unsubscribe when component unmounts
+    return () => {
+      unsubscribe();
+      unsubscribe1();
+    };
+  }, [currentUser]);
+
+  useEffect(() => {
     setMenuItem(window.location.pathname);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.pathname]);
@@ -205,117 +245,200 @@ function Header() {
 
         <div className={styles.content_right}>
           {!needLogin ? (
-            <div className={styles.profile_dropdown_wrapper}>
-              <Dropdown
-                menu={{
-                  items,
-                }}
-                placement="bottomRight"
-                arrow={{ pointAtCenter: true }}
-                trigger={["click"]}
-                dropdownRender={(menu) => (
-                  <div style={contentStyle}>
-                    <Space
-                      style={{
-                        padding: 8,
-                      }}
-                    >
-                      <div
+            <>
+              <div className={styles.profile_dropdown_wrapper}>
+                <Dropdown
+                  menu={{
+                    items,
+                  }}
+                  placement="bottomRight"
+                  arrow={{ pointAtCenter: true }}
+                  onOpenChange={async (e) => {
+                    if (e && notificationsUnRead) {
+                      console.log(e);
+                      console.log(notificationsUnRead);
+                      notificationsUnRead.forEach((noti) => {
+                        const classRef = doc(
+                          firestore,
+                          "notifications",
+                          noti.id
+                        );
+                        let dataToAdd = { ...noti };
+
+                        const index = dataToAdd.receiver.findIndex(
+                          (el) => el === `${currentUser.uid}$unread`
+                        );
+
+                        dataToAdd.receiver[index] = `${currentUser.uid}`;
+                        updateDoc(classRef, dataToAdd);
+                      });
+                    }
+                  }}
+                  trigger={["click"]}
+                  dropdownRender={(menu) => (
+                    <div style={contentStyle}>
+                      <Space
                         style={{
-                          display: "flex",
-                          alignItems: "center",
+                          padding: 8,
+                          backgroundColor: "#f4f9fe",
+                          borderRadius: "8px",
                         }}
                       >
-                        <img
-                          style={{
-                            objectFit: "cover",
-                            scale: "0.4",
-                            borderRadius: "50%",
-                          }}
-                          src={infoUser.profilePic}
-                          alt="Notification Icon"
-                        />
                         <div
                           style={{
                             display: "flex",
+                            alignItems: "center",
                             flexDirection: "column",
-                            justifyContent: "center",
-                            overflow: "hidden",
                           }}
                         >
-                          <span>{infoUser.name}</span>
-                          <span
-                            style={{
-                              fontWeight: "500",
-                              width: "100%",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
-                          >
-                            {infoUser.email}
-                          </span>
+                          {notificationsUnRead?.map((el) => {
+                            return (
+                              <NotificationItem key={el} notification={el} />
+                            );
+                          })}
+                          {notificationsRead?.map((el) => {
+                            return (
+                              <NotificationItem key={el} notification={el} />
+                            );
+                          })}
                         </div>
-                      </div>
-                    </Space>
-                    <Divider
+                      </Space>
+                    </div>
+                  )}
+                >
+                  <Badge count={notificationsUnRead?.length} offset={[-35, 5]}>
+                    <div
                       style={{
-                        margin: 0,
-                      }}
-                    />
-                    {React.cloneElement(menu, {
-                      style: menuStyle,
-                    })}
-                    <Divider
-                      style={{
-                        margin: 0,
-                      }}
-                    />
-                    <Space
-                      style={{
-                        padding: 8,
+                        width: "60%",
+                        position: "relative",
+                        padding: "0px",
+                        borderRadius: "100px",
+                        aspectRatio: "1",
+                        cursor: "pointer",
+                        backgroundColor: "#f0f2f5",
+                        display: "flex",
                         justifyContent: "center",
-                        width: "100%",
+                        alignItems: "center",
                       }}
                     >
-                      <Button
-                        type="primary"
-                        style={{ fontFamily: "Gilroy" }}
-                        onClick={handleLogout}
-                      >
-                        Đăng xuất
-                      </Button>
-                    </Space>
-                  </div>
-                )}
-              >
-                <div
-                  style={{
-                    width: "70%",
-                    position: "relative",
-                    padding: "0px",
-                    borderRadius: "100px",
-                    aspectRatio: "1",
-                    cursor: "pointer",
+                      <BellFilled />
+                    </div>
+                  </Badge>
+                </Dropdown>
+              </div>
+              <div className={styles.profile_dropdown_wrapper}>
+                <Dropdown
+                  menu={{
+                    items,
                   }}
+                  placement="bottomRight"
+                  arrow={{ pointAtCenter: true }}
+                  trigger={["click"]}
+                  dropdownRender={(menu) => (
+                    <div style={contentStyle}>
+                      <Space
+                        style={{
+                          padding: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <img
+                            style={{
+                              objectFit: "cover",
+                              scale: "0.4",
+                              borderRadius: "50%",
+                            }}
+                            src={infoUser.profilePic}
+                            alt="Notification Icon"
+                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <span>{infoUser.name}</span>
+                            <span
+                              style={{
+                                fontWeight: "500",
+                                width: "100%",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {infoUser.email}
+                            </span>
+                          </div>
+                        </div>
+                      </Space>
+                      <Divider
+                        style={{
+                          margin: 0,
+                        }}
+                      />
+                      {React.cloneElement(menu, {
+                        style: menuStyle,
+                      })}
+                      <Divider
+                        style={{
+                          margin: 0,
+                        }}
+                      />
+                      <Space
+                        style={{
+                          padding: 8,
+                          justifyContent: "center",
+                          width: "100%",
+                        }}
+                      >
+                        <Button
+                          type="primary"
+                          style={{ fontFamily: "Gilroy" }}
+                          onClick={handleLogout}
+                        >
+                          Đăng xuất
+                        </Button>
+                      </Space>
+                    </div>
+                  )}
                 >
-                  <img
+                  <div
                     style={{
-                      objectFit: "cover",
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      translate: "-50% -50%",
-                      scale: "0.4",
-                      borderRadius: "50%",
+                      width: "70%",
+                      position: "relative",
+                      padding: "0px",
+                      borderRadius: "100px",
+                      aspectRatio: "1",
+                      cursor: "pointer",
+                      userSelect: "none",
                     }}
-                    src={
-                      JSON.parse(localStorage.getItem("ulti_user")).profilePic
-                    }
-                    alt="Notification Icon"
-                  />
-                </div>
-              </Dropdown>
-            </div>
+                  >
+                    <img
+                      style={{
+                        objectFit: "cover",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        translate: "-50% -50%",
+                        scale: "0.4",
+                        borderRadius: "50%",
+                      }}
+                      src={
+                        JSON.parse(localStorage.getItem("ulti_user")).profilePic
+                      }
+                      alt="Notification Icon"
+                    />
+                  </div>
+                </Dropdown>
+              </div>
+            </>
           ) : (
             <>
               <Button
@@ -349,4 +472,45 @@ function Header() {
   );
 }
 
+const NotificationItem = ({ notification }) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        width: "100%",
+        padding: "7px 14px",
+        alignItems: "center",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.063)",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          overflow: "hidden",
+          userSelect: "none",
+          marginRight: "8px",
+        }}
+        className={styles.img_wrapper}
+      >
+        <img
+          style={{
+            width: "100%",
+            objectFit: "cover",
+          }}
+          alt="img"
+          src="https://shub-storage.sgp1.cdn.digitaloceanspaces.com/profile_images/AvatarDefaultPng.png"
+        />
+      </div>
+      <div style={{ padding: "6px 8px" }}>
+        <p>{notification.content}</p>
+        <p style={{ color: "#65697b", fontSize: "12px" }}>
+          {convertISOToCustomFormat(notification.dateCreate)}
+        </p>
+      </div>
+    </div>
+  );
+};
 export default Header;

@@ -4,10 +4,11 @@ import empty from "assets/img/empty.json";
 import { useClass } from "contexts/class_context/ClassContext";
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
-import { firestore } from "../../../firebase";
+import { auth, firestore } from "../../../firebase";
 import styles from "./Member.module.css";
 
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -148,6 +149,21 @@ function Member() {
           dataToAdd.members = [...classData.members, uid];
         }
         await updateDoc(classRef, dataToAdd);
+        const _notification = {
+          dateCreate: new Date().toISOString(),
+          uidCreator: auth.currentUser.uid,
+          nameCreator: auth.currentUser.displayName,
+          photoURL: auth.currentUser.photoURL,
+          class: classId,
+          content: `Bạn đã được thêm vào lớp ${dataClass.nameClass}`,
+          type: "normal",
+          receiver: [`${uid}$unread`],
+        };
+        const docRef = await addDoc(
+          collection(firestore, "notifications"),
+          _notification
+        );
+        console.log(docRef);
         toast.success("Đã thêm mới 1 người", {
           position: "top-center",
           autoClose: 5000,

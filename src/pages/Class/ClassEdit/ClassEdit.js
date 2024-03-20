@@ -210,6 +210,7 @@ function ClassEdit() {
                   setPassword(e.target.value);
                 }}
                 size="large"
+                value={password}
               />
             </div>
           )}

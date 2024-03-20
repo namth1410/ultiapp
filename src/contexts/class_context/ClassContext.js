@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot, query, collection, where } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth, firestore } from "../../firebase";
@@ -10,6 +10,7 @@ export const ClassProvider = ({ children }) => {
   const [dataClass, setDataClass] = useState(null);
   const [creatorId, setCreatorId] = useState(null);
   const [dataHomework, setDataHomework] = useState(null);
+  const [requestJoinClass, setRequestJoinClass] = useState(null);
 
   const classId = window.location.pathname.split("/")[2];
 
@@ -43,6 +44,26 @@ export const ClassProvider = ({ children }) => {
       }
     });
 
+    const unsubRequestJoinClass = onSnapshot(
+      query(
+        collection(firestore, "notifications"),
+        where("class", "==", classId),
+        where("type", "==", "request_join_class")
+      ),
+      (docSnapshot) => {
+        if (!docSnapshot.empty) {
+          const requestJoinClassData = [];
+          docSnapshot?.forEach((doc) => {
+            requestJoinClassData.push({ id: doc.id, ...doc.data() });
+          });
+          setRequestJoinClass(requestJoinClassData);
+        } else {
+          setRequestJoinClass(null);
+          console.log("Không tìm thấy request với id đã cho");
+        }
+      }
+    );
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is signed in:", user);
@@ -52,6 +73,7 @@ export const ClassProvider = ({ children }) => {
     });
 
     return () => {
+      unsubRequestJoinClass();
       unsubscribe();
       unsub();
       unsubHomework();
@@ -67,9 +89,10 @@ export const ClassProvider = ({ children }) => {
       setDataClass,
       dataHomework,
       setDataHomework,
+      requestJoinClass,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dataClass, dataHomework]
+    [dataClass, dataHomework, requestJoinClass]
   );
 
   return (

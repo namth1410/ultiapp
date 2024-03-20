@@ -9,6 +9,7 @@ import styles from "./Member.module.css";
 
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -22,7 +23,7 @@ import { toast } from "react-toastify";
 const { Search } = Input;
 
 function Member() {
-  const { dataClass, classId } = useClass();
+  const { dataClass, classId, requestJoinClass } = useClass();
 
   const [isModalAddMemberOpen, setIsModalAddMemberOpen] = useState(false);
   const [userSearch, setUserSearch] = useState(null);
@@ -121,17 +122,30 @@ function Member() {
     setIsSearching(false);
   };
 
-  const onAddUserToClass = async () => {
+  const onApproveAll = async () => {
+    requestJoinClass.forEach((el) => {
+      onAddUserToClass(el.uidCreator);
+      onDeleteRequestJoinClass(el.id);
+    });
+  };
+
+  const onRejectAll = async () => {
+    requestJoinClass.forEach((el) => {
+      onDeleteRequestJoinClass(el.id);
+    });
+  };
+
+  const onAddUserToClass = async (uid) => {
     const classRef = doc(firestore, "classes", dataClass.id);
     const docSnap = await getDoc(classRef);
     if (docSnap.exists()) {
       const classData = docSnap.data();
-      if (!classData.members?.includes(userSearch.uid)) {
+      if (!classData.members?.includes(uid)) {
         let dataToAdd = {};
         if (!classData.members || !Array.isArray(classData.members)) {
-          dataToAdd.members = [userSearch.uid];
+          dataToAdd.members = [uid];
         } else {
-          dataToAdd.members = [...classData.members, userSearch.uid];
+          dataToAdd.members = [...classData.members, uid];
         }
         await updateDoc(classRef, dataToAdd);
         toast.success("Đã thêm mới 1 người", {
@@ -170,6 +184,11 @@ function Member() {
       });
     }
   };
+
+  const onDeleteRequestJoinClass = async (id) => {
+    await deleteDoc(doc(firestore, "notifications", id));
+  };
+
   const onSearch = (value, _e, info) => console.log(info?.source, value);
   const convertToDataTable = (data) => {
     return data.map((el) => ({
@@ -178,6 +197,7 @@ function Member() {
       email: el.email,
     }));
   };
+
   useEffect(() => {
     if (!dataClass?.members) return;
     const promises = dataClass.members.map((userId) => {
@@ -236,8 +256,45 @@ function Member() {
             loop={true}
           />
         ) : (
-          <div>
-            <Table columns={columns} dataSource={dataMembers} />
+          <Table
+            style={{ width: "100%" }}
+            columns={columns}
+            dataSource={dataMembers}
+          />
+        )}
+        {requestJoinClass && (
+          <div className={styles.right_box}>
+            <p
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+              }}
+            >{`Chờ duyệt • ${requestJoinClass.length}`}</p>
+            <button
+              onClick={onApproveAll}
+              className={`${styles.btn} ${styles.ok_btn}`}
+            >
+              Phê duyệt tất cả
+            </button>
+            <button
+              onClick={onRejectAll}
+              className={`${styles.btn} ${styles.reject_btn}`}
+            >
+              Từ chối tất cả
+            </button>
+
+            <div style={{ marginTop: "5px" }}>
+              {requestJoinClass.map((el) => {
+                return (
+                  <RequestJoinItem
+                    key={el}
+                    item={el}
+                    onAddUserToClass={onAddUserToClass}
+                    onDeleteRequestJoinClass={onDeleteRequestJoinClass}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
@@ -257,7 +314,9 @@ function Member() {
               height: "auto",
               fontSize: "18px",
             }}
-            onClick={onAddUserToClass}
+            onClick={() => {
+              onAddUserToClass(userSearch.uid);
+            }}
             key={1}
             disabled={!userSearch}
           >
@@ -325,5 +384,76 @@ function Member() {
     </div>
   );
 }
+
+const RequestJoinItem = ({
+  item,
+  onAddUserToClass,
+  onDeleteRequestJoinClass,
+}) => {
+  const { id, uidCreator, photoURL, nameCreator } = item;
+  console.log(item);
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "10px",
+        height: "100%",
+        fontFamily: "Inter, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          fontSize: "14px",
+          width: "100%",
+          fontWeight: "600",
+        }}
+      >
+        <img
+          style={{
+            objectFit: "cover",
+            borderRadius: "50%",
+            width: "35px",
+          }}
+          src={photoURL}
+          alt="Notification Icon"
+        />
+        <span>{nameCreator}</span>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "space-around",
+          gap: "10px",
+        }}
+      >
+        <button
+          onClick={() => {
+            onAddUserToClass(uidCreator);
+            onDeleteRequestJoinClass(id);
+          }}
+          className={`${styles.mini_btn} ${styles.ok_btn}`}
+        >
+          Duyệt
+        </button>
+        <button
+          onClick={() => {
+            onDeleteRequestJoinClass(id);
+          }}
+          className={`${styles.mini_btn} ${styles.reject_btn}`}
+        >
+          Xóa
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default Member;

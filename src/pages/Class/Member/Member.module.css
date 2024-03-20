@@ -1,5 +1,6 @@
 .wrapper {
   width: 100%;
+  overflow-x: auto;
 
   .tools {
     display: flex;
@@ -14,5 +15,75 @@
     height: 100%;
     padding: 0 5px;
     box-sizing: border-box;
+    display: flex;
+
+    .right_box {
+      width: 30%;
+      border-left: 1px solid rgb(216, 220, 240);
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      box-sizing: border-box;
+      max-width: 240px;
+      gap: 15px;
+      color: #202227;
+
+      .ok_btn {
+        border-radius: 6px;
+        text-transform: none;
+        font-family: Inter, sans-serif;
+        line-height: 1.75;
+        padding: 6px 16px;
+        transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+          box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+          border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+          color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        color: rgb(255, 255, 255);
+        background-color: rgb(30, 136, 229);
+        border: 0;
+        outline: 0;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .ok_btn:hover {
+        background-color: rgb(21, 95, 160);
+      }
+
+      .reject_btn {
+        border-radius: 6px;
+        text-transform: none;
+        font-family: Inter, sans-serif;
+        line-height: 1.75;
+        padding: 6px 16px;
+        transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+          box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+          border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+          color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        color: #000;
+        background-color: #e0e0e0;
+        border: 0;
+        outline: 0;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .reject_btn:hover {
+        background-color: #f5f5f5;
+      }
+
+      .btn {
+        font-size: 0.875rem;
+        min-width: 64px;
+      }
+
+      .mini_btn {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 4px 10px;
+        line-height: 1.43;
+        font-weight: 600;
+      }
+    }
   }
 }

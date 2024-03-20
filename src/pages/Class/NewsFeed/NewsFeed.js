@@ -1,5 +1,6 @@
 import FormCreateNews from "components/FormCreateNews/FormCreateNews";
 import NewItem from "components/NewItem/NewItem";
+import { useClass } from "contexts/class_context/ClassContext";
 import {
   collection,
   onSnapshot,
@@ -8,13 +9,26 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { firestore } from "../../../firebase";
+import { auth, firestore } from "../../../firebase";
 import styles from "./NewsFeed.module.css";
 
 function NewsFeed() {
   const classId = window.location.pathname.split("/")[2];
 
+  const { dataClass } = useClass();
+
   const [newsfeed, setNewsfeed] = useState(null);
+  const [canPostNews, setCanPostNews] = useState(false);
+
+  useEffect(() => {
+    if (!dataClass) return;
+    setCanPostNews(
+      !(
+        dataClass.config?.offNewsFeed &&
+        dataClass.uidCreator !== auth.currentUser.uid
+      )
+    );
+  }, [dataClass]);
 
   useEffect(() => {
     const q = query(
@@ -41,9 +55,11 @@ function NewsFeed() {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.wrapper_form_create}>
-        <FormCreateNews></FormCreateNews>
-      </div>
+      {canPostNews && (
+        <div className={styles.wrapper_form_create}>
+          <FormCreateNews></FormCreateNews>
+        </div>
+      )}
 
       {newsfeed?.map((newfeed) => {
         return <NewItem key={newfeed} newfeed={newfeed} />;

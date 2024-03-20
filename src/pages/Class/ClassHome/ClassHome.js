@@ -5,9 +5,18 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import styles from "./ClassHome.module.css";
 
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { auth, firestore } from "../../../firebase";
+const { Search } = Input;
 
 function ClassHome() {
   const navigate = useNavigate();
@@ -34,6 +43,8 @@ function ClassHome() {
   const [userCreatedClasses, setUserCreatedClasses] = useState(null);
   const [userJoinedClasses, setUserJoinedClasses] = useState(null);
   const [filter, setFilter] = useState("time_desc");
+
+  const [searchClass, setSearchClass] = useState(null);
 
   const getUserCreatedClasses = async (uid) => {
     const quizzsRef = collection(firestore, "classes");
@@ -104,6 +115,17 @@ function ClassHome() {
     return sortedArray;
   }
 
+  const onSearch = async (id) => {
+    const classRef = doc(firestore, "classes", id);
+    const docSnapshot = await getDoc(classRef);
+
+    if (docSnapshot.exists()) {
+      setSearchClass({ ...docSnapshot.data(), id: id });
+    } else {
+      setSearchClass(null);
+    }
+  };
+
   useEffect(() => {
     if (!userCreatedClasses) return;
 
@@ -136,11 +158,14 @@ function ClassHome() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.tools}>
-        <Input
-          style={{
-            height: "100%",
+        <Search
+          placeholder="Tìm kiếm..."
+          allowClear
+          enterButton="Tìm kiếm"
+          size="large"
+          onSearch={(e) => {
+            onSearch(e);
           }}
-          placeholder="Tìm kiếm"
         />
         <Select
           defaultValue="time_desc"
@@ -171,6 +196,12 @@ function ClassHome() {
         </Button>
       </div>
       <div className={styles.list_wrapper}>
+        {searchClass && (
+          <div className={styles.a1_wrapper}>
+            <CardClass props={searchClass} isSearching={true}></CardClass>
+          </div>
+        )}
+
         {userCreatedClasses && (
           <div className={styles.a1_wrapper}>
             <div

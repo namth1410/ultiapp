@@ -4,10 +4,11 @@ import {
   SnippetsFilled,
   WindowsFilled,
 } from "@ant-design/icons";
-import { Menu } from "antd";
+import { Badge, Menu } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase";
 import styles from "./MenuClass.module.css";
 
 function getItem(label, key, icon, children, type) {
@@ -21,21 +22,58 @@ function getItem(label, key, icon, children, type) {
 }
 
 function MenuClass() {
-  const { dataClass } = useClass();
+  const { dataClass, requestJoinClass } = useClass();
 
   const navigate = useNavigate();
 
   const [selectedKeys, setSelectedKeys] = useState([]);
 
-  const items = [
+  const [items, setItems] = useState([
     getItem("Bảng tin", "newsfeed", <WindowsFilled />),
     getItem("Lịch học", "1", <WindowsFilled />),
-    getItem("Thành viên", "member", <WindowsFilled />),
+    getItem(
+      <Badge count={requestJoinClass?.length} offset={[15, 7]}>
+        <span>Thành viên</span>
+      </Badge>,
+      "member",
+      <WindowsFilled />
+    ),
     getItem("Bài tập", "homework", <WindowsFilled />),
     getItem("Bảng điểm", "score", <FileFilled />),
     getItem("Tài liệu", "6", <SnippetsFilled />),
     getItem("Chỉnh sửa", "class_edit", <EditFilled />),
-  ];
+  ]);
+
+  useEffect(() => {
+    if (!dataClass) return;
+    if (dataClass.uidCreator !== auth.currentUser.uid) {
+      setItems(items.slice(0, -1));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataClass]);
+
+  useEffect(() => {
+    const updateItems = () => {
+      const updatedItems = [
+        getItem("Bảng tin", "newsfeed", <WindowsFilled />),
+        getItem("Lịch học", "1", <WindowsFilled />),
+        getItem(
+          <Badge count={requestJoinClass?.length} offset={[15, 7]}>
+            <span>Thành viên</span>
+          </Badge>,
+          "member",
+          <WindowsFilled />
+        ),
+        getItem("Bài tập", "homework", <WindowsFilled />),
+        getItem("Bảng điểm", "score", <FileFilled />),
+        getItem("Tài liệu", "6", <SnippetsFilled />),
+        getItem("Chỉnh sửa", "class_edit", <EditFilled />),
+      ];
+      setItems(updatedItems);
+    };
+
+    updateItems();
+  }, [requestJoinClass]);
 
   useEffect(() => {
     if (window.location.pathname.includes("homework")) {

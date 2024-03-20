@@ -289,6 +289,8 @@ function Header() {
                             display: "flex",
                             alignItems: "center",
                             flexDirection: "column",
+                            maxHeight: "400px",
+                            overflowY: "auto",
                           }}
                         >
                           {notificationsUnRead?.map((el) => {

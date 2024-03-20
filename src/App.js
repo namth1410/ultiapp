@@ -8,6 +8,7 @@ import SearchWordGame from "games/word_search/SearchWordGame";
 import ClassLayout from "layouts/ClassLayout";
 import MainLayout from "layouts/MainLayout";
 import ChatBox from "pages/ChatBox/ChatBox ";
+import ClassEdit from "pages/Class/ClassEdit/ClassEdit";
 import ClassHome from "pages/Class/ClassHome/ClassHome";
 import AddHomeWork from "pages/Class/HomeWork/AddHomeWork/AddHomeWork";
 import DetailHomeWork from "pages/Class/HomeWork/DetailHomeWork/DetailHomeWork";
@@ -29,13 +30,13 @@ import Signup from "pages/Signup";
 import PracticeSpeaking from "pages/Speaking/PracticeSpeaking/PracticeSpeaking";
 import Speaking from "pages/Speaking/Speaking";
 import Test from "pages/Test/Test";
+import { ExamProvider } from "pages/TestOnline/ExamContext";
+import PreTest from "pages/TestOnline/PreTest/PreTest";
+import Exam from "pages/TestOnline/Test/Test";
 import TestOnline from "pages/TestOnline/TestOnline";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import PreTest from "pages/TestOnline/PreTest/PreTest";
-import Exam from "pages/TestOnline/Test/Test";
-import { ExamProvider } from "pages/TestOnline/ExamContext";
 
 function App() {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ function App() {
             <Route path="/class" element={<ClassHome />} />
             <Route path="/class/*" element={<ClassLayout />}>
               <Route path="create-class" element={<CreateClass />} />
+              <Route path=":class_id/class_edit" element={<ClassEdit />} />
               <Route path=":class_id/newsfeed" element={<NewsFeed />} />
               <Route
                 path=":class_id/homework"

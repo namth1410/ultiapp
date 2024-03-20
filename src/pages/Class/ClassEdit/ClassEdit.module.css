@@ -2,15 +2,15 @@
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin: 1% 20%;
   gap: 40px;
   font-family: Inter, sans-serif;
   color: #202227;
 
   .left_box {
-    width: 80%;
+    width: 100%;
 
     .name_class {
       width: 100%;
@@ -51,8 +51,10 @@
   }
 
   .right_box {
-    width: 20%;
+    width: 100%;
     display: flex;
+    flex-direction: column;
+    gap: 20px;
     height: fit-content;
   }
 

@@ -1,12 +1,20 @@
-import { Button, Input, Spin, Switch } from "antd";
-import { addDoc, collection } from "firebase/firestore";
-import { useState } from "react";
+import { Button, Input, Modal, Spin, Switch } from "antd";
+import { useClass } from "contexts/class_context/ClassContext";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { auth, firestore } from "../../firebase";
-import styles from "./CreateClass.module.css";
+import { auth, firestore } from "../../../firebase";
+import styles from "./ClassEdit.module.css";
 
-function CreateClass() {
+function ClassEdit() {
+  const navigate = useNavigate();
+  const { dataClass, classId } = useClass();
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const [originDataClass, setOriginDataClass] = useState(null);
+  const [draftDataClass, setDraftDataClass] = useState(null);
 
   const [nameClass, setNameClass] = useState("");
   const [hasPassword, setHasPassword] = useState(false);
@@ -15,6 +23,9 @@ function CreateClass() {
   const [approveStudent, setApproveStudent] = useState(false);
   const [preventStudentExitClass, setPreventStudentExitClass] = useState(false);
   const [offNewsFeed, setOffNewsFeed] = useState(false);
+
+  const [isDeleteClassModal, setIsDeleteClassModal] = useState(false);
+  const [isDataClassChanged, setIsDataClassChanged] = useState(false);
 
   const validateFrom = () => {
     return !(nameClass.length === 0 || (hasPassword && password.length === 0));
@@ -49,8 +60,9 @@ function CreateClass() {
       photoURL: auth.currentUser.photoURL,
     };
 
-    const docRef = await addDoc(collection(firestore, "classes"), dataToAdd);
-    console.log(docRef);
+    const classRef = doc(firestore, "classes", classId);
+    await updateDoc(classRef, dataToAdd);
+    setIsLoading(false);
     toast.success("Tạo lớp mới thành công!", {
       position: "top-right",
       autoClose: 5000,
@@ -61,9 +73,107 @@ function CreateClass() {
       progress: undefined,
       theme: "light",
     });
-    window.location.href = `/class/${docRef.id}/newsfeed`;
+    window.location.href = `/class/${classId}/newsfeed`;
   };
 
+  const onDelete = async () => {
+    try {
+      await deleteDoc(doc(firestore, "classes", classId));
+
+      setIsDeleteClassModal(false);
+      toast.success("Đã xóa", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/class");
+    } catch (error) {
+      console.error("Error removing member from class:", error);
+    }
+  };
+
+  function checkDataClassChanged(originData, draftData) {
+    if (originData.nameClass !== draftData.nameClass) {
+      return true;
+    }
+
+    if (originData.password !== draftData.password) {
+      return true;
+    }
+
+    return (
+      originData.config.approveStudent !== draftData.config.approveStudent ||
+      originData.config.preventStudentExitClass !==
+        draftData.config.preventStudentExitClass ||
+      originData.config.offNewsFeed !== draftData.config.offNewsFeed
+    );
+  }
+
+  useEffect(() => {
+    if (!draftDataClass) return;
+    setIsDataClassChanged(
+      checkDataClassChanged(originDataClass, draftDataClass)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftDataClass]);
+
+  useEffect(() => {
+    if (!originDataClass) return;
+    setDraftDataClass({
+      nameClass: nameClass,
+      password: password,
+      config: {
+        approveStudent: approveStudent || false,
+        preventStudentExitClass: preventStudentExitClass || false,
+        offNewsFeed: offNewsFeed || false,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    nameClass,
+    password,
+    approveStudent,
+    preventStudentExitClass,
+    offNewsFeed,
+  ]);
+
+  useEffect(() => {
+    if (!dataClass) return;
+    setNameClass(dataClass.nameClass);
+    setHasPassword(dataClass.password !== "");
+    setPassword(dataClass.password);
+    setApproveStudent(dataClass.config?.approveStudent || false);
+    setPreventStudentExitClass(
+      dataClass.config?.preventStudentExitClass || false
+    );
+    setOffNewsFeed(dataClass.config?.offNewsFeed || false);
+
+    setOriginDataClass({
+      nameClass: dataClass.nameClass,
+      password: dataClass.password,
+      config: {
+        approveStudent: dataClass.config?.approveStudent || false,
+        preventStudentExitClass:
+          dataClass.config?.preventStudentExitClass || false,
+        offNewsFeed: dataClass.config?.offNewsFeed || false,
+      },
+    });
+    setDraftDataClass({
+      nameClass: dataClass.nameClass,
+      password: dataClass.password,
+      config: {
+        approveStudent: dataClass.config?.approveStudent || false,
+        preventStudentExitClass:
+          dataClass.config?.preventStudentExitClass || false,
+        offNewsFeed: dataClass.config?.offNewsFeed || false,
+      },
+    });
+  }, [dataClass]);
   return (
     <div className={styles.wrapper}>
       <div className={styles.left_box}>
@@ -75,6 +185,7 @@ function CreateClass() {
             onChange={(e) => {
               setNameClass(e.target.value);
             }}
+            value={nameClass}
           />
         </div>
 
@@ -110,6 +221,7 @@ function CreateClass() {
                 onChange={(e) => {
                   setApproveStudent(e);
                 }}
+                value={approveStudent}
               />
             </div>
             <p>
@@ -125,6 +237,7 @@ function CreateClass() {
                 onChange={(e) => {
                   setPreventStudentExitClass(e);
                 }}
+                value={preventStudentExitClass}
               />
             </div>
             <p>
@@ -140,6 +253,7 @@ function CreateClass() {
                 onChange={(e) => {
                   setOffNewsFeed(e);
                 }}
+                value={offNewsFeed}
               />
             </div>
             <p>Học sinh không thể đăng bài, bình luận</p>
@@ -151,7 +265,7 @@ function CreateClass() {
         <Button
           style={{
             width: "100%",
-            backgroundColor: "#1e88e5",
+            backgroundColor: isDataClassChanged ? "#1e88e5" : "#ccc",
             padding: "15px 20px",
             height: "auto",
             fontFamily: "Gilroy",
@@ -159,10 +273,41 @@ function CreateClass() {
             fontSize: "20px",
           }}
           onClick={onSubmit}
+          disabled={!isDataClassChanged}
         >
-          Tạo lớp
+          Lưu thay đổi
+        </Button>
+        <Button
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            padding: "15px 20px",
+            height: "auto",
+            fontFamily: "Gilroy",
+            color: "rgb(255, 99, 99)",
+            fontSize: "20px",
+            border: "1px solid rgb(255, 99, 99)",
+          }}
+          onClick={() => {
+            setIsDeleteClassModal(true);
+          }}
+        >
+          Xóa lớp
         </Button>
       </div>
+
+      <Modal
+        title="Xóa lớp học"
+        open={isDeleteClassModal}
+        onOk={() => {
+          onDelete();
+        }}
+        onCancel={() => {
+          setIsDeleteClassModal(false);
+        }}
+      >
+        <p>Bạn chắc chắn muốn xóa lớp học này?</p>
+      </Modal>
 
       {isLoading && (
         <>
@@ -188,4 +333,4 @@ function CreateClass() {
   );
 }
 
-export default CreateClass;
+export default ClassEdit;

@@ -1,9 +1,14 @@
-import { FileFilled, SnippetsFilled, WindowsFilled } from "@ant-design/icons";
+import {
+  EditFilled,
+  FileFilled,
+  SnippetsFilled,
+  WindowsFilled,
+} from "@ant-design/icons";
 import { Menu } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MenuClass.module.css";
-import { useEffect, useState } from "react";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -26,10 +31,10 @@ function MenuClass() {
     getItem("Bảng tin", "newsfeed", <WindowsFilled />),
     getItem("Lịch học", "1", <WindowsFilled />),
     getItem("Thành viên", "member", <WindowsFilled />),
-    getItem("Vai trò lớp", "3", <WindowsFilled />),
     getItem("Bài tập", "homework", <WindowsFilled />),
     getItem("Bảng điểm", "score", <FileFilled />),
     getItem("Tài liệu", "6", <SnippetsFilled />),
+    getItem("Chỉnh sửa", "class_edit", <EditFilled />),
   ];
 
   useEffect(() => {
@@ -41,8 +46,8 @@ function MenuClass() {
       setSelectedKeys(["1"]);
     } else if (window.location.pathname.includes("/member")) {
       setSelectedKeys(["member"]);
-    } else if (window.location.pathname.includes("/3")) {
-      setSelectedKeys(["3"]);
+    } else if (window.location.pathname.includes("/class_edit")) {
+      setSelectedKeys(["class_edit"]);
     } else if (window.location.pathname.includes("/score")) {
       setSelectedKeys(["score"]);
     } else {

@@ -10,17 +10,18 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { auth, firestore } from "../../../firebase";
+import { auth, firestore, useAuth } from "../../../firebase";
 const { Search } = Input;
 
 function ClassHome() {
   const navigate = useNavigate();
-
+  const currentUser = useAuth();
   const filters = [
     {
       value: "asc",
@@ -67,26 +68,6 @@ function ClassHome() {
     }
   };
 
-  const getUserJoinedClasses = async (uid) => {
-    const quizzsRef = collection(firestore, "classes");
-    const querySnapshot = await getDocs(
-      query(
-        quizzsRef,
-        where("members", "array-contains", uid),
-        orderBy("dateCreate", "desc")
-      )
-    );
-    if (querySnapshot.empty) {
-      setUserJoinedClasses(null);
-    } else {
-      const _userJoinedClasses = [];
-      querySnapshot.forEach((doc) => {
-        _userJoinedClasses.push({ ...doc.data(), id: doc.id });
-      });
-      setUserJoinedClasses(_userJoinedClasses);
-    }
-  };
-
   function sortArrayByFilter(array, filter) {
     let sortedArray = [...array];
 
@@ -130,23 +111,45 @@ function ClassHome() {
     if (!userCreatedClasses) return;
 
     let _userCreatedClasses = [...userCreatedClasses];
-    let _userJoinedClasses = [...userJoinedClasses];
-
     _userCreatedClasses = sortArrayByFilter(_userCreatedClasses, filter);
-    _userJoinedClasses = sortArrayByFilter(_userJoinedClasses, filter);
-
     setUserCreatedClasses(_userCreatedClasses);
-    setUserJoinedClasses(_userJoinedClasses);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
+
+  useEffect(() => {
+    if (currentUser == null) {
+      return;
+    }
+    const unsubscribe = onSnapshot(
+      query(
+        collection(firestore, "classes"),
+        where("members", "array-contains", currentUser.uid),
+        orderBy("dateCreate", "desc")
+      ),
+      (snapshot) => {
+        if (snapshot.empty) {
+          setUserJoinedClasses(null);
+        } else {
+          const _userJoinedClasses = [];
+          snapshot.forEach((doc) => {
+            _userJoinedClasses.push({ ...doc.data(), id: doc.id });
+          });
+          setUserJoinedClasses(_userJoinedClasses);
+        }
+      }
+    );
+
+    // Return a function to unsubscribe when component unmounts
+    return () => {
+      unsubscribe();
+    };
+  }, [currentUser]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is signed in:", user);
         getUserCreatedClasses(user.uid);
-        getUserJoinedClasses(user.uid);
       } else {
         console.log("User is signed out");
       }

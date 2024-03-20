@@ -1,7 +1,7 @@
-import { Card, Tag, Modal, Input } from "antd";
+import { Card, Input, Modal, Tag } from "antd";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CardQuizz({ props }) {
   const { id, title, quizz_items, photoURL, nameCreator, access, password } =
@@ -34,45 +34,46 @@ function CardQuizz({ props }) {
   };
 
   return (
-    <button
-      onClick={() => {
-        if (access === "password") {
-          showModal();
-        } else {
-          navigate(`/quizz/${id}`);
-        }
-      }}
-      style={{ cursor: "pointer", border: "none", backgroundColor: "unset" }}
-    >
-      <Card
-        title={title}
-        style={{
-          width: 300,
+    <>
+      <button
+        onClick={() => {
+          if (access === "password") {
+            showModal();
+          } else {
+            navigate(`/quizz/${id}`);
+          }
         }}
-        extra={<Tag color={COLOR_ACCESS[access]}>{access}</Tag>}
+        style={{ cursor: "pointer", border: "none", backgroundColor: "unset" }}
       >
-        <Tag color="processing">{`${quizz_items.length} thuật ngữ`}</Tag>
-        <div
+        <Card
+          title={title}
           style={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: "35px",
+            width: 300,
           }}
+          extra={<Tag color={COLOR_ACCESS[access]}>{access}</Tag>}
         >
-          <img
+          <Tag color="processing">{`${quizz_items.length} thuật ngữ`}</Tag>
+          <div
             style={{
-              objectFit: "cover",
-              width: "35px",
-              borderRadius: "50%",
-              marginRight: "10px",
+              display: "flex",
+              alignItems: "center",
+              marginTop: "35px",
             }}
-            src={photoURL}
-            alt="Notification Icon"
-          />
-          <span>{nameCreator}</span>
-        </div>
-      </Card>
-
+          >
+            <img
+              style={{
+                objectFit: "cover",
+                width: "35px",
+                borderRadius: "50%",
+                marginRight: "10px",
+              }}
+              src={photoURL}
+              alt="Notification Icon"
+            />
+            <span>{nameCreator}</span>
+          </div>
+        </Card>
+      </button>
       <Modal
         title="Nhập mật khẩu để truy cập"
         open={isModalOpen}
@@ -88,7 +89,7 @@ function CardQuizz({ props }) {
           }}
         />
       </Modal>
-    </button>
+    </>
   );
 }
 

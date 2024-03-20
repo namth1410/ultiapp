@@ -28,6 +28,8 @@ function Member() {
   const [userSearch, setUserSearch] = useState(null);
   const [dataMembers, setDataMembers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isDeleteMemberModal, setIsDeleteMemberModal] = useState(false);
+  const [memberIdWantDelete, setMemberIdWantDelete] = useState(null);
 
   const columns = [
     {
@@ -53,7 +55,8 @@ function Member() {
             border: "none",
           }}
           onClick={(_) => {
-            removeMemberFromClass(classId, record.key);
+            setIsDeleteMemberModal(true);
+            setMemberIdWantDelete(record.key);
           }}
         >
           <DeleteOutlined />
@@ -78,7 +81,17 @@ function Member() {
 
         transaction.update(classRef, { members: updatedMembers });
       });
-
+      setIsDeleteMemberModal(false);
+      toast.success("Đã xóa", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       console.log("Member removed successfully.");
     } catch (error) {
       console.error("Error removing member from class:", error);
@@ -166,7 +179,7 @@ function Member() {
     }));
   };
   useEffect(() => {
-    if (!dataClass) return;
+    if (!dataClass?.members) return;
     const promises = dataClass.members.map((userId) => {
       const userQuery = query(
         collection(firestore, "users"),
@@ -246,6 +259,7 @@ function Member() {
             }}
             onClick={onAddUserToClass}
             key={1}
+            disabled={!userSearch}
           >
             Thêm vào lớp
           </Button>,
@@ -292,6 +306,21 @@ function Member() {
             />
           )}
         </div>
+      </Modal>
+
+      <Modal
+        title="Xóa thành viên"
+        open={isDeleteMemberModal}
+        onOk={() => {
+          removeMemberFromClass(classId, memberIdWantDelete);
+          setMemberIdWantDelete(null);
+        }}
+        onCancel={() => {
+          setIsDeleteMemberModal(false);
+          setMemberIdWantDelete(null);
+        }}
+      >
+        <p>Bạn chắc chắn muốn xóa người này ra khỏi lớp?</p>
       </Modal>
     </div>
   );

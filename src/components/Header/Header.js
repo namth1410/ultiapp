@@ -293,12 +293,20 @@ function Header() {
                         >
                           {notificationsUnRead?.map((el) => {
                             return (
-                              <NotificationItem key={el} notification={el} />
+                              <NotificationItem
+                                key={el}
+                                notification={el}
+                                navigate={navigate}
+                              />
                             );
                           })}
                           {notificationsRead?.map((el) => {
                             return (
-                              <NotificationItem key={el} notification={el} />
+                              <NotificationItem
+                                key={el}
+                                notification={el}
+                                navigate={navigate}
+                              />
                             );
                           })}
                         </div>
@@ -472,7 +480,7 @@ function Header() {
   );
 }
 
-const NotificationItem = ({ notification }) => {
+const NotificationItem = ({ notification, navigate }) => {
   return (
     <div
       style={{
@@ -482,6 +490,11 @@ const NotificationItem = ({ notification }) => {
         alignItems: "center",
         borderBottom: "1px solid rgba(0, 0, 0, 0.063)",
         boxSizing: "border-box",
+      }}
+      onClick={() => {
+        if (notification.content.includes("Bạn đã được thêm vào lớp")) {
+          navigate(`/class/${notification.class}/newsfeed`);
+        }
       }}
     >
       <div

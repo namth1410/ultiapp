@@ -20,7 +20,7 @@ function CardClass({ props }) {
           width: 300,
         }}
       >
-        <Tag color="#108ee9">{`${members?.length} thành viên`}</Tag>
+        <Tag color="#108ee9">{`${members?.length || 0} thành viên`}</Tag>
 
         <div
           style={{

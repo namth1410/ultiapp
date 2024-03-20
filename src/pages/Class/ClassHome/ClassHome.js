@@ -6,57 +6,120 @@ import { useEffect, useState } from "react";
 import styles from "./ClassHome.module.css";
 
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { auth, firestore } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { auth, firestore } from "../../../firebase";
 
 function ClassHome() {
   const navigate = useNavigate();
 
+  const filters = [
+    {
+      value: "asc",
+      label: "A-Z",
+    },
+    {
+      value: "desc",
+      label: "Z-A",
+    },
+    {
+      value: "time_asc",
+      label: "Cũ nhất",
+    },
+    {
+      value: "time_desc",
+      label: "Mới nhất",
+    },
+  ];
+
   const [userCreatedClasses, setUserCreatedClasses] = useState(null);
   const [userJoinedClasses, setUserJoinedClasses] = useState(null);
+  const [filter, setFilter] = useState("time_desc");
+
+  const getUserCreatedClasses = async (uid) => {
+    const quizzsRef = collection(firestore, "classes");
+    const querySnapshot = await getDocs(
+      query(
+        quizzsRef,
+        where("uidCreator", "==", uid),
+        orderBy("dateCreate", "desc")
+      )
+    );
+    if (querySnapshot.empty) {
+      setUserCreatedClasses(null);
+    } else {
+      const _userCreatedClasses = [];
+      querySnapshot.forEach((doc) => {
+        _userCreatedClasses.push({ ...doc.data(), id: doc.id });
+      });
+      console.log(_userCreatedClasses);
+      setUserCreatedClasses(_userCreatedClasses);
+    }
+  };
+
+  const getUserJoinedClasses = async (uid) => {
+    const quizzsRef = collection(firestore, "classes");
+    const querySnapshot = await getDocs(
+      query(
+        quizzsRef,
+        where("members", "array-contains", uid),
+        orderBy("dateCreate", "desc")
+      )
+    );
+    if (querySnapshot.empty) {
+      setUserJoinedClasses(null);
+    } else {
+      const _userJoinedClasses = [];
+      querySnapshot.forEach((doc) => {
+        _userJoinedClasses.push({ ...doc.data(), id: doc.id });
+      });
+      setUserJoinedClasses(_userJoinedClasses);
+    }
+  };
+
+  function sortArrayByFilter(array, filter) {
+    let sortedArray = [...array];
+
+    if (filter === "asc" || filter === "desc") {
+      sortedArray.sort((a, b) => {
+        const nameA = a.nameClass.toUpperCase();
+        const nameB = b.nameClass.toUpperCase();
+        if (filter === "asc") {
+          return nameA.localeCompare(nameB);
+        } else {
+          return nameB.localeCompare(nameA);
+        }
+      });
+    } else if (filter === "time_asc" || filter === "time_desc") {
+      sortedArray.sort((a, b) => {
+        const dateA = new Date(a.dateCreate);
+        const dateB = new Date(b.dateCreate);
+        if (filter === "time_asc") {
+          return dateA - dateB;
+        } else {
+          return dateB - dateA;
+        }
+      });
+    }
+
+    return sortedArray;
+  }
 
   useEffect(() => {
-    const getUserCreatedClasses = async (uid) => {
-      const quizzsRef = collection(firestore, "classes");
-      const querySnapshot = await getDocs(
-        query(
-          quizzsRef,
-          where("uidCreator", "==", uid),
-          orderBy("dateCreate", "desc")
-        )
-      );
-      if (querySnapshot.empty) {
-        setUserCreatedClasses(null);
-      } else {
-        const _userCreatedClasses = [];
-        querySnapshot.forEach((doc) => {
-          _userCreatedClasses.push({ ...doc.data(), id: doc.id });
-        });
-        console.log(_userCreatedClasses);
-        setUserCreatedClasses(_userCreatedClasses);
-      }
-    };
+    if (!userCreatedClasses) return;
 
-    const getUserJoinedClasses = async (uid) => {
-      const quizzsRef = collection(firestore, "classes");
-      const querySnapshot = await getDocs(
-        query(
-          quizzsRef,
-          where("members", "array-contains", uid),
-          orderBy("dateCreate", "desc")
-        )
-      );
-      if (querySnapshot.empty) {
-        setUserJoinedClasses(null);
-      } else {
-        const _userJoinedClasses = [];
-        querySnapshot.forEach((doc) => {
-          _userJoinedClasses.push({ ...doc.data(), id: doc.id });
-        });
-        setUserJoinedClasses(_userJoinedClasses);
-      }
-    };
+    let _userCreatedClasses = [...userCreatedClasses];
+    let _userJoinedClasses = [...userJoinedClasses];
 
+    _userCreatedClasses = sortArrayByFilter(_userCreatedClasses, filter);
+    _userJoinedClasses = sortArrayByFilter(_userJoinedClasses, filter);
+
+    setUserCreatedClasses(_userCreatedClasses);
+    setUserJoinedClasses(_userJoinedClasses);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is signed in:", user);
@@ -80,18 +143,16 @@ function ClassHome() {
           placeholder="Tìm kiếm"
         />
         <Select
-          defaultValue="lucy"
+          defaultValue="time_desc"
           style={{
             width: 160,
             height: "100%",
           }}
           allowClear
-          options={[
-            {
-              value: "lucy",
-              label: "Lucy",
-            },
-          ]}
+          options={filters}
+          onChange={(e) => {
+            setFilter(e);
+          }}
         />
         <Button
           size="large"

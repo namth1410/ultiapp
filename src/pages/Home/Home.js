@@ -9,7 +9,7 @@ import styles from "./Home.module.css";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [myQuizzs, setMyQuizzs] = useState([]);
+  const [myQuizzs, setMyQuizzs] = useState(null);
   const [maybeCareQuizzs, setMaybeCareQuizzs] = useState([]);
 
   useEffect(() => {
@@ -74,34 +74,40 @@ const Home = () => {
         <p>Tìm thẻ ghi nhớ, lời giải chuyên gia và nhiều hơn nữa</p>
       </button>
 
-      <div className={styles.my_quizzs_wrapper}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h2>Danh sách quizz của bạn</h2>
-          <div
-            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-          >
-            <span
+      {myQuizzs && (
+        <div className={styles.my_quizzs_wrapper}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h2>Danh sách quizz của bạn</h2>
+            <div
               style={{
-                color: "var(--primary-color)",
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
               }}
             >
-              Xem thêm
-            </span>
-            <RightOutlined style={{ color: "var(--primary-color)" }} />
+              <span
+                style={{
+                  color: "var(--primary-color)",
+                }}
+              >
+                Xem thêm
+              </span>
+              <RightOutlined style={{ color: "var(--primary-color)" }} />
+            </div>
+          </div>
+          <div className={styles.quizzs}>
+            {myQuizzs.map((item, index) => {
+              return index < 3 ? (
+                <div key={item.id}>
+                  <CardQuizz props={item} />
+                </div>
+              ) : (
+                <></>
+              );
+            })}
           </div>
         </div>
-        <div className={styles.quizzs}>
-          {myQuizzs.map((item, index) => {
-            return index < 3 ? (
-              <div key={item.id}>
-                <CardQuizz props={item} />
-              </div>
-            ) : (
-              <></>
-            );
-          })}
-        </div>
-      </div>
+      )}
 
       <div
         className={`${styles.my_quizzs_wrapper} ${styles.maybe_care_quizzs_wrapper}`}

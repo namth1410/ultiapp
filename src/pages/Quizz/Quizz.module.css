@@ -6,6 +6,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  color: #202227;
 
   .mode_wrapper {
     display: flex;
@@ -23,11 +24,13 @@
       padding: 20px;
       width: 150px;
       cursor: pointer;
+      transition: all 0.5s;
     }
 
     button:hover {
       box-shadow: 0 0.25rem 1rem 0 #282e3e14;
       border-bottom-color: #dbdfff;
+      background-color: #f0f0f0;
     }
   }
 

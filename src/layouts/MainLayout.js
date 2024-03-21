@@ -39,6 +39,7 @@ function MainLayout() {
         style={{
           width: "100%",
           height: visibleHeader ? "calc(100vh - 89px)" : "100vh",
+          overflow: "auto"
         }}
       >
         <Outlet />

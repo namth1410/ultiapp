@@ -176,7 +176,6 @@ function ClassHome() {
             width: 160,
             height: "100%",
           }}
-          allowClear
           options={filters}
           onChange={(e) => {
             setFilter(e);

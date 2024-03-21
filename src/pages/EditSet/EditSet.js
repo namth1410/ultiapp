@@ -252,7 +252,7 @@ function EditSet() {
           <Select
             defaultValue={access}
             style={{
-              width: "auto",
+              width: "180px",
             }}
             value={access}
             onChange={(value) => {

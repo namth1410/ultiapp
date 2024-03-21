@@ -182,7 +182,7 @@ function CreateSet() {
           <Select
             defaultValue={access}
             style={{
-              width: "auto",
+              width: "180px",
             }}
             onChange={(value) => {
               setAccess(value);

@@ -84,7 +84,6 @@ function HomeWork() {
     const now = new Date().toISOString();
     const timeStart = selectedHomework.config.timeStart;
     const deadline = selectedHomework.config.deadline;
-
     if (timeStart && deadline) {
       if (now < timeStart || now > deadline) {
         setCanDoHomework(false);
@@ -101,7 +100,6 @@ function HomeWork() {
   };
 
   useEffect(() => {
-    console.log(selectedHomework);
     if (selectedHomework) {
       checkCanDoHomework();
       setHasReview(selectedHomework.config.hasReview);
@@ -127,9 +125,6 @@ function HomeWork() {
         return;
       }
       const records = [];
-      setCanDoHomework(
-        QuerySnapshot.size < selectedHomework.config.timesLimitDo
-      );
       QuerySnapshot.forEach((doc) => {
         records.push({ ...doc.data(), id: doc.id });
       });

@@ -5,11 +5,29 @@
   align-items: center;
   background-color: #f0f2f5;
   overflow: scroll;
+  color: #202227;
+
 
   .wrapper_form_create {
     display: flex;
     flex-direction: column;
     max-width: 620px;
     width: 620px;
+  }
+
+  .intro {
+    padding: 32px;
+    background: white;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid rgb(216, 220, 240);
+    font-family: Inter, sans-serif;
+    box-sizing: border-box;
+    max-width: 620px;
+
+    .a1 {
+      margin: auto auto 16px;
+      width: 50%;
+    }
   }
 }

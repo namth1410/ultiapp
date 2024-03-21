@@ -115,7 +115,7 @@ function DetailRecordHomework() {
           collection(firestore, "homework_results"),
           where("userUid", "==", auth.currentUser.uid),
           where("homework_id", "==", homeworkId),
-          orderBy("dateCreate", "asc")
+          orderBy("dateCreate", "desc")
         )
       );
 
@@ -132,7 +132,7 @@ function DetailRecordHomework() {
         records.map((el, index) => {
           return {
             value: index + 1,
-            label: `Lần làm bài ${index + 1}`,
+            label: `Lần làm bài ${records.length - index}`,
           };
         })
       );

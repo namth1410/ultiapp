@@ -32,7 +32,6 @@ function MenuClass() {
 
   const [items, setItems] = useState([
     getItem("Bảng tin", "newsfeed", <WindowsFilled />),
-    getItem("Lịch học", "1", <WindowsFilled />),
     getItem(
       isOwnClass ? (
         <Badge count={requestJoinClass?.length} offset={[15, 7]}>
@@ -60,7 +59,6 @@ function MenuClass() {
     const updateItems = () => {
       let updatedItems = [
         getItem("Bảng tin", "newsfeed", <WindowsFilled />),
-        getItem("Lịch học", "1", <WindowsFilled />),
         getItem(
           isOwnClass ? (
             <Badge count={requestJoinClass?.length} offset={[15, 7]}>
@@ -91,8 +89,6 @@ function MenuClass() {
       setSelectedKeys(["homework"]);
     } else if (window.location.pathname.includes("newsfeed")) {
       setSelectedKeys(["newsfeed"]);
-    } else if (window.location.pathname.includes("/1")) {
-      setSelectedKeys(["1"]);
     } else if (window.location.pathname.includes("/member")) {
       setSelectedKeys(["member"]);
     } else if (window.location.pathname.includes("/class_edit")) {

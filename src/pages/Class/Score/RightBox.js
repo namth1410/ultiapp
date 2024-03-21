@@ -17,6 +17,7 @@ function RightBox() {
       title: "Họ tên",
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Nộp bài lúc",
@@ -35,6 +36,7 @@ function RightBox() {
       dataIndex: "score",
       key: "score",
       align: "center",
+      sorter: (a, b) => a.score > b.score,
     },
   ];
 
@@ -43,7 +45,7 @@ function RightBox() {
       name: el.username,
       dateCreate: convertISOToCustomFormat(el.dateCreate),
       duration: convertDurationToStringV2(el.timeSpent / 100),
-      score: 10,
+      score: Math.random(),
     }));
   };
 

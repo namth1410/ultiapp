@@ -46,7 +46,7 @@ const HomeWorkItem = ({ homework, selectedHomework, setSelectedHomework }) => {
       <div>
         <div className={styles.tes}>{nameHomework}</div>
         <div
-          style={{ fontSize: "12px", fontWeight: "400" }}
+          style={{ fontSize: "12px", fontWeight: "400", marginTop: "5px" }}
         >{`Deadline: ${convertISOToCustomFormat(config.deadline)}`}</div>
       </div>
     </div>

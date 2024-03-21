@@ -34,4 +34,8 @@
     width: 100%;
     background: #3498db;
   }
+
+  .item_wrapper:not(.item_wrapper_select):hover {
+    background-color: #ccc;
+  }
 }

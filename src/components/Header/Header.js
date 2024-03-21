@@ -8,6 +8,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -150,7 +151,8 @@ function Header() {
     const unsubscribe = onSnapshot(
       query(
         collection(firestore, "notifications"),
-        where("receiver", "array-contains", `${currentUser.uid}$unread`)
+        where("receiver", "array-contains", `${currentUser.uid}$unread`),
+        orderBy("dateCreate", "desc")
       ),
       (snapshot) => {
         const _notifications = snapshot.docs.map((doc) => {
@@ -163,7 +165,8 @@ function Header() {
     const unsubscribe1 = onSnapshot(
       query(
         collection(firestore, "notifications"),
-        where("receiver", "array-contains", `${currentUser.uid}`)
+        where("receiver", "array-contains", `${currentUser.uid}`),
+        orderBy("dateCreate", "desc")
       ),
       (snapshot) => {
         const _notifications = snapshot.docs.map((doc) => doc.data());

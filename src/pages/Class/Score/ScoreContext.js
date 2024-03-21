@@ -6,7 +6,7 @@ import { firestore } from "../../../firebase";
 const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
-  const { dataClass, dataHomework } = useClass();
+  const { dataHomework } = useClass();
 
   const [selectedHomework, setSelectedHomework] = useState(null);
   const [studentHomeworkData, setStudentHomeworkData] = useState(null);

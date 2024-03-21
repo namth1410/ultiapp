@@ -220,6 +220,10 @@ function Member() {
   useEffect(() => {
     if (!currentUser || !dataClass) return;
     setIsOwnClass(currentUser.uid === dataClass.uidCreator);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, dataClass]);
+
+  useEffect(() => {
     setColumns([
       {
         title: "Họ và tên",
@@ -254,8 +258,7 @@ function Member() {
         ),
       },
     ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser, dataClass]);
+  }, [isOwnClass]);
 
   useEffect(() => {
     if (!dataClass?.members) return;

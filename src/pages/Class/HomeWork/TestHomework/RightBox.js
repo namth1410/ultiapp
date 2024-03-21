@@ -13,6 +13,7 @@ function RightBox({ dataHomework }) {
   const [value, setValue] = useState(0);
   const [myAnswer, setMyAnswer] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [isTimerRunning, setIsTimerRunning] = useState(true);
@@ -121,6 +122,9 @@ function RightBox({ dataHomework }) {
               height: "auto",
               backgroundColor: "#e0e0e0",
             }}
+            onClick={() => {
+              setIsExitModalOpen(true);
+            }}
           >
             Rời khỏi
           </Button>
@@ -140,6 +144,19 @@ function RightBox({ dataHomework }) {
           </Button>
         </div>
       </div>
+
+      <Modal
+        title="Bạn có chắc chắn muốn rời khỏi đây?"
+        open={isExitModalOpen}
+        onOk={() => {
+          navigate(-1);
+        }}
+        onCancel={() => {
+          setIsModalOpen(false);
+        }}
+      >
+        <p>Nếu bạn chưa nộp bài mà rời khỏi thì dữ liệu sẽ không được lưu!</p>
+      </Modal>
 
       <Modal
         title="Bạn có chắc chắn muốn nộp bài?"

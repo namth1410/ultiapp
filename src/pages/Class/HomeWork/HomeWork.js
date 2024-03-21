@@ -96,6 +96,8 @@ function HomeWork() {
       setCanDoHomework(false);
     } else if (!deadline && now < timeStart) {
       setCanDoHomework(false);
+    } else {
+      setCanDoHomework(true);
     }
   };
 

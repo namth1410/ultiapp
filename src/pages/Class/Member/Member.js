@@ -453,7 +453,6 @@ const RequestJoinItem = ({
   onDeleteRequestJoinClass,
 }) => {
   const { id, uidCreator, photoURL, nameCreator } = item;
-  console.log(item);
   return (
     <div
       style={{
@@ -462,7 +461,7 @@ const RequestJoinItem = ({
         justifyContent: "center",
         alignItems: "center",
         gap: "10px",
-        height: "100%",
+        margin: "15px 0",
         fontFamily: "Inter, sans-serif",
       }}
     >

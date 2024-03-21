@@ -66,6 +66,8 @@
     align-items: center;
     margin-top: 16px;
     flex-direction: column;
+    max-height: 400px;
+    overflow-y: scroll;
   }
 
   .avatar {

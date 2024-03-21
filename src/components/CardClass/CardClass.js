@@ -53,7 +53,8 @@ function CardClass({ props, isSearching = false }) {
           const q = query(
             collection(firestore, "notifications"),
             where("type", "==", "request_join_class"),
-            where("uidCreator", "==", auth.currentUser.uid)
+            where("uidCreator", "==", auth.currentUser.uid),
+            where("class", "==", id),
           );
 
           const querySnapshot = await getDocs(q);

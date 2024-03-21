@@ -19,6 +19,7 @@ import TestHomework from "pages/Class/HomeWork/TestHomework/TestHomework";
 import Member from "pages/Class/Member/Member";
 import NewsFeed from "pages/Class/NewsFeed/NewsFeed";
 import Score from "pages/Class/Score/Score";
+import { ScoreProvider } from "pages/Class/Score/ScoreContext";
 import CreateClass from "pages/CreateClass/CreateClass";
 import CreateSet from "pages/CreateSet/CreateSet";
 import EditSet from "pages/EditSet/EditSet";
@@ -102,7 +103,14 @@ function App() {
                 path=":class_id/homework/:homework_id/test"
                 element={<TestHomework />}
               />
-              <Route path=":class_id/score" element={<Score />} />
+              <Route
+                path=":class_id/score"
+                element={
+                  <ScoreProvider>
+                    <Score />
+                  </ScoreProvider>
+                }
+              />
               <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
             </Route>
 

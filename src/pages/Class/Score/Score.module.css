@@ -1,3 +1,24 @@
-.class {
-    background-color: #fff;
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  background-color: #f0f2f5;
+  overflow: scroll;
+  color: #202227;
+
+  .left_box {
+    max-width: 250px;
+    min-width: 250px;
+    display: flex;
+    height: 100%;
+    border-right: 1px solid rgb(216, 220, 240);
+  }
+
+  .right_box {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding-top: 10px;
+  }
 }

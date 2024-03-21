@@ -8,7 +8,7 @@ import { Badge, Menu } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
+import { useAuth } from "../../firebase";
 import styles from "./MenuClass.module.css";
 
 function getItem(label, key, icon, children, type) {
@@ -22,19 +22,25 @@ function getItem(label, key, icon, children, type) {
 }
 
 function MenuClass() {
+  const currentUser = useAuth();
   const { dataClass, requestJoinClass } = useClass();
 
   const navigate = useNavigate();
 
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [isOwnClass, setIsOwnClass] = useState(false);
 
   const [items, setItems] = useState([
     getItem("Bảng tin", "newsfeed", <WindowsFilled />),
     getItem("Lịch học", "1", <WindowsFilled />),
     getItem(
-      <Badge count={requestJoinClass?.length} offset={[15, 7]}>
+      isOwnClass ? (
+        <Badge count={requestJoinClass?.length} offset={[15, 7]}>
+          <span>Thành viên</span>
+        </Badge>
+      ) : (
         <span>Thành viên</span>
-      </Badge>,
+      ),
       "member",
       <WindowsFilled />
     ),
@@ -45,22 +51,24 @@ function MenuClass() {
   ]);
 
   useEffect(() => {
-    if (!dataClass) return;
-    if (dataClass.uidCreator !== auth.currentUser.uid) {
-      setItems(items.slice(0, -1));
-    }
+    if (!currentUser || !dataClass) return;
+    setIsOwnClass(currentUser.uid === dataClass.uidCreator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataClass]);
+  }, [currentUser, dataClass]);
 
   useEffect(() => {
     const updateItems = () => {
-      const updatedItems = [
+      let updatedItems = [
         getItem("Bảng tin", "newsfeed", <WindowsFilled />),
         getItem("Lịch học", "1", <WindowsFilled />),
         getItem(
-          <Badge count={requestJoinClass?.length} offset={[15, 7]}>
+          isOwnClass ? (
+            <Badge count={requestJoinClass?.length} offset={[15, 7]}>
+              <span>Thành viên</span>
+            </Badge>
+          ) : (
             <span>Thành viên</span>
-          </Badge>,
+          ),
           "member",
           <WindowsFilled />
         ),
@@ -69,11 +77,14 @@ function MenuClass() {
         getItem("Tài liệu", "6", <SnippetsFilled />),
         getItem("Chỉnh sửa", "class_edit", <EditFilled />),
       ];
+      if (!isOwnClass) {
+        updatedItems = updatedItems.slice(0, -1);
+      }
       setItems(updatedItems);
     };
 
     updateItems();
-  }, [requestJoinClass]);
+  }, [requestJoinClass, isOwnClass]);
 
   useEffect(() => {
     if (window.location.pathname.includes("homework")) {

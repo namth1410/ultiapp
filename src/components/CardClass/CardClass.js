@@ -110,7 +110,12 @@ function CardClass({ props, isSearching = false }) {
         onClick={() => {
           isSearching ? setIsModalOpen(true) : navigate(`/class/${id}`);
         }}
-        style={{ cursor: "pointer", border: "none", backgroundColor: "unset" }}
+        style={{
+          cursor: "pointer",
+          border: "none",
+          backgroundColor: "unset",
+          width: "fit-content",
+        }}
       >
         <Card
           title={nameClass}

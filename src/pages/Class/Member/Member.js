@@ -4,7 +4,7 @@ import empty from "assets/img/empty.json";
 import { useClass } from "contexts/class_context/ClassContext";
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
-import { auth, firestore } from "../../../firebase";
+import { auth, firestore, useAuth } from "../../../firebase";
 import styles from "./Member.module.css";
 
 import {
@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 const { Search } = Input;
 
 function Member() {
+  const currentUser = useAuth();
   const { dataClass, classId, requestJoinClass } = useClass();
 
   const [isModalAddMemberOpen, setIsModalAddMemberOpen] = useState(false);
@@ -32,8 +33,9 @@ function Member() {
   const [isSearching, setIsSearching] = useState(false);
   const [isDeleteMemberModal, setIsDeleteMemberModal] = useState(false);
   const [memberIdWantDelete, setMemberIdWantDelete] = useState(null);
+  const [isOwnClass, setIsOwnClass] = useState(false);
 
-  const columns = [
+  const [columns, setColumns] = useState([
     {
       title: "Họ và tên",
       dataIndex: "name",
@@ -51,11 +53,12 @@ function Member() {
       render: (_, record) => (
         <button
           style={{
-            cursor: "pointer",
-            color: "red",
+            cursor: isOwnClass ? "pointer" : "not-allowed",
+            color: isOwnClass ? "red" : "#ccc",
             backgroundColor: "unset",
             border: "none",
           }}
+          disabled={!isOwnClass}
           onClick={(_) => {
             setIsDeleteMemberModal(true);
             setMemberIdWantDelete(record.key);
@@ -65,7 +68,7 @@ function Member() {
         </button>
       ),
     },
-  ];
+  ]);
 
   const removeMemberFromClass = async (classId, memberId) => {
     try {
@@ -215,6 +218,46 @@ function Member() {
   };
 
   useEffect(() => {
+    if (!currentUser || !dataClass) return;
+    setIsOwnClass(currentUser.uid === dataClass.uidCreator);
+    setColumns([
+      {
+        title: "Họ và tên",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        key: "address",
+      },
+      {
+        title: "Xóa",
+        dataIndex: "",
+        key: "x",
+        render: (_, record) => (
+          <button
+            style={{
+              cursor: isOwnClass ? "pointer" : "not-allowed",
+              color: isOwnClass ? "red" : "#ccc",
+              backgroundColor: "unset",
+              border: "none",
+            }}
+            disabled={!isOwnClass}
+            onClick={(_) => {
+              setIsDeleteMemberModal(true);
+              setMemberIdWantDelete(record.key);
+            }}
+          >
+            <DeleteOutlined />
+          </button>
+        ),
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, dataClass]);
+
+  useEffect(() => {
     if (!dataClass?.members) return;
     const promises = dataClass.members.map((userId) => {
       const userQuery = query(
@@ -278,7 +321,7 @@ function Member() {
             dataSource={dataMembers}
           />
         )}
-        {requestJoinClass && (
+        {requestJoinClass && isOwnClass && (
           <div className={styles.right_box}>
             <p
               style={{

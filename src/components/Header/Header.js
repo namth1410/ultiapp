@@ -285,6 +285,7 @@ function Header() {
                           padding: 8,
                           backgroundColor: "#f4f9fe",
                           borderRadius: "8px",
+                          maxWidth: "400px",
                         }}
                       >
                         <div
@@ -510,19 +511,26 @@ const NotificationItem = ({ notification, navigate }) => {
           overflow: "hidden",
           userSelect: "none",
           marginRight: "8px",
+          flexShrink: 0
         }}
         className={styles.img_wrapper}
       >
         <img
           style={{
             width: "100%",
+            height: "100%",
             objectFit: "cover",
           }}
           alt="img"
           src="https://shub-storage.sgp1.cdn.digitaloceanspaces.com/profile_images/AvatarDefaultPng.png"
         />
       </div>
-      <div style={{ padding: "6px 8px" }}>
+      <div
+        className="text"
+        style={{
+          padding: "6px 8px",
+        }}
+      >
         <p>{notification.content}</p>
         <p style={{ color: "#65697b", fontSize: "12px" }}>
           {convertISOToCustomFormat(notification.dateCreate)}

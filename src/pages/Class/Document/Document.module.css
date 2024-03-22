@@ -7,6 +7,8 @@
     width: 80%;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
 
     .tools {
       display: flex;

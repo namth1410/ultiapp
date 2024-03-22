@@ -100,37 +100,39 @@ function Document() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.left_box}>
-        <div className={styles.tools}>
-          <Search
-            placeholder="Tìm kiếm..."
-            allowClear
-            enterButton="Tìm kiếm"
-            size="large"
-          />
-          <Select
-            defaultValue="time_desc"
-            style={{
-              width: 160,
-              height: "100%",
-            }}
-            options={filters}
-            onChange={(e) => {
-              setFilter(e);
-            }}
-          />
-          <Button
-            size="large"
-            type="primary"
-            style={{
-              background: "#1e88e5",
-              fontFamily: "Gilroy",
-              width: "fit-content",
-              height: "100%",
-            }}
-          >
-            Tải lên tài liệu
-          </Button>
-        </div>
+        {!isShowDocument && (
+          <div className={styles.tools}>
+            <Search
+              placeholder="Tìm kiếm..."
+              allowClear
+              enterButton="Tìm kiếm"
+              size="large"
+            />
+            <Select
+              defaultValue="time_desc"
+              style={{
+                width: 160,
+                height: "100%",
+              }}
+              options={filters}
+              onChange={(e) => {
+                setFilter(e);
+              }}
+            />
+            <Button
+              size="large"
+              type="primary"
+              style={{
+                background: "#1e88e5",
+                fontFamily: "Gilroy",
+                width: "fit-content",
+                height: "100%",
+              }}
+            >
+              Tải lên tài liệu
+            </Button>
+          </div>
+        )}
         {isShowDocument ? (
           <div>
             <MemoizedDocViewer

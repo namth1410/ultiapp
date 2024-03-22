@@ -50,7 +50,7 @@ function MenuClass() {
     ),
     getItem("Bài tập", "homework", <WindowsFilled />),
     getItem("Bảng điểm", "score", <FileFilled />),
-    getItem("Tài liệu", "6", <SnippetsFilled />),
+    getItem("Tài liệu", "document", <SnippetsFilled />),
     getItem("Chỉnh sửa", "class_edit", <EditFilled />),
   ]);
 
@@ -127,7 +127,7 @@ function MenuClass() {
         ),
         getItem("Bài tập", "homework", <WindowsFilled />),
         getItem("Bảng điểm", "score", <FileFilled />),
-        getItem("Tài liệu", "6", <SnippetsFilled />),
+        getItem("Tài liệu", "document", <SnippetsFilled />),
         getItem("Chỉnh sửa", "class_edit", <EditFilled />),
       ];
       if (!isOwnClass) {
@@ -150,8 +150,8 @@ function MenuClass() {
       setSelectedKeys(["class_edit"]);
     } else if (window.location.pathname.includes("/score")) {
       setSelectedKeys(["score"]);
-    } else {
-      setSelectedKeys(["6"]);
+    } else if (window.location.pathname.includes("/document")) {
+      setSelectedKeys(["document"]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.pathname]);

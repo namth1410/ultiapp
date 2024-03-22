@@ -1,0 +1,106 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  .left_box {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+
+    .tools {
+      display: flex;
+      position: sticky;
+      background: white;
+      z-index: 300;
+      padding: 16px 32px;
+      width: 100%;
+      box-sizing: border-box;
+      align-items: center;
+      gap: 16px;
+      height: 80px;
+    }
+
+    .document_item {
+      width: fit-content;
+      height: fit-content;
+      border-top-right-radius: 16px;
+      font-family: Inter, sans-serif;
+      color: #202227;
+      max-width: 150px;
+      min-width: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      border: none;
+      transition: all 0.35s;
+      cursor: pointer;
+
+      .img_wrapper {
+        width: 120px;
+        height: 160px;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .nameDocument {
+        font-size: 14px;
+        font-weight: bold;
+        text-overflow: ellipsis;
+        max-height: 30px;
+        min-height: 30px;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+      }
+    }
+
+    .document_item:hover {
+      background-color: #cecece;
+    }
+
+    .selected {
+      background-color: rgb(64, 185, 255);
+      color: #fff;
+    }
+    .selected:hover {
+      background-color: rgb(132, 210, 255);
+      color: #fff;
+    }
+  }
+
+  .right_box {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    border-left: 1px solid #d8dcf0;
+    min-width: 250px;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    .action_homework_item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 16px;
+      width: 100%;
+      border: none;
+      background-color: #fff;
+      font-family: Gilroy, Arial, Helvetica, sans-serif;
+      text-transform: none;
+      padding: 15px 10px;
+      cursor: pointer;
+    }
+
+    .action_homework_item:hover {
+      background-color: #2022270a;
+    }
+  }
+}

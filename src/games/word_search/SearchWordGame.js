@@ -44,8 +44,8 @@ const SearchWordGame = () => {
     const a = dataQuizz.quizz_items;
     const cloneArr = [...a];
     const selectedWords = [];
-
-    for (let i = 0; i < 4; i++) {
+    const count = a.length < 4 ? a.length : 4;
+    for (let i = 0; i < count; i++) {
       const randomIndex = Math.floor(Math.random() * cloneArr.length);
       selectedWords.push(cloneArr.splice(randomIndex, 1)[0]);
     }
@@ -441,7 +441,7 @@ const SearchWordGame = () => {
           }}
         >
           {quizzItems.map((el, index) => {
-            return index < 3 ? (
+            return index < words.length / 2 ? (
               <Definition
                 definition={el.definition}
                 isFounded={foundWordsV1.includes(
@@ -503,7 +503,7 @@ const SearchWordGame = () => {
           }}
         >
           {quizzItems.map((el, index) => {
-            return index > 2 ? (
+            return index >= words.length / 2 ? (
               <Definition
                 definition={el.definition}
                 isFounded={foundWordsV1.includes(

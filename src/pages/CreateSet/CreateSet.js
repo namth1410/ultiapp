@@ -64,10 +64,10 @@ function CreateSet() {
   };
 
   const onFinish = async (values) => {
-    if (values.quizz_items.length < 5) {
+    if (values.quizz_items.length < 2) {
       Swal.fire({
         icon: "error",
-        title: "1 Quizz phải có ít nhất 5 thuật ngữ",
+        title: "1 Quizz phải có ít nhất 2 thuật ngữ",
       });
       return;
     }

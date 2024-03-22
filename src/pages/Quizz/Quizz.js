@@ -8,8 +8,9 @@ import {
   SoundOutlined,
   StarFilled,
   SwapOutlined,
+  LockOutlined,
 } from "@ant-design/icons";
-import { Image, Modal, Select } from "antd";
+import { Badge, Modal, Select } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -34,6 +35,7 @@ function Quizz() {
   const [voice, setVoice] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [isLockTest, setIsLockTest] = useState(false);
 
   const handleVoiceChange = (event) => {
     const voices = window.speechSynthesis.getVoices();
@@ -98,6 +100,7 @@ function Quizz() {
         setDataQuizz(quizzData);
         setTotalQuizzItem(quizzData.quizz_items.length);
         setIndexQuizzItem(0);
+        setIsLockTest(quizzData.quizz_items.length < 5);
         if (auth.currentUser.uid === quizzData.uidCreator) {
           setIsOwner(true);
         } else {
@@ -146,15 +149,41 @@ function Quizz() {
       <div className={styles.mode_wrapper}>
         <button>Thẻ ghi nhớ</button>
         <button>Học</button>
-        <button
-          onClick={() => {
-            navigate(
-              `/quizz/test/${quizz_id}?mode=MULTIPLE_CHOICE&quantityQuestion=5&isShuffle=false`
-            );
-          }}
+
+        <Badge
+          count={
+            isLockTest ? (
+              <div
+                style={{
+                  width: "fit-content",
+                  height: "fit-content",
+                  backgroundColor: "#f5222d",
+                  borderRadius: "50%",
+                  padding: "5px",
+                }}
+              >
+                <LockOutlined
+                  style={{
+                    color: "#fff",
+                  }}
+                />
+              </div>
+            ) : (
+              0
+            )
+          }
         >
-          Kiểm tra
-        </button>
+          <button
+            onClick={() => {
+              navigate(
+                `/quizz/test/${quizz_id}?mode=MULTIPLE_CHOICE&quantityQuestion=5&isShuffle=false`
+              );
+            }}
+            disabled={isLockTest}
+          >
+            Kiểm tra
+          </button>
+        </Badge>
         <button
           onClick={() => {
             navigate(`/game/${quizz_id}`);
@@ -228,14 +257,22 @@ function Quizz() {
                 ? dataShuffleQuizz?.quizz_items[indexQuizzItem].definition
                 : dataQuizz?.quizz_items[indexQuizzItem].definition}
             </span>
-            <Image
-              preview={false}
-              width="40%"
+            <img
+              alt="img"
               src={
                 isShuffle
                   ? dataShuffleQuizz?.quizz_items[indexQuizzItem].image
                   : dataQuizz?.quizz_items[indexQuizzItem].image
               }
+              style={{
+                display: isShuffle
+                  ? dataShuffleQuizz?.quizz_items[indexQuizzItem].image
+                    ? "block"
+                    : "none"
+                  : dataQuizz?.quizz_items[indexQuizzItem].image
+                  ? "block"
+                  : "none",
+              }}
             />
           </div>
         )}

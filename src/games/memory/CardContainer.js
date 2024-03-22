@@ -75,7 +75,13 @@ const CardContainer = () => {
       </div>
       <button onClick={startGame}>Chơi mới</button>
 
-      <div className="card-container">
+      <div
+        style={{
+          gridTemplateColumns:
+            cards.length === 6 ? "repeat(3, 1fr)" : "repeat(4, 1fr)",
+        }}
+        className="card-container"
+      >
         {cards.map((card, index) => (
           <Card
             card={card}

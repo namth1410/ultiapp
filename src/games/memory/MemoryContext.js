@@ -31,16 +31,6 @@ const MemoryProvider = ({ children }) => {
     return isWin;
   };
 
-  const shuffleCards = () => {
-    const shuffledCards = [...CardArray, ...CardArray]
-      .sort(() => Math.random() - 0.5)
-      .map((card) => {
-        return { ...card, id: Math.random() };
-      });
-
-    setCards(shuffledCards);
-  };
-
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -113,27 +103,28 @@ const MemoryProvider = ({ children }) => {
   }, [choiceOne, choiceTwo]);
 
   useEffect(() => {
-    shuffleCards();
-
     const getDataQuizz = async (id) => {
       const quizzRef = doc(firestore, "quizzs", id);
       const docSnapshot = await getDoc(quizzRef);
 
       if (docSnapshot.exists()) {
         const quizzData = { id: docSnapshot.id, ...docSnapshot.data() };
-        const _data1 = quizzData.quizz_items.map((el, index) => ({
+        const shuffledItems = quizzData.quizz_items
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 6);
+        const _data1 = shuffledItems.map((el, index) => ({
           ...el,
           isFlipped: false,
           isMatched: false,
           type: "term",
           id: index,
         }));
-        const _data2 = quizzData.quizz_items.map((el, index) => ({
+        const _data2 = shuffledItems.map((el, index) => ({
           ...el,
           isFlipped: false,
           isMatched: false,
           type: "definition",
-          id: index + quizzData.quizz_items.length,
+          id: index + shuffledItems.length,
         }));
         const _data = [..._data1, ..._data2];
         setCards(shuffleArray(_data));

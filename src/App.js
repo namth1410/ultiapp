@@ -44,6 +44,7 @@ import { DocumentProvider } from "pages/Class/Document/DocumentContext";
 function App() {
   const navigate = useNavigate();
   const needLogin = !localStorage.getItem("ulti_auth");
+  
   useEffect(() => {
     if (needLogin) {
       navigate("/login");

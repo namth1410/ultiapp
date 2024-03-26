@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: window._env_.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL,
   timeout: 5000 * 60,
   headers: {
     "Content-Type": "application/json",
@@ -11,14 +11,7 @@ const axiosInstance = axios.create({
 export const setupAxios = () => {
   axiosInstance.interceptors.request.use(
     (config) => {
-      const vtgAuth = JSON.parse(localStorage.getItem("vtg_auth"));
-      if (!vtgAuth) {
-        window.location.href = "/";
-        return;
-      }
-      config.headers.Authorization = `Bearer ${
-        JSON.parse(localStorage.getItem("vtg_auth")).access_token
-      }`;
+      config.withCredentials = true;
       return config;
     },
     (error) => {

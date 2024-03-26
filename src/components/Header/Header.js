@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "ultis/api";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Header.module.css";
@@ -121,6 +122,19 @@ function Header() {
         })
       );
 
+      const apiUrl = `${process.env.REACT_APP_API_URL}/sessionLogin`;
+      const idToken = user.stsTokenManager.accessToken;
+
+      axiosInstance
+        .post(apiUrl, { idToken })
+        .then((response) => {
+          const cookies = response.headers["set-cookie"];
+          console.log("Cookies:", cookies);
+        })
+        .catch((error) => {
+          console.error("Error:", error.response.data);
+        });
+
       navigate("/class");
     } catch (error) {
       console.error("Đã xảy ra lỗi khi đăng nhập:", error);
@@ -137,6 +151,12 @@ function Header() {
     signOut(auth)
       .then(() => {
         localStorage.clear();
+        axiosInstance
+          .get(`${process.env.REACT_APP_API_URL}/sessionLogout`)
+          .then((response) => {})
+          .catch((error) => {
+            console.error("Error:", error);
+          });
         navigate("/login");
       })
       .catch((error) => {
@@ -511,7 +531,7 @@ const NotificationItem = ({ notification, navigate }) => {
           overflow: "hidden",
           userSelect: "none",
           marginRight: "8px",
-          flexShrink: 0
+          flexShrink: 0,
         }}
         className={styles.img_wrapper}
       >

@@ -122,7 +122,7 @@ function Header() {
         })
       );
 
-      const apiUrl = `a/${process.env.REACT_APP_API_URL}/sessionLogin`;
+      const apiUrl = `/sessionLogin`;
       const idToken = user.stsTokenManager.accessToken;
 
       axiosInstance
@@ -152,7 +152,7 @@ function Header() {
       .then(() => {
         localStorage.clear();
         axiosInstance
-          .get(`${process.env.REACT_APP_API_URL}/sessionLogout`)
+          .get(`/sessionLogout`)
           .then((response) => {})
           .catch((error) => {
             console.error("Error:", error);

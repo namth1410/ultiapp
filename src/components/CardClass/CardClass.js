@@ -16,7 +16,6 @@ import { auth, firestore } from "../../firebase";
 
 function CardClass({ props, isSearching = false }) {
   const { id, nameClass, members, nameCreator, password, config } = props;
-
   const navigate = useNavigate();
 
   const [inputPassword, setInputPassword] = useState("");
@@ -54,7 +53,7 @@ function CardClass({ props, isSearching = false }) {
             collection(firestore, "notifications"),
             where("type", "==", "request_join_class"),
             where("uidCreator", "==", auth.currentUser.uid),
-            where("class", "==", id),
+            where("class", "==", id)
           );
 
           const querySnapshot = await getDocs(q);

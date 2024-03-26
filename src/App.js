@@ -11,6 +11,7 @@ import ChatBox from "pages/ChatBox/ChatBox ";
 import ClassEdit from "pages/Class/ClassEdit/ClassEdit";
 import ClassHome from "pages/Class/ClassHome/ClassHome";
 import Document from "pages/Class/Document/Document";
+import { DocumentProvider } from "pages/Class/Document/DocumentContext";
 import AddHomeWork from "pages/Class/HomeWork/AddHomeWork/AddHomeWork";
 import DetailHomeWork from "pages/Class/HomeWork/DetailHomeWork/DetailHomeWork";
 import DetailRecordHomework from "pages/Class/HomeWork/DetailRecordHomework/DetailRecordHomework";
@@ -39,12 +40,11 @@ import TestOnline from "pages/TestOnline/TestOnline";
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import { DocumentProvider } from "pages/Class/Document/DocumentContext";
 
 function App() {
   const navigate = useNavigate();
   const needLogin = !localStorage.getItem("ulti_auth");
-  
+
   useEffect(() => {
     if (needLogin) {
       navigate("/login");

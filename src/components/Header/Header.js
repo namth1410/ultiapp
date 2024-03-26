@@ -128,14 +128,13 @@ function Header() {
       axiosInstance
         .post(apiUrl, { idToken })
         .then((response) => {
-          const cookies = response.headers["set-cookie"];
+          const cookies = response.headers["Set-Cookie"];
           console.log("Cookies:", cookies);
+          navigate("/class");
         })
         .catch((error) => {
           console.error("Error:", error.response.data);
         });
-
-      navigate("/class");
     } catch (error) {
       console.error("Đã xảy ra lỗi khi đăng nhập:", error);
     }
@@ -152,12 +151,11 @@ function Header() {
       .then(() => {
         localStorage.clear();
         axiosInstance
-          .get(`/sessionLogout`)
+          .post(`/sessionLogout`)
           .then((response) => {})
           .catch((error) => {
             console.error("Error:", error);
           });
-        navigate("/login");
       })
       .catch((error) => {
         // An error happened.

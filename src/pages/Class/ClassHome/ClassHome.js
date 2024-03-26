@@ -1,27 +1,22 @@
 import { RightOutlined } from "@ant-design/icons";
 import { Button, Input, Select } from "antd";
 import CardClass from "components/CardClass/CardClass";
-import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./ClassHome.module.css";
 
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { getUserCreatedClasses } from "appdata/classes/classesSlice";
+import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { auth, firestore, useAuth } from "../../../firebase";
+import { firestore } from "../../../firebase";
 const { Search } = Input;
 
 function ClassHome() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const currentUser = useAuth();
+
+  const classesRedux = useSelector((state) => state.classesRedux);
+
   const filters = [
     {
       value: "asc",
@@ -46,27 +41,6 @@ function ClassHome() {
   const [filter, setFilter] = useState("time_desc");
 
   const [searchClass, setSearchClass] = useState(null);
-
-  const getUserCreatedClasses = async (uid) => {
-    const quizzsRef = collection(firestore, "classes");
-    const querySnapshot = await getDocs(
-      query(
-        quizzsRef,
-        where("uidCreator", "==", uid),
-        orderBy("dateCreate", "desc")
-      )
-    );
-    if (querySnapshot.empty) {
-      setUserCreatedClasses(null);
-    } else {
-      const _userCreatedClasses = [];
-      querySnapshot.forEach((doc) => {
-        _userCreatedClasses.push({ ...doc.data(), id: doc.id });
-      });
-      console.log(_userCreatedClasses);
-      setUserCreatedClasses(_userCreatedClasses);
-    }
-  };
 
   function sortArrayByFilter(array, filter) {
     let sortedArray = [...array];
@@ -117,45 +91,14 @@ function ClassHome() {
   }, [filter]);
 
   useEffect(() => {
-    if (currentUser == null) {
-      return;
-    }
-    const unsubscribe = onSnapshot(
-      query(
-        collection(firestore, "classes"),
-        where("members", "array-contains", currentUser.uid),
-        orderBy("dateCreate", "desc")
-      ),
-      (snapshot) => {
-        if (snapshot.empty) {
-          setUserJoinedClasses(null);
-        } else {
-          const _userJoinedClasses = [];
-          snapshot.forEach((doc) => {
-            _userJoinedClasses.push({ ...doc.data(), id: doc.id });
-          });
-          setUserJoinedClasses(_userJoinedClasses);
-        }
-      }
-    );
-
-    // Return a function to unsubscribe when component unmounts
-    return () => {
-      unsubscribe();
-    };
-  }, [currentUser]);
+    setUserCreatedClasses(classesRedux.userCreatedClasses || []);
+    setUserJoinedClasses(classesRedux.userJoinedClasses || []);
+  }, [classesRedux]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User is signed in:", user);
-        getUserCreatedClasses(user.uid);
-      } else {
-        console.log("User is signed out");
-      }
-    });
-
-    return () => unsubscribe;
+    dispatch(getUserCreatedClasses());
+    // dispatch(getUserJoinedClasses());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

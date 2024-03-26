@@ -1,4 +1,6 @@
+import { store } from "appdata/store";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,8 +13,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 setupAxios();
 root.render(
   <BrowserRouter>
-    <App />
-    <ToastContainer />
+    <Provider store={store}>
+      <App />
+      <ToastContainer />
+    </Provider>
   </BrowserRouter>
 );
 

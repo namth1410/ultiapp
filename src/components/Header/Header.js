@@ -122,7 +122,7 @@ function Header() {
         })
       );
 
-      const apiUrl = `${process.env.REACT_APP_API_URL}/sessionLogin`;
+      const apiUrl = `a/${process.env.REACT_APP_API_URL}/sessionLogin`;
       const idToken = user.stsTokenManager.accessToken;
 
       axiosInstance

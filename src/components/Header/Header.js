@@ -26,7 +26,7 @@ function Header() {
   const navigate = useNavigate();
   const currentUser = useAuth();
 
-  const needLogin = !localStorage.getItem("ulti_user");
+  const needLogin = !localStorage.getItem("ulti_user") || !document.cookie;
 
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
   const [menuItem, setMenuItem] = useState("");

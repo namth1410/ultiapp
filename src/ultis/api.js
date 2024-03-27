@@ -25,10 +25,15 @@ export const setupAxios = () => {
     },
     async (error) => {
       const originalRequest = error.config;
+      console.log(error);
+      window.location.href = "http://localhost:3000";
+
       if (
         error.response.status === 401 &&
         error.response.data.errors[0]?.message === "ExpiredSignature"
       ) {
+        console.log("asd");
+
         try {
           const response = await handleRefreshToken(
             JSON.parse(localStorage.getItem("vtg_auth")).refresh_token
@@ -43,6 +48,10 @@ export const setupAxios = () => {
           console.error("Error refreshing token:", refreshError);
           return Promise.reject(refreshError);
         }
+      } else {
+        console.log("1asd");
+
+        window.location.href = "http://localhost:3000";
       }
 
       return Promise.reject(error);

@@ -26,7 +26,25 @@ function Header() {
   const navigate = useNavigate();
   const currentUser = useAuth();
 
-  const needLogin = !localStorage.getItem("ulti_auth");
+  function getSessionCookie() {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      console.log(cookie);
+      // Check if this is the cookie you're looking for
+      if (cookie.startsWith("session=")) {
+        // If the "session" cookie exists, return false indicating no need for login
+        return false;
+      }
+    }
+    // If the "session" cookie isn't found, return true indicating login is needed
+    return true;
+  }
+  const needLogin = getSessionCookie();
+
+  // Usage
+  console.log(needLogin); // This will log `true` if the "session" cookie doesn't exist, indicating the need for login, otherwise `false`.
+
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
   const [menuItem, setMenuItem] = useState("");
   const [notificationsUnRead, setNotificationsUnRead] = useState(null);
@@ -373,7 +391,7 @@ function Header() {
                           padding: 8,
                         }}
                       >
-                        <div
+                        {/* <div
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -408,7 +426,7 @@ function Header() {
                               {infoUser.email}
                             </span>
                           </div>
-                        </div>
+                        </div> */}
                       </Space>
                       <Divider
                         style={{
@@ -459,12 +477,10 @@ function Header() {
                         top: "50%",
                         left: "50%",
                         translate: "-50% -50%",
-                        scale: "0.4",
                         borderRadius: "50%",
+                        width: "40px",
                       }}
-                      src={
-                        JSON.parse(localStorage.getItem("ulti_user")).profilePic
-                      }
+                      src="https://png.pngtree.com/png-clipart/20230914/original/pngtree-flower-jpg-vector-png-image_11243673.png"
                       alt="Notification Icon"
                     />
                   </div>

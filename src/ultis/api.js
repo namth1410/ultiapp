@@ -27,7 +27,7 @@ export const setupAxios = () => {
       console.log(error);
 
       if (error.response.data === "login") {
-        window.location.href = process.env.REACT_APP_HOST;
+        window.location.href = `${process.env.REACT_APP_HOST}/login`;
       }
     }
   );

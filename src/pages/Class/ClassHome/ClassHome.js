@@ -6,12 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./ClassHome.module.css";
 
 import {
+  getClassById,
   getUserCreatedClasses,
   getUserJoinedClasses,
 } from "appdata/classes/classesSlice";
-import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { firestore } from "../../../firebase";
 const { Search } = Input;
 
 function ClassHome() {
@@ -73,15 +72,8 @@ function ClassHome() {
     return sortedArray;
   }
 
-  const onSearch = async (id) => {
-    const classRef = doc(firestore, "classes", id);
-    const docSnapshot = await getDoc(classRef);
-
-    if (docSnapshot.exists()) {
-      setSearchClass({ ...docSnapshot.data(), id: id });
-    } else {
-      setSearchClass(null);
-    }
+  const onSearch = (id) => {
+    dispatch(getClassById({ id }));
   };
 
   useEffect(() => {
@@ -96,6 +88,7 @@ function ClassHome() {
   useEffect(() => {
     setUserCreatedClasses(classesRedux.userCreatedClasses || []);
     setUserJoinedClasses(classesRedux.userJoinedClasses || []);
+    setSearchClass(classesRedux.searchClass || null);
   }, [classesRedux]);
 
   useEffect(() => {

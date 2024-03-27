@@ -116,6 +116,7 @@ function Header() {
       localStorage.setItem(
         "ulti_user",
         JSON.stringify({
+          uid: user.uid,
           name: user.displayName,
           email: user.email,
           profilePic: user.photoURL,

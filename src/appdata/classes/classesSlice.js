@@ -29,7 +29,16 @@ export const classesSlice = createSlice({
           userJoinedClasses: [...action.payload],
         };
       })
-      .addCase(getUserJoinedClasses.rejected, (state, action) => {});
+      .addCase(getUserJoinedClasses.rejected, (state, action) => {})
+      .addCase(getClassById.pending, (state, action) => {})
+      .addCase(getClassById.fulfilled, (state, action) => {
+        console.log(action.payload);
+        return {
+          ...state,
+          searchClass: action.payload,
+        };
+      })
+      .addCase(getClassById.rejected, (state, action) => {});
   },
 });
 
@@ -37,9 +46,7 @@ export const getUserCreatedClasses = createAsyncThunk(
   "classes/getUserCreatedClasses",
   async () => {
     try {
-      const respone = await axiosInstance.get(
-        `/classes/user-created`
-      );
+      const respone = await axiosInstance.get(`/classes/user-created`);
       return respone.data;
     } catch (error) {
       throw new Error(error);
@@ -59,4 +66,15 @@ export const getUserJoinedClasses = createAsyncThunk(
   }
 );
 
+export const getClassById = createAsyncThunk(
+  "classes/getClassById",
+  async ({ id }) => {
+    try {
+      const respone = await axiosInstance.get(`/classes/${id}`);
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
 export default classesSlice.reducer;

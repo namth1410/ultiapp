@@ -1,12 +1,17 @@
+import { getDataClassById } from "appdata/class/classSlice";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { auth, firestore } from "../../firebase";
 
 const ClassContext = createContext();
 
 export const ClassProvider = ({ children }) => {
+  const dispatch = useDispatch();
+  const classRedux = useSelector((state) => state.classRedux);
+  const mySelf = JSON.parse(localStorage.getItem("ulti_user"));
   const [dataClass, setDataClass] = useState(null);
   const [creatorId, setCreatorId] = useState(null);
   const [dataHomework, setDataHomework] = useState(null);
@@ -15,35 +20,6 @@ export const ClassProvider = ({ children }) => {
   const classId = window.location.pathname.split("/")[2];
 
   useEffect(() => {
-    const classRef = doc(firestore, "classes", classId);
-
-    const unsub = onSnapshot(classRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const classData = { id: docSnapshot.id, ...docSnapshot.data() };
-        setDataClass(classData);
-        setCreatorId(classData.uidCreator);
-      } else {
-        console.log("Không tìm thấy class với id đã cho");
-      }
-    });
-
-    const qHomework = query(
-      collection(firestore, "homework"),
-      where("class", "==", classId)
-    );
-    const unsubHomework = onSnapshot(qHomework, (docSnapshot) => {
-      if (!docSnapshot.empty) {
-        const homeworkData = [];
-        docSnapshot?.forEach((doc) => {
-          homeworkData.push({ id: doc.id, ...doc.data() });
-        });
-
-        setDataHomework(homeworkData);
-      } else {
-        console.log("Không tìm thấy homework với id đã cho");
-      }
-    });
-
     const unsubRequestJoinClass = onSnapshot(
       query(
         collection(firestore, "notifications"),
@@ -75,9 +51,19 @@ export const ClassProvider = ({ children }) => {
     return () => {
       unsubRequestJoinClass();
       unsubscribe();
-      unsub();
-      unsubHomework();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setDataClass(classRedux.dataClass);
+    setCreatorId(classRedux.dataClass?.uidCreator);
+    setDataHomework(classRedux.dataHomework);
+  }, [classRedux]);
+
+  useEffect(() => {
+    dispatch(getDataClassById({ id: classId }));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -90,6 +76,7 @@ export const ClassProvider = ({ children }) => {
       dataHomework,
       setDataHomework,
       requestJoinClass,
+      mySelf,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [dataClass, dataHomework, requestJoinClass]

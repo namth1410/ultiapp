@@ -1,3 +1,4 @@
+import { ReactComponent as NewsFeedSvg } from "assets/img/newsfeed.svg";
 import FormCreateNews from "components/FormCreateNews/FormCreateNews";
 import NewItem from "components/NewItem/NewItem";
 import { useClass } from "contexts/class_context/ClassContext";
@@ -9,14 +10,13 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { auth, firestore } from "../../../firebase";
+import { firestore } from "../../../firebase";
 import styles from "./NewsFeed.module.css";
-import { ReactComponent as NewsFeedSvg } from "assets/img/newsfeed.svg";
 
 function NewsFeed() {
   const classId = window.location.pathname.split("/")[2];
 
-  const { dataClass } = useClass();
+  const { dataClass, mySelf } = useClass();
 
   const [newsfeed, setNewsfeed] = useState(null);
   const [canPostNews, setCanPostNews] = useState(false);
@@ -24,11 +24,9 @@ function NewsFeed() {
   useEffect(() => {
     if (!dataClass) return;
     setCanPostNews(
-      !(
-        dataClass.config?.offNewsFeed &&
-        dataClass.uidCreator !== auth.currentUser.uid
-      )
+      !(dataClass.config?.offNewsFeed && dataClass.uidCreator !== mySelf.uid)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataClass]);
 
   useEffect(() => {
@@ -80,7 +78,7 @@ function NewsFeed() {
               fontSize: "14px",
               fontWeight: "400",
               textAlign: "center",
-              marginTop: "5px"
+              marginTop: "5px",
             }}
           >
             Nơi trao đổi các vấn đề trong lớp học dành cho giáo viên học sinh

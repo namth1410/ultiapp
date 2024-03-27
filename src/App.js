@@ -41,127 +41,123 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 function App() {
+  const needLogin = !localStorage.getItem("ulti_user");
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        <>
-          <Route index path="/login" element={<Login />} />
-
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/chat" element={<ChatBox />} />
-
-          <Route path="/class" element={<ClassHome />} />
-          <Route path="/class/*" element={<ClassLayout />}>
-            <Route path="create-class" element={<CreateClass />} />
-            <Route path=":class_id/class_edit" element={<ClassEdit />} />
-            <Route path=":class_id/newsfeed" element={<NewsFeed />} />
+        {needLogin ? (
+          <>
+            <Route index path="/login" element={<Login />} />
+            <Route index path="/*" element={<Navigate to="/login" />} />
+            <Route path="/signup" element={<Signup />} />
+          </>
+        ) : (
+          <>
+            <Route path="/chat" element={<ChatBox />} />
+            <Route path="/class" element={<ClassHome />} />
+            <Route path="/class/*" element={<ClassLayout />}>
+              <Route path="create-class" element={<CreateClass />} />
+              <Route path=":class_id/class_edit" element={<ClassEdit />} />
+              <Route path=":class_id/newsfeed" element={<NewsFeed />} />
+              <Route
+                path=":class_id/homework"
+                element={
+                  <HomeworkProvider>
+                    <HomeWork />
+                  </HomeworkProvider>
+                }
+              />
+              <Route
+                path=":class_id/homework/:homework_id/detail/:record_id"
+                element={<DetailRecordHomework />}
+              />
+              <Route
+                path=":class_id/homework/:homework_id/edit"
+                element={
+                  <AddHomeWorkProvider>
+                    <EditHomework />
+                  </AddHomeWorkProvider>
+                }
+              />
+              <Route path=":class_id/member" element={<Member />} />
+              <Route
+                path=":class_id/homework/add"
+                element={
+                  <AddHomeWorkProvider>
+                    <AddHomeWork />
+                  </AddHomeWorkProvider>
+                }
+              />
+              <Route
+                path=":class_id/homework/:homework_id/detail"
+                element={<DetailHomeWork />}
+              />
+              <Route
+                path=":class_id/homework/:homework_id/test"
+                element={<TestHomework />}
+              />
+              <Route
+                path=":class_id/score"
+                element={
+                  <ScoreProvider>
+                    <Score />
+                  </ScoreProvider>
+                }
+              />
+              <Route
+                path=":class_id/document"
+                element={
+                  <DocumentProvider>
+                    <Document />
+                  </DocumentProvider>
+                }
+              />
+              <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
+            </Route>
+            <Route path="/quizz" element={<Home />} />
+            <Route path="/quizz/:quizz_id" element={<Quizz />} />
+            <Route path="/quizz/create-set" element={<CreateSet />} />
+            <Route path="/quizz/edit-set/:quizz_id" element={<EditSet />} />
             <Route
-              path=":class_id/homework"
+              path="/quizz/test/:quizz_id"
               element={
-                <HomeworkProvider>
-                  <HomeWork />
-                </HomeworkProvider>
+                <TestProvider>
+                  <Test />
+                </TestProvider>
+              }
+            />
+            <Route path="game/:quizz_id" element={<MenuGame />} />
+            <Route
+              path="game/memory/:quizz_id"
+              element={
+                <MemoryProvider>
+                  <CardContainer />
+                </MemoryProvider>
               }
             />
             <Route
-              path=":class_id/homework/:homework_id/detail/:record_id"
-              element={<DetailRecordHomework />}
+              path="game/searchword/:quizz_id"
+              element={<SearchWordGame />}
             />
+            <Route path="speaking" element={<Speaking />} />
             <Route
-              path=":class_id/homework/:homework_id/edit"
+              path="speaking/practice/:topic_id"
+              element={<PracticeSpeaking />}
+            />
+            <Route path="online" element={<TestOnline />} />
+            <Route path="online/:id_test/:name_test" element={<PreTest />} />
+            <Route
+              path="online/:id_test/:name_test/exam"
               element={
-                <AddHomeWorkProvider>
-                  <EditHomework />
-                </AddHomeWorkProvider>
+                <ExamProvider>
+                  <Exam />
+                </ExamProvider>
               }
             />
-            <Route path=":class_id/member" element={<Member />} />
-            <Route
-              path=":class_id/homework/add"
-              element={
-                <AddHomeWorkProvider>
-                  <AddHomeWork />
-                </AddHomeWorkProvider>
-              }
-            />
-            <Route
-              path=":class_id/homework/:homework_id/detail"
-              element={<DetailHomeWork />}
-            />
-            <Route
-              path=":class_id/homework/:homework_id/test"
-              element={<TestHomework />}
-            />
-            <Route
-              path=":class_id/score"
-              element={
-                <ScoreProvider>
-                  <Score />
-                </ScoreProvider>
-              }
-            />
-            <Route
-              path=":class_id/document"
-              element={
-                <DocumentProvider>
-                  <Document />
-                </DocumentProvider>
-              }
-            />
-            <Route path=":class_id/*" element={<Navigate to="newsfeed" />} />
-          </Route>
-
-          <Route path="/quizz" element={<Home />} />
-          <Route path="/quizz/:quizz_id" element={<Quizz />} />
-          <Route path="/quizz/create-set" element={<CreateSet />} />
-          <Route path="/quizz/edit-set/:quizz_id" element={<EditSet />} />
-
-          <Route
-            path="/quizz/test/:quizz_id"
-            element={
-              <TestProvider>
-                <Test />
-              </TestProvider>
-            }
-          />
-
-          <Route path="game/:quizz_id" element={<MenuGame />} />
-
-          <Route
-            path="game/memory/:quizz_id"
-            element={
-              <MemoryProvider>
-                <CardContainer />
-              </MemoryProvider>
-            }
-          />
-
-          <Route
-            path="game/searchword/:quizz_id"
-            element={<SearchWordGame />}
-          />
-
-          <Route path="speaking" element={<Speaking />} />
-          <Route
-            path="speaking/practice/:topic_id"
-            element={<PracticeSpeaking />}
-          />
-
-          <Route path="online" element={<TestOnline />} />
-          <Route path="online/:id_test/:name_test" element={<PreTest />} />
-          <Route
-            path="online/:id_test/:name_test/exam"
-            element={
-              <ExamProvider>
-                <Exam />
-              </ExamProvider>
-            }
-          />
-
-          <Route path="/*" element={<Navigate to="/login" />} />
-
-          <Route index element={<Navigate to="/login" />} />
-        </>
+            <Route path="/*" element={<Navigate to="/class" />} />
+            <Route index element={<Navigate to="/class" />} />
+          </>
+        )}
       </Route>
     </Routes>
   );

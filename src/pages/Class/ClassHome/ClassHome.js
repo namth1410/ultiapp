@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./ClassHome.module.css";
 
-import { getUserCreatedClasses } from "appdata/classes/classesSlice";
+import {
+  getUserCreatedClasses,
+  getUserJoinedClasses,
+} from "appdata/classes/classesSlice";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { firestore } from "../../../firebase";
@@ -97,7 +100,7 @@ function ClassHome() {
 
   useEffect(() => {
     dispatch(getUserCreatedClasses());
-    // dispatch(getUserJoinedClasses());
+    dispatch(getUserJoinedClasses());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

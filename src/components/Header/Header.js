@@ -129,7 +129,7 @@ function Header() {
       axiosInstance
         .post(apiUrl, { idToken })
         .then((response) => {
-          window.location.href = `${process.env.REACT_APP_HOST}/class`;
+          // window.location.href = `${process.env.REACT_APP_HOST}/class`;
         })
         .catch((error) => {
           console.error("Error:", error.response.data);

@@ -42,9 +42,7 @@ import "./App.css";
 
 function App() {
   const needLogin = !localStorage.getItem("ulti_user") || !document.cookie;
-  if (needLogin) {
-    localStorage.clear();
-  }
+
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>

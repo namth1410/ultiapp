@@ -41,7 +41,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 function App() {
-  const needLogin = !localStorage.getItem("ulti_user");
+  const needLogin = !localStorage.getItem("ulti_user") || !document.cookie;
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
@@ -50,6 +50,7 @@ function App() {
             <Route index path="/login" element={<Login />} />
             <Route index path="/*" element={<Navigate to="/login" />} />
             <Route path="/signup" element={<Signup />} />
+            <Route index element={<Navigate to="/login" />} />
           </>
         ) : (
           <>

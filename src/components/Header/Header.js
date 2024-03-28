@@ -134,7 +134,7 @@ function Header() {
         });
 
       setTimeout(() => {
-        // window.location.href = `${process.env.REACT_APP_HOST}/class`;
+        window.location.href = `${process.env.REACT_APP_HOST}/class`;
       }, 1000);
     } catch (error) {
       console.error("Đã xảy ra lỗi khi đăng nhập:", error);

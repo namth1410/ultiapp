@@ -1,12 +1,10 @@
 import { BellFilled, UserOutlined } from "@ant-design/icons";
 import { Badge, Button, Divider, Dropdown, Space } from "antd";
 import Logo from "assets/img/logo.svg";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {
-  addDoc,
   collection,
   doc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,

@@ -11,7 +11,14 @@ const axiosInstance = axios.create({
 export const setupAxios = () => {
   axiosInstance.interceptors.request.use(
     (config) => {
-      config.withCredentials = true;
+      const ultiAuth = JSON.parse(localStorage.getItem("ulti_auth"));
+      if (!ultiAuth) {
+        window.location.href = "/";
+        return;
+      }
+      config.headers.Authorization = `${
+        JSON.parse(localStorage.getItem("ulti_auth")).accessToken
+      }`;
       return config;
     },
     (error) => {
@@ -25,10 +32,6 @@ export const setupAxios = () => {
     },
     async (error) => {
       console.log(error);
-
-      if (error.response.data === "login") {
-        window.location.href = `${process.env.REACT_APP_HOST}/login`;
-      }
     }
   );
 };

@@ -41,7 +41,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 function App() {
-  const needLogin = !localStorage.getItem("ulti_user") || !document.cookie;
+  const needLogin = !localStorage.getItem("ulti_auth");
 
   return (
     <Routes>

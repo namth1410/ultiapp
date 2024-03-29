@@ -21,12 +21,15 @@ import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Header.module.css";
 
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+  prompt: "select_account",
+});
 
 function Header() {
   const navigate = useNavigate();
   const currentUser = useAuth();
 
-  const needLogin = !localStorage.getItem("ulti_user") || !document.cookie;
+  const needLogin = !localStorage.getItem("ulti_auth");
 
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
   const [menuItem, setMenuItem] = useState("");
@@ -85,27 +88,6 @@ function Header() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      const usersRef = collection(firestore, "users");
-      const querySnapshot = await getDocs(
-        query(usersRef, where("uid", "==", user.uid))
-      );
-
-      if (!querySnapshot.empty) {
-        const docId = querySnapshot.docs[0].id;
-        await updateDoc(doc(usersRef, docId), {
-          displayName: user.displayName,
-          email: user.email,
-          profilePic: user.photoURL,
-        });
-      } else {
-        await addDoc(usersRef, {
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-          profilePic: user.photoURL,
-        });
-      }
-
       localStorage.setItem(
         "ulti_auth",
         JSON.stringify({
@@ -123,19 +105,18 @@ function Header() {
         })
       );
 
-      const apiUrl = `/sessionLogin`;
-      const idToken = user.stsTokenManager.accessToken;
+      const apiUrl = `/login`;
 
       await axiosInstance
-        .post(apiUrl, { idToken })
-        .then((response) => {})
+        .post(apiUrl)
+        .then((response) => {
+          console.log(response);
+        })
         .catch((error) => {
           console.error("Error:", error.response.data);
         });
 
-      setTimeout(() => {
-        window.location.href = `${process.env.REACT_APP_HOST}/class`;
-      }, 1000);
+      window.location.href = `${process.env.REACT_APP_HOST}/class`;
     } catch (error) {
       console.error("Đã xảy ra lỗi khi đăng nhập:", error);
     }
@@ -148,21 +129,17 @@ function Header() {
   };
 
   const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        axiosInstance
-          .post(`/sessionLogout`)
-          .then((response) => {
-            localStorage.clear();
-            window.location.href = `${process.env.REACT_APP_HOST}/login`;
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      })
-      .catch((error) => {
-        // An error happened.
-      });
+    auth.signOut().then(() => {
+      axiosInstance
+        .post(`/logout`)
+        .then((response) => {
+          localStorage.clear();
+          window.location.href = `${process.env.REACT_APP_HOST}/login`;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { getDataClassById } from "appdata/class/classSlice";
+import { getDataClassById, getHomeworkOfClass } from "appdata/class/classSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -63,6 +63,7 @@ export const ClassProvider = ({ children }) => {
 
   useEffect(() => {
     dispatch(getDataClassById({ id: classId }));
+    dispatch(getHomeworkOfClass({ id: classId }));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

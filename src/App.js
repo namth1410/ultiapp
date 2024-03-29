@@ -29,6 +29,7 @@ import Home from "pages/Home/Home";
 import Login from "pages/Login";
 import MenuGame from "pages/MenuGame/MenuGame";
 import Quizz from "pages/Quizz/Quizz";
+import Spell from "pages/Quizz/Spell/Spell";
 import Signup from "pages/Signup";
 import PracticeSpeaking from "pages/Speaking/PracticeSpeaking/PracticeSpeaking";
 import Speaking from "pages/Speaking/Speaking";
@@ -118,6 +119,7 @@ function App() {
             </Route>
             <Route path="/quizz" element={<Home />} />
             <Route path="/quizz/:quizz_id" element={<Quizz />} />
+            <Route path="/quizz/spell/:quizz_id" element={<Spell />} />
             <Route path="/quizz/create-set" element={<CreateSet />} />
             <Route path="/quizz/edit-set/:quizz_id" element={<EditSet />} />
             <Route

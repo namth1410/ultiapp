@@ -147,7 +147,13 @@ function Quizz() {
       </div>
 
       <div className={styles.mode_wrapper}>
-        <button>Thẻ ghi nhớ</button>
+        <button
+          onClick={() => {
+            navigate(`/quizz/spell/${quizz_id}`);
+          }}
+        >
+          Chính tả
+        </button>
         <button>Học</button>
 
         <Badge

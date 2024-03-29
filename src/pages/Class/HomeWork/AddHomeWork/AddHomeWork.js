@@ -67,7 +67,7 @@ function AddHomeWork() {
 
   const uploadFile = async () => {
     const file = selectedDocs[0];
-    const storageRef = ref(storage, `Homework/${file.name}`);
+    const storageRef = ref(storage, `Homework/${classId}#${file.name}`);
 
     await uploadBytes(storageRef, file)
       .then((snapshot) => {

@@ -1,0 +1,196 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(219, 223, 255, 0.2);
+
+  .container {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 81.25em;
+    height: 100%;
+
+    .left_box {
+      width: 12.1875rem;
+      box-shadow: 0 0.25rem 1.25rem #00000014;
+      background-color: #f6f7fb;
+      position: relative;
+      box-sizing: border-box;
+      padding: 1rem;
+
+      .back {
+        border-bottom: 1px solid #f6f7fb;
+        padding: 0.5rem 0rem;
+        align-items: center;
+        display: flex;
+        min-height: 2.5rem;
+        color: #3ccfcf;
+        gap: 5px;
+        cursor: pointer;
+      }
+
+      .controls {
+        .progress {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          .total_progress {
+            .progress_bar {
+              background-color: #23b26d4d;
+              position: relative;
+              width: 100%;
+              height: 0.75rem;
+
+              .progress_bar_fill {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 14.2857%;
+                height: 0.75rem;
+                background-color: #23b26d;
+              }
+            }
+
+            .progress_label {
+              display: flex;
+              justify-content: space-between;
+              font-weight: 600;
+              font-size: 0.75rem;
+              letter-spacing: 0.125rem;
+              text-transform: uppercase;
+              margin-top: 5px;
+            }
+          }
+        }
+
+        .action {
+          position: absolute;
+          bottom: 1rem;
+          left: 1rem;
+          right: 1rem;
+
+          button {
+            background: #fff !important;
+            border: 0.125rem solid #d9dde8;
+            color: #3ccfcf;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            width: 100%;
+            font-weight: 600;
+            font-size: 0.875rem;
+            line-height: 1.285714285714286;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .right_box {
+      display: flex;
+      flex: 1 1;
+      padding: 1.5rem;
+      position: relative;
+      width: 100%;
+
+      .spell_controller {
+        position: relative;
+        flex: 1;
+        overflow: auto;
+        padding: 2rem;
+        background-color: #fff;
+
+        .input_wrapper {
+          display: flex;
+
+          .view_input {
+            width: 100%;
+            margin-left: 10px;
+
+            .show {
+              height: 100%;
+              width: 100%;
+              line-height: 1.3;
+              border-bottom: 2px solid #202227;
+              font-size: 1.875rem;
+              font-weight: 400;
+              display: flex;
+              align-items: center;
+
+              .test {
+                opacity: 1;
+                transition: opacity 1s ease-in-out, max-width 1s ease-in-out;
+              }
+              .remove {
+                opacity: 0;
+                max-width: 0;
+                text-decoration: line-through;
+                color: #ff725b;
+              }
+
+              .add {
+                opacity: 1;
+                max-width: none;
+                color: #23b26d;
+              }
+
+              .is_active {
+                max-width: none;
+              }
+            }
+
+            input {
+              height: 100%;
+              width: 100%;
+              background: #0000;
+              border: none;
+              color: inherit;
+              cursor: inherit;
+              display: block;
+              font: inherit;
+              outline: none;
+              overflow: hidden;
+              resize: none;
+              text-shadow: inherit;
+              -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+              white-space: pre-wrap;
+              word-wrap: break-word;
+              -webkit-font-smoothing: antialiased;
+              line-height: 1.3;
+              font-size: 1.875rem;
+              font-weight: 400;
+              border-bottom: 2px solid #202227;
+            }
+
+            .text {
+              color: #939bb4;
+              display: flex;
+              justify-content: space-between;
+              margin-top: 0.625rem;
+              text-align: inherit;
+              font-weight: 600;
+              text-transform: uppercase;
+              font-size: 0.75rem;
+              letter-spacing: 0.0625rem;
+              line-height: 1.3;
+              -webkit-user-select: none;
+              user-select: none;
+            }
+          }
+        }
+
+        .input_prompt {
+          border-top: 0.125rem solid var(--gray-200-gray-900);
+          padding-top: 1.25rem;
+          font-weight: 400;
+          font-size: 1.25rem;
+          line-height: 1.5;
+          margin-top: 1.5rem;
+
+          .input_prompt_image {
+            margin-top: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}

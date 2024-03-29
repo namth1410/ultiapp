@@ -71,6 +71,7 @@
     .text_quizz_item {
       font-size: 35px;
       font-weight: 500;
+      color: var(--text-color-primary);
     }
   }
 

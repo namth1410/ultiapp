@@ -31,6 +31,10 @@ export const setupAxios = () => {
       return response;
     },
     async (error) => {
+      if (error.response.status === 401) {
+        localStorage.clear();
+        window.location.reload();
+      }
       console.log(error);
     }
   );

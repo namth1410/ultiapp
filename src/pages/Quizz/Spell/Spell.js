@@ -30,6 +30,8 @@ function Spell() {
     setRoundIndex,
     resultRound,
     setResultRound,
+    resultAll,
+    setResultAll,
     onNextRound,
     onRestart,
   } = useSpell();
@@ -58,6 +60,15 @@ function Spell() {
       const _resultRound = resultRound ? [...resultRound] : [];
       setResultRound([
         ..._resultRound,
+        {
+          index: indexQuizzItem,
+          countTypeIncorrect: countTypeIncorrect,
+          data: dataQuizz.quizz_items[indexQuizzItem],
+        },
+      ]);
+      const _resultAll = resultAll ? [...resultAll] : [];
+      setResultAll([
+        ..._resultAll,
         {
           index: indexQuizzItem,
           countTypeIncorrect: countTypeIncorrect,
@@ -460,6 +471,78 @@ function Spell() {
                 Chúc mừng bạn đã làm xong
               </div>
               <button onClick={onRestart}>Bắt đầu lại</button>
+
+              <div
+                style={{
+                  marginTop: "1.5rem",
+                  padding: "1.25rem",
+                  backgroundColor: "#fff",
+                  width: "100%",
+                  height: "fit-content",
+                  display: "flex",
+                  justifyContent: "space-around",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    width: "200px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "50px",
+                      fontWeight: "700",
+                      color: "#282e3e",
+                    }}
+                  >
+                    Sai
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "600",
+                      color: "#939bb4",
+                    }}
+                  >
+                    {resultAll.filter((el) => el.countTypeIncorrect > 0).length}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    width: "200px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "50px",
+                      fontWeight: "700",
+                      color: "#23b26d",
+                    }}
+                  >
+                    Đúng
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "600",
+                      color: "#23b26d",
+                    }}
+                  >
+                    {
+                      resultAll.filter((el) => el.countTypeIncorrect === 0)
+                        .length
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -480,7 +563,7 @@ const ResultRoundItem = ({ props }) => {
               <CloseCircleFilled style={{ color: "#ff725b" }} />
               <span
                 style={{ color: "#ff725b", marginLeft: "5px" }}
-              >{`Sai ${props.countTypeIncorrect} câu`}</span>
+              >{`Sai ${props.countTypeIncorrect} lần`}</span>
             </div>
           )}
         </div>

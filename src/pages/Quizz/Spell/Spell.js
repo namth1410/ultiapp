@@ -206,6 +206,32 @@ function Spell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuizzItem, dataQuizz]);
 
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Enter") {
+        if (isActiveAdd) {
+          setInputAnswer("");
+          setIsChecking(false);
+          setResult(null);
+          setAddClassWrong(false);
+          setIsActive(false);
+          setIsActiveAdd(false);
+        }
+      }
+    };
+    if (!isActiveAdd) {
+      inputRef.current.focus();
+    } else {
+      // Thêm sự kiện lắng nghe vào cửa sổ khi component được mount
+      window.addEventListener("keyup", handleKeyPress);
+    }
+
+    // Xóa sự kiện lắng nghe khi component bị unmount
+    return () => {
+      window.removeEventListener("keyup", handleKeyPress);
+    };
+  }, [isActiveAdd]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>

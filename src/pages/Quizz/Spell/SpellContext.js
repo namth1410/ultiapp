@@ -15,13 +15,42 @@ export const SpellProvider = ({ children }) => {
   const [indexQuizzItem, setIndexQuizzItem] = useState(0);
   const [roundIndex, setRoundIndex] = useState(0);
   const [totalRoundIndex, setTotalRoundIndex] = useState(0);
+  const [quizzIndexInCurrentRound, setQuizzIndexInCurrentRound] = useState(0);
+  const [countQuizzItemInRound, setCountQuizzItemInRound] = useState(0);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState(false);
+  const [isEnd, setIsEnd] = useState("");
+
+  const onNextRound = () => {
+    setStatus(false);
+    setIsEnd("");
+    setIndexQuizzItem(indexQuizzItem + 1);
+    setRoundIndex(roundIndex + 1);
+    setQuizzIndexInCurrentRound(0);
+  };
+
+  const onRestart = () => {
+    setIndexQuizzItem(0);
+    setRoundIndex(0);
+    setQuizzIndexInCurrentRound(0);
+    setProgress(0);
+    setStatus(false);
+    setIsEnd("");
+  };
 
   useEffect(() => {
     if (!status) return;
     setTimeout(() => {
-      setIndexQuizzItem(indexQuizzItem + 1);
+      if (indexQuizzItem === dataQuizz.quizz_items.length - 1) {
+        setIsEnd("end");
+        setStatus(false);
+        return;
+      }
+      if ((indexQuizzItem + 1) % 5 === 0) {
+        setIsEnd("end_round");
+      } else {
+        setIndexQuizzItem(indexQuizzItem + 1);
+      }
       setStatus(false);
     }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,8 +96,15 @@ export const SpellProvider = ({ children }) => {
       totalRoundIndex,
       indexQuizzItem,
       setIndexQuizzItem,
+      quizzIndexInCurrentRound,
+      setQuizzIndexInCurrentRound,
+      countQuizzItemInRound,
+      setCountQuizzItemInRound,
       status,
       setStatus,
+      isEnd,
+      onNextRound,
+      onRestart,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [dataQuizz, totalQuizzItem, roundIndex, progress, indexQuizzItem, status]

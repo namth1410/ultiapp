@@ -12,6 +12,7 @@ import { useSpell } from "./SpellContext";
 function Spell() {
   const navigate = useNavigate();
   const {
+    isEnd,
     status,
     setStatus,
     dataQuizz,
@@ -19,6 +20,14 @@ function Spell() {
     progress,
     setProgress,
     totalQuizzItem,
+    quizzIndexInCurrentRound,
+    setQuizzIndexInCurrentRound,
+    countQuizzItemInRound,
+    setCountQuizzItemInRound,
+    setRoundIndex,
+    roundIndex,
+    onNextRound,
+    onRestart,
   } = useSpell();
   const [inputAnswer, setInputAnswer] = useState("");
   const [isChecking, setIsChecking] = useState(false);
@@ -155,10 +164,18 @@ function Spell() {
   }, [addClassWrong]);
 
   useEffect(() => {
+    if (!dataQuizz) return;
     setProgress(((indexQuizzItem / totalQuizzItem) * 100).toFixed(0));
     setInputAnswer("");
+    setQuizzIndexInCurrentRound(indexQuizzItem % 5);
+    setRoundIndex(Math.floor(indexQuizzItem / 5));
+    setCountQuizzItemInRound(
+      dataQuizz?.quizz_items.length > (roundIndex + 1) * 5
+        ? 5
+        : (dataQuizz?.quizz_items.length - roundIndex * 5) % 5
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexQuizzItem]);
+  }, [indexQuizzItem, dataQuizz]);
 
   return (
     <div className={styles.wrapper}>
@@ -207,14 +224,16 @@ function Spell() {
                 <div className={styles.progress_bar}>
                   <span
                     style={{
-                      width: `${(indexQuizzItem / 5) * 100}%`,
+                      width: `${
+                        (quizzIndexInCurrentRound / countQuizzItemInRound) * 100
+                      }%`,
                     }}
                     className={styles.progress_bar_fill}
                   ></span>
                 </div>
                 <div className={styles.progress_label}>
                   <span>Vòng này</span>
-                  <span>{`${indexQuizzItem}/${5}`}</span>
+                  <span>{`${quizzIndexInCurrentRound}/${countQuizzItemInRound}`}</span>
                 </div>
               </div>
             </div>
@@ -228,102 +247,120 @@ function Spell() {
           </div>
         </div>
         <div className={styles.right_box}>
-          <div className={styles.spell_controller}>
-            <div className={styles.input_wrapper}>
-              <img
-                alt="img"
-                onClick={onListen}
-                src={listen}
-                style={{ width: "30px", cursor: "pointer" }}
-              />
+          {isEnd === "" && (
+            <div className={styles.spell_controller}>
+              <div className={styles.input_wrapper}>
+                <img
+                  alt="img"
+                  onClick={onListen}
+                  src={listen}
+                  style={{ width: "30px", cursor: "pointer" }}
+                />
 
-              <div className={styles.view_input}>
-                {isChecking && (
-                  <div className={styles.show}>
-                    {result.map((el) => {
-                      return (
-                        <span
-                          key={el}
-                          className={`${styles.test} ${
-                            addClassWrong && el.type === "remove"
-                              ? styles.remove
-                              : ""
-                          } ${el.type === "add" ? styles.add : ""}  ${
-                            isActive ? styles.is_active : ""
-                          } ${
-                            isActiveAdd && el.type === "add"
-                              ? styles.is_active_add
-                              : ""
-                          }`}
-                        >
-                          {el.character === " " ? "\u00A0" : el.character}
+                <div className={styles.view_input}>
+                  {isChecking && (
+                    <div className={styles.show}>
+                      {result.map((el) => {
+                        return (
+                          <span
+                            key={el}
+                            className={`${styles.test} ${
+                              addClassWrong && el.type === "remove"
+                                ? styles.remove
+                                : ""
+                            } ${el.type === "add" ? styles.add : ""}  ${
+                              isActive ? styles.is_active : ""
+                            } ${
+                              isActiveAdd && el.type === "add"
+                                ? styles.is_active_add
+                                : ""
+                            }`}
+                          >
+                            {el.character === " " ? "\u00A0" : el.character}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {isChecking ? (
+                    <></>
+                  ) : (
+                    <input
+                      onChange={(e) => {
+                        setInputAnswer(e.target.value);
+                      }}
+                      onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                          getMinimumEditDistance(
+                            inputAnswer,
+                            dataQuizz.quizz_items[indexQuizzItem].term
+                          );
+                        }
+                      }}
+                      disabled={status}
+                      className={`${status && styles.correct}`}
+                      value={inputAnswer}
+                      placeholder="Nhập những gì bạn nghe thấy"
+                    ></input>
+                  )}
+                  <div
+                    style={{ color: status ? "#23b26d" : "#939bb4" }}
+                    className={styles.text}
+                  >
+                    {status ? "Bạn đã trả lời đúng" : "Trả lời"}
+                    {isChecking && (
+                      <span
+                        onClick={() => {
+                          setInputAnswer("");
+                          setIsChecking(false);
+                          setResult(null);
+                          setAddClassWrong(false);
+                          setIsActive(false);
+                          setIsActiveAdd(false);
+                        }}
+                        style={{ cursor: "pointer", color: "#ffc000" }}
+                      >
+                        <span style={{ marginRight: "5px" }}>
+                          <RedoOutlined />
                         </span>
-                      );
-                    })}
+                        {""}
+                        Nhập lại
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.input_prompt}>
+                <div className={styles.input_prompt_phonetic}>
+                  {dataQuizz?.quizz_items[indexQuizzItem].definition}
+                </div>
+                {dataQuizz?.quizz_items[indexQuizzItem].image && (
+                  <div className={styles.input_prompt_image}>
+                    <img
+                      alt="img"
+                      src={dataQuizz.quizz_items[indexQuizzItem].image}
+                    />
                   </div>
                 )}
-                {isChecking ? (
-                  <></>
-                ) : (
-                  <input
-                    onChange={(e) => {
-                      setInputAnswer(e.target.value);
-                    }}
-                    onKeyUp={(e) => {
-                      if (e.key === "Enter") {
-                        getMinimumEditDistance(
-                          inputAnswer,
-                          dataQuizz.quizz_items[indexQuizzItem].term
-                        );
-                      }
-                    }}
-                    className={`${status && styles.correct}`}
-                    value={inputAnswer}
-                    placeholder="Nhập những gì bạn nghe thấy"
-                  ></input>
-                )}
-                <div
-                  style={{ color: status ? "#23b26d" : "#939bb4" }}
-                  className={styles.text}
-                >
-                  {status ? "Bạn đã trả lời đúng" : "Trả lời"}
-                  {isChecking && (
-                    <span
-                      onClick={() => {
-                        setInputAnswer("");
-                        setIsChecking(false);
-                        setResult(null);
-                        setAddClassWrong(false);
-                        setIsActive(false);
-                        setIsActiveAdd(false);
-                      }}
-                      style={{ cursor: "pointer", color: "#ffc000" }}
-                    >
-                      <span style={{ marginRight: "5px" }}>
-                        <RedoOutlined />
-                      </span>
-                      {""}
-                      Nhập lại
-                    </span>
-                  )}
-                </div>
               </div>
             </div>
+          )}
 
-            <div className={styles.input_prompt}>
-              <div className={styles.input_prompt_phonetic}>
-                {dataQuizz?.quizz_items[indexQuizzItem].definition}
-              </div>
-              {dataQuizz?.quizz_items[indexQuizzItem].image && (
-                <div className={styles.input_prompt_image}>
-                  <img
-                    alt="img"
-                    src={dataQuizz.quizz_items[indexQuizzItem].image}
-                  />
-                </div>
-              )}
+          {isEnd === "end_round" && (
+            <div className={styles.end_round}>
+              <button onClick={onNextRound}>Tiếp tục</button>
             </div>
-          </div>
+          )}
+
+          {isEnd === "end" && (
+            <div className={styles.end}>
+              <div style={{ fontSize: "2.375rem", fontWeight: "700" }}>
+                Chúc mừng bạn đã làm xong
+              </div>
+              <button onClick={onRestart}>Bắt đầu lại</button>
+            </div>
+          )}
         </div>
       </div>
     </div>

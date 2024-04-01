@@ -20,6 +20,7 @@ export const SpellProvider = ({ children }) => {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState(false);
   const [isEnd, setIsEnd] = useState("");
+  const [resultRound, setResultRound] = useState(null);
 
   const onNextRound = () => {
     setStatus(false);
@@ -103,6 +104,8 @@ export const SpellProvider = ({ children }) => {
       status,
       setStatus,
       isEnd,
+      resultRound,
+      setResultRound,
       onNextRound,
       onRestart,
     }),

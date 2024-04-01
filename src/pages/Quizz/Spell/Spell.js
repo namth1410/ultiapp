@@ -4,7 +4,7 @@ import {
   RedoOutlined,
 } from "@ant-design/icons";
 import listen from "assets/img/listen.svg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Spell.module.css";
 import { useSpell } from "./SpellContext";
@@ -24,17 +24,21 @@ function Spell() {
     setQuizzIndexInCurrentRound,
     countQuizzItemInRound,
     setCountQuizzItemInRound,
-    setRoundIndex,
     roundIndex,
+    setRoundIndex,
+    resultRound,
+    setResultRound,
     onNextRound,
     onRestart,
   } = useSpell();
+  const inputRef = useRef();
   const [inputAnswer, setInputAnswer] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState(null);
   const [addClassWrong, setAddClassWrong] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isActiveAdd, setIsActiveAdd] = useState(false);
+  const [countTypeIncorrect, setCountTypeIncorrect] = useState(0);
 
   const onListen = () => {
     const synth = window.speechSynthesis;
@@ -49,6 +53,15 @@ function Spell() {
 
   function getMinimumEditDistance(A, B) {
     if (A === B) {
+      const _resultRound = resultRound ? [...resultRound] : [];
+      setResultRound([
+        ..._resultRound,
+        {
+          index: indexQuizzItem,
+          countTypeIncorrect: countTypeIncorrect,
+          data: dataQuizz.quizz_items[indexQuizzItem],
+        },
+      ]);
       setStatus(true);
       return;
     }
@@ -138,6 +151,7 @@ function Spell() {
     });
     setResult(_result);
     setIsChecking(true);
+    setCountTypeIncorrect(countTypeIncorrect + 1);
     console.log(operations);
     return operations;
   }
@@ -174,6 +188,8 @@ function Spell() {
         ? 5
         : (dataQuizz?.quizz_items.length - roundIndex * 5) % 5
     );
+    inputRef.current.focus();
+    setCountTypeIncorrect(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuizzItem, dataQuizz]);
 
@@ -286,6 +302,7 @@ function Spell() {
                     <></>
                   ) : (
                     <input
+                      ref={inputRef}
                       onChange={(e) => {
                         setInputAnswer(e.target.value);
                       }}
@@ -350,6 +367,88 @@ function Spell() {
           {isEnd === "end_round" && (
             <div className={styles.end_round}>
               <button onClick={onNextRound}>Tiếp tục</button>
+
+              <div
+                style={{
+                  marginTop: "1.5rem",
+                  padding: "1.25rem",
+                  backgroundColor: "#fff",
+                  width: "100%",
+                  height: "fit-content",
+                  display: "flex",
+                  justifyContent: "space-around",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    width: "200px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "50px",
+                      fontWeight: "700",
+                      color: "#282e3e",
+                    }}
+                  >
+                    Sai
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "600",
+                      color: "#939bb4",
+                    }}
+                  >
+                    {
+                      resultRound.filter((el) => el.countTypeIncorrect > 0)
+                        .length
+                    }
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    width: "200px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "50px",
+                      fontWeight: "700",
+                      color: "#23b26d",
+                    }}
+                  >
+                    Đúng
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "600",
+                      color: "#23b26d",
+                    }}
+                  >
+                    {
+                      resultRound.filter((el) => el.countTypeIncorrect === 0)
+                        .length
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "2.5rem", width: "100%" }}>
+                <div className={styles.heading}>Vừa xem</div>
+                {resultRound.map((el) => {
+                  return <ResultRoundItem key={el} props={el} />;
+                })}
+              </div>
             </div>
           )}
 
@@ -366,5 +465,21 @@ function Spell() {
     </div>
   );
 }
+
+const ResultRoundItem = ({ props }) => {
+  return (
+    <div className={styles.SpellAnalysisItem}>
+      <div className={styles.SpellAnalysisItem_answer}>
+        <div className={styles.SpellAnalysisItem_info_wrapper}></div>
+        <span>{props.data.term}</span>
+      </div>
+
+      <div className={styles.SpellAnalysisItem_prompt}>
+        <span>{props.data.definition}</span>
+        {props.data.image && <img alt="img" src={props.data.image} />}
+      </div>
+    </div>
+  );
+};
 
 export default Spell;

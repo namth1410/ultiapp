@@ -28,6 +28,7 @@ export const SpellProvider = ({ children }) => {
     setIndexQuizzItem(indexQuizzItem + 1);
     setRoundIndex(roundIndex + 1);
     setQuizzIndexInCurrentRound(0);
+    setResultRound(null);
   };
 
   const onRestart = () => {
@@ -37,6 +38,7 @@ export const SpellProvider = ({ children }) => {
     setProgress(0);
     setStatus(false);
     setIsEnd("");
+    setResultRound(null);
   };
 
   useEffect(() => {

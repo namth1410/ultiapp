@@ -1,4 +1,6 @@
 import {
+  CheckCircleFilled,
+  CloseCircleFilled,
   ControlOutlined,
   DoubleLeftOutlined,
   RedoOutlined,
@@ -470,7 +472,18 @@ const ResultRoundItem = ({ props }) => {
   return (
     <div className={styles.SpellAnalysisItem}>
       <div className={styles.SpellAnalysisItem_answer}>
-        <div className={styles.SpellAnalysisItem_info_wrapper}></div>
+        <div className={styles.SpellAnalysisItem_info_wrapper}>
+          {props.countTypeIncorrect === 0 ? (
+            <CheckCircleFilled style={{ color: "#23b26d" }} />
+          ) : (
+            <div>
+              <CloseCircleFilled style={{ color: "#ff725b" }} />
+              <span
+                style={{ color: "#ff725b", marginLeft: "5px" }}
+              >{`Sai ${props.countTypeIncorrect} câu`}</span>
+            </div>
+          )}
+        </div>
         <span>{props.data.term}</span>
       </div>
 

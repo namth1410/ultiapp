@@ -58,7 +58,7 @@ function Spell() {
             `${i - 1}# Thay đổi kí tự ${A[i - 1]} thành ${B[j - 1]}`
           );
         } else {
-          operations.push(`${i - 1}# Giữ kí tự ${A[i - 1]}`)
+          operations.push(`${i - 1}# Giữ kí tự ${A[i - 1]}`);
         }
         i--;
         j--;
@@ -83,10 +83,17 @@ function Spell() {
         });
         _result.push({
           type: "remove",
-          character: el[el.length - 1],
+          character: el[18],
         });
+
+        if (el.includes("Thay đổi")) {
+          _result.push({
+            type: "add",
+            character: el[el.length - 1],
+          });
+        }
         chiSoLanThayDoiTruoc = index;
-      } else {
+      } else if (el.includes("Thêm")) {
         _result.push({
           type: "add",
           character: el[el.length - 1],

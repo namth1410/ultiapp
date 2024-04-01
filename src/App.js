@@ -40,6 +40,7 @@ import Exam from "pages/TestOnline/Test/Test";
 import TestOnline from "pages/TestOnline/TestOnline";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import { SpellProvider } from "pages/Quizz/Spell/SpellContext";
 
 function App() {
   const needLogin = !localStorage.getItem("ulti_auth");
@@ -119,7 +120,14 @@ function App() {
             </Route>
             <Route path="/quizz" element={<Home />} />
             <Route path="/quizz/:quizz_id" element={<Quizz />} />
-            <Route path="/quizz/spell/:quizz_id" element={<Spell />} />
+            <Route
+              path="/quizz/spell/:quizz_id"
+              element={
+                <SpellProvider>
+                  <Spell />
+                </SpellProvider>
+              }
+            />
             <Route path="/quizz/create-set" element={<CreateSet />} />
             <Route path="/quizz/edit-set/:quizz_id" element={<EditSet />} />
             <Route

@@ -45,9 +45,9 @@
                 position: absolute;
                 top: 0;
                 left: 0;
-                width: 14.2857%;
                 height: 0.75rem;
                 background-color: #23b26d;
+                transition: width 0.5s ease-in-out;
               }
             }
 
@@ -118,8 +118,10 @@
 
               .test {
                 opacity: 1;
-                transition: opacity 1s ease-in-out, max-width 1s ease-in-out;
+                transition: opacity 1s ease-in-out, max-width 1s ease-in-out,
+                  transform 1s ease-in-out;
               }
+
               .remove {
                 opacity: 0;
                 max-width: 0;
@@ -127,13 +129,20 @@
                 color: #ff725b;
               }
 
-              .add {
-                opacity: 1;
+              .is_active {
                 max-width: none;
-                color: #23b26d;
               }
 
-              .is_active {
+              .add {
+                opacity: 0;
+                max-width: 0;
+                transition: opacity 1s ease-in-out, max-width 1s ease-in-out;
+              }
+
+              .is_active_add {
+                opacity: 1;
+                transition: opacity 1s ease-in-out, max-width 1s ease-in-out;
+                color: #23b26d;
                 max-width: none;
               }
             }
@@ -159,6 +168,11 @@
               font-size: 1.875rem;
               font-weight: 400;
               border-bottom: 2px solid #202227;
+            }
+
+            .correct {
+              color: #23b26d;
+              transition: color 0.5s ease-in-out;
             }
 
             .text {

@@ -1,20 +1,48 @@
-import { ControlOutlined, DoubleLeftOutlined } from "@ant-design/icons";
+import {
+  ControlOutlined,
+  DoubleLeftOutlined,
+  RedoOutlined,
+} from "@ant-design/icons";
 import listen from "assets/img/listen.svg";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Spell.module.css";
-import { useState, useEffect } from "react";
+import { useSpell } from "./SpellContext";
 
 function Spell() {
   const navigate = useNavigate();
-
+  const {
+    status,
+    setStatus,
+    dataQuizz,
+    indexQuizzItem,
+    progress,
+    setProgress,
+    totalQuizzItem,
+  } = useSpell();
   const [inputAnswer, setInputAnswer] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState(null);
-  const correctStr = "Lightbulb";
-  const [addClass, setAddClass] = useState(false);
+  const [addClassWrong, setAddClassWrong] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isActiveAdd, setIsActiveAdd] = useState(false);
+
+  const onListen = () => {
+    const synth = window.speechSynthesis;
+
+    const u = new SpeechSynthesisUtterance(
+      dataQuizz?.quizz_items[indexQuizzItem].term
+    );
+
+    u.voice = synth.getVoices()[0];
+    synth.speak(u);
+  };
 
   function getMinimumEditDistance(A, B) {
+    if (A === B) {
+      setStatus(true);
+      return;
+    }
     // Tạo ma trận 2 chiều với kích thước (A.length + 1) x (B.length + 1)
     const dp = [];
     for (let i = 0; i <= A.length; i++) {
@@ -67,24 +95,19 @@ function Spell() {
 
     operations.reverse();
     let _result = [];
-    let chiSoLanThayDoiTruoc = -1;
     operations.forEach((el, index) => {
       if (el.includes("Thay đổi") || el.includes("Xóa")) {
-        let i = parseInt(el.split("#")[0]);
-        let _inputAnswer = inputAnswer.split(""); //z x c b u l
-        _inputAnswer.forEach((c, _index) => {
-          if (_index < i && _index > chiSoLanThayDoiTruoc) {
-            console.log("giu nguyen");
-            _result.push({
-              type: "correct",
-              character: c,
-            });
-          }
-        });
-        _result.push({
-          type: "remove",
-          character: el[18],
-        });
+        if (el.includes("Thay đổi")) {
+          _result.push({
+            type: "remove",
+            character: el.split(" ")[5] || " ",
+          });
+        } else {
+          _result.push({
+            type: "remove",
+            character: el[el.length - 1] || " ",
+          });
+        }
 
         if (el.includes("Thay đổi")) {
           _result.push({
@@ -92,24 +115,28 @@ function Spell() {
             character: el[el.length - 1],
           });
         }
-        chiSoLanThayDoiTruoc = index;
       } else if (el.includes("Thêm")) {
         _result.push({
           type: "add",
           character: el[el.length - 1],
         });
+      } else if (el.includes("Giữ")) {
+        _result.push({
+          type: "correct",
+          character: el[el.length - 1],
+        });
       }
     });
-    console.log(_result);
     setResult(_result);
     setIsChecking(true);
+    console.log(operations);
     return operations;
   }
 
   useEffect(() => {
     if (!result) return;
     const timer = setTimeout(() => {
-      setAddClass(true);
+      setAddClassWrong(true);
       setIsActive(true);
     }, 1000);
 
@@ -117,14 +144,21 @@ function Spell() {
   }, [result]);
 
   useEffect(() => {
-    if (addClass) {
+    if (addClassWrong) {
       const removeClassTimer = setTimeout(() => {
         setIsActive(false);
+        setIsActiveAdd(true);
       }, 1000);
 
       return () => clearTimeout(removeClassTimer);
     }
-  }, [addClass]);
+  }, [addClassWrong]);
+
+  useEffect(() => {
+    setProgress(((indexQuizzItem / totalQuizzItem) * 100).toFixed(0));
+    setInputAnswer("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexQuizzItem]);
 
   return (
     <div className={styles.wrapper}>
@@ -158,21 +192,29 @@ function Spell() {
             <div className={styles.progress}>
               <div className={styles.total_progress}>
                 <div className={styles.progress_bar}>
-                  <span className={styles.progress_bar_fill}></span>
+                  <span
+                    style={{ width: `${progress}%` }}
+                    className={styles.progress_bar_fill}
+                  ></span>
                 </div>
                 <div className={styles.progress_label}>
                   <span>Tiến độ</span>
-                  <span>4%</span>
+                  <span>{`${progress}%`}</span>
                 </div>
               </div>
 
               <div className={styles.total_progress}>
                 <div className={styles.progress_bar}>
-                  <span className={styles.progress_bar_fill}></span>
+                  <span
+                    style={{
+                      width: `${(indexQuizzItem / 5) * 100}%`,
+                    }}
+                    className={styles.progress_bar_fill}
+                  ></span>
                 </div>
                 <div className={styles.progress_label}>
                   <span>Vòng này</span>
-                  <span>1/7</span>
+                  <span>{`${indexQuizzItem}/${5}`}</span>
                 </div>
               </div>
             </div>
@@ -188,28 +230,40 @@ function Spell() {
         <div className={styles.right_box}>
           <div className={styles.spell_controller}>
             <div className={styles.input_wrapper}>
-              <img alt="img" src={listen} style={{ width: "30px" }} />
+              <img
+                alt="img"
+                onClick={onListen}
+                src={listen}
+                style={{ width: "30px", cursor: "pointer" }}
+              />
 
               <div className={styles.view_input}>
-                {isChecking ? (
+                {isChecking && (
                   <div className={styles.show}>
                     {result.map((el) => {
                       return (
                         <span
                           key={el}
                           className={`${styles.test} ${
-                            addClass && el.type === "remove"
+                            addClassWrong && el.type === "remove"
                               ? styles.remove
                               : ""
+                          } ${el.type === "add" ? styles.add : ""}  ${
+                            isActive ? styles.is_active : ""
                           } ${
-                            addClass && el.type === "add" ? styles.add : ""
-                          } ${isActive ? styles.is_active : ""}`}
+                            isActiveAdd && el.type === "add"
+                              ? styles.is_active_add
+                              : ""
+                          }`}
                         >
-                          {el.character}
+                          {el.character === " " ? "\u00A0" : el.character}
                         </span>
                       );
                     })}
                   </div>
+                )}
+                {isChecking ? (
+                  <></>
                 ) : (
                   <input
                     onChange={(e) => {
@@ -217,36 +271,57 @@ function Spell() {
                     }}
                     onKeyUp={(e) => {
                       if (e.key === "Enter") {
-                        const operations = getMinimumEditDistance(
+                        getMinimumEditDistance(
                           inputAnswer,
-                          "bulletin"
-                        );
-
-                        console.log(
-                          "Các thao tác cần thiết để biến đổi chuỗi A thành chuỗi B:"
-                        );
-                        operations.forEach((operation) =>
-                          console.log(operation)
+                          dataQuizz.quizz_items[indexQuizzItem].term
                         );
                       }
                     }}
+                    className={`${status && styles.correct}`}
+                    value={inputAnswer}
                     placeholder="Nhập những gì bạn nghe thấy"
                   ></input>
                 )}
-                <div className={styles.text}>Trả lời</div>
+                <div
+                  style={{ color: status ? "#23b26d" : "#939bb4" }}
+                  className={styles.text}
+                >
+                  {status ? "Bạn đã trả lời đúng" : "Trả lời"}
+                  {isChecking && (
+                    <span
+                      onClick={() => {
+                        setInputAnswer("");
+                        setIsChecking(false);
+                        setResult(null);
+                        setAddClassWrong(false);
+                        setIsActive(false);
+                        setIsActiveAdd(false);
+                      }}
+                      style={{ cursor: "pointer", color: "#ffc000" }}
+                    >
+                      <span style={{ marginRight: "5px" }}>
+                        <RedoOutlined />
+                      </span>
+                      {""}
+                      Nhập lại
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className={styles.input_prompt}>
               <div className={styles.input_prompt_phonetic}>
-                /ˈlaɪtˌbʌlb/ Bóng đèn
+                {dataQuizz?.quizz_items[indexQuizzItem].definition}
               </div>
-              <div className={styles.input_prompt_image}>
-                <img
-                  alt="img"
-                  src="https://o.quizlet.com/-wA2dkxbiOHdGJPTNhmKPg.jpg"
-                />
-              </div>
+              {dataQuizz?.quizz_items[indexQuizzItem].image && (
+                <div className={styles.input_prompt_image}>
+                  <img
+                    alt="img"
+                    src={dataQuizz.quizz_items[indexQuizzItem].image}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -265,9 +265,21 @@ function Quizz() {
         {hideTerm && (
           <div className={styles.definition_wrapper}>
             <span className={styles.text_quizz_item}>
-              {isShuffle
-                ? dataShuffleQuizz?.quizz_items[indexQuizzItem].definition
-                : dataQuizz?.quizz_items[indexQuizzItem].definition}
+              <div>
+                {isShuffle
+                  ? dataShuffleQuizz?.quizz_items[indexQuizzItem].definition
+                  : dataQuizz?.quizz_items[indexQuizzItem].definition}
+              </div>
+              <div style={{ fontSize: "25px", color: "#3d3d3d" }}>
+                {isShuffle
+                  ? normalizePronunciation(
+                      dataShuffleQuizz?.quizz_items[indexQuizzItem]
+                        .pronunciation
+                    )
+                  : normalizePronunciation(
+                      dataQuizz?.quizz_items[indexQuizzItem].pronunciation
+                    )}
+              </div>
             </span>
             <img
               alt="img"

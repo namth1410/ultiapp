@@ -63,6 +63,18 @@
           }
         }
 
+        .auto_listen {
+          display: flex;
+          flex-direction: column;
+          margin-top: 40px;
+          gap: 20px;
+          .auto_item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        }
+
         .action {
           position: absolute;
           bottom: 1rem;

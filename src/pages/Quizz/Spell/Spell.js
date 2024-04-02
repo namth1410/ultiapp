@@ -5,12 +5,13 @@ import {
   DoubleLeftOutlined,
   RedoOutlined,
 } from "@ant-design/icons";
+import { Switch } from "antd";
 import listen from "assets/img/listen.svg";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Spell.module.css";
 import { useSpell } from "./SpellContext";
-import axios from "axios";
 
 function Spell() {
   const navigate = useNavigate();
@@ -45,7 +46,10 @@ function Spell() {
   const [isActiveAdd, setIsActiveAdd] = useState(false);
   const [countTypeIncorrect, setCountTypeIncorrect] = useState(0);
 
-  const [audioSrc, setAudioSrc] = useState(null);
+  const [autoPlayV1, setAutoPlayV1] = useState(false);
+  const [autoPlayV2, setAutoPlayV2] = useState(false);
+  const [audioElement, setAudioElement] = useState(null);
+  const intervalRef = useRef(null);
 
   const onListen = () => {
     const synth = window.speechSynthesis;
@@ -234,8 +238,33 @@ function Spell() {
       window.removeEventListener("keyup", handleKeyPress);
     };
   }, [isActiveAdd]);
-
   useEffect(() => {
+    if (!autoPlayV2) {
+      // Nếu autoPlayV2 là false và intervalRef hiện đang lưu trữ một interval, hủy nó.
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
+
+    // Nếu autoPlayV2 là true và intervalRef không chứa bất kỳ interval nào, tạo mới interval.
+    if (!intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        a();
+      }, 2000);
+    }
+
+    // Hàm cleanup trong useEffect để đảm bảo rằng interval được hủy khi component unmount hoặc dependency thay đổi.
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [autoPlayV2]);
+
+  const a = async () => {
     const apiKey = "AIzaSyCgT0Tj0KP1LvNFgu2c-urP8v-CbJUiRlw";
     const endpoint = `https://us-central1-texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`;
     const payload = {
@@ -246,26 +275,29 @@ function Spell() {
         speakingRate: 1,
       },
       input: {
-        text: "Tôi yêu Việt Nam",
+        text: dataQuizz.quizz_items[indexQuizzItem].term,
       },
       voice: {
         languageCode: "vi-VN",
         name: "vi-VN-Neural2-A",
       },
     };
-    const a = async () => {
-      axios
-        .post(endpoint, payload)
-        .then((res) => {
-          console.log(res);
-          setAudioSrc(`data:audio/mp3;base64,${res.data.audioContent}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    a();
-  }, []);
+    axios
+      .post(endpoint, payload)
+      .then((res) => {
+        if (audioElement) {
+          audioElement.pause();
+        }
+        const newAudioElement = new Audio(
+          `data:audio/mp3;base64,${res.data.audioContent}`
+        );
+        setAudioElement(newAudioElement);
+        newAudioElement.play();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -325,6 +357,29 @@ function Spell() {
                   <span>Vòng này</span>
                   <span>{`${quizzIndexInCurrentRound}/${countQuizzItemInRound}`}</span>
                 </div>
+              </div>
+            </div>
+
+            <div className={styles.auto_listen}>
+              <div>Tự động phát</div>
+              <div className={styles.auto_item}>
+                <span>Khi chuyển từ</span>
+                <Switch
+                  value={autoPlayV1}
+                  onChange={(e) => {
+                    setAutoPlayV1(e);
+                  }}
+                />
+              </div>
+
+              <div className={styles.auto_item}>
+                <span>Mỗi 2 giây</span>
+                <Switch
+                  value={autoPlayV2}
+                  onChange={(e) => {
+                    setAutoPlayV2(e);
+                  }}
+                />
               </div>
             </div>
 
@@ -606,8 +661,6 @@ function Spell() {
               </div>
             </div>
           )}
-
-          {audioSrc && <audio controls src={audioSrc} />}
         </div>
       </div>
     </div>

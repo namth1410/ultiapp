@@ -528,7 +528,7 @@ function Quizz() {
 
       <Modal
         title="Bạn đánh giá quizz này như thế nào?"
-        footer={(_, {}) => (
+        footer={(_) => (
           <Button type="primary" onClick={onRate}>
             Gửi
           </Button>

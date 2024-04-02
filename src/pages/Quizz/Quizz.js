@@ -18,7 +18,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
 import styles from "./Quizz.module.css";
-import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
+import {
+  cacheImages,
+  normalizePartsOfSpeech,
+  normalizePronunciation,
+} from "ultis/func";
 
 function Quizz() {
   const { quizz_id } = useParams();
@@ -102,6 +106,7 @@ function Quizz() {
         setTotalQuizzItem(quizzData.quizz_items.length);
         setIndexQuizzItem(0);
         setIsLockTest(quizzData.quizz_items.length < 5);
+        cacheImages(quizzData.quizz_items.map((el) => el.image));
         if (auth.currentUser.uid === quizzData.uidCreator) {
           setIsOwner(true);
         } else {

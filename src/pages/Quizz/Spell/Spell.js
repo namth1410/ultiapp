@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Spell.module.css";
 import { useSpell } from "./SpellContext";
+import axios from "axios";
 
 function Spell() {
   const navigate = useNavigate();
@@ -43,6 +44,8 @@ function Spell() {
   const [isActive, setIsActive] = useState(false);
   const [isActiveAdd, setIsActiveAdd] = useState(false);
   const [countTypeIncorrect, setCountTypeIncorrect] = useState(0);
+
+  const [audioSrc, setAudioSrc] = useState(null);
 
   const onListen = () => {
     const synth = window.speechSynthesis;
@@ -231,6 +234,38 @@ function Spell() {
       window.removeEventListener("keyup", handleKeyPress);
     };
   }, [isActiveAdd]);
+
+  useEffect(() => {
+    const apiKey = "AIzaSyCgT0Tj0KP1LvNFgu2c-urP8v-CbJUiRlw";
+    const endpoint = `https://us-central1-texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`;
+    const payload = {
+      audioConfig: {
+        audioEncoding: "MP3",
+        effectsProfileId: ["small-bluetooth-speaker-class-device"],
+        pitch: 0,
+        speakingRate: 1,
+      },
+      input: {
+        text: "Tôi yêu Việt Nam",
+      },
+      voice: {
+        languageCode: "vi-VN",
+        name: "vi-VN-Neural2-A",
+      },
+    };
+    const a = async () => {
+      axios
+        .post(endpoint, payload)
+        .then((res) => {
+          console.log(res);
+          setAudioSrc(`data:audio/mp3;base64,${res.data.audioContent}`);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    a();
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -571,6 +606,8 @@ function Spell() {
               </div>
             </div>
           )}
+
+          {audioSrc && <audio controls src={audioSrc} />}
         </div>
       </div>
     </div>

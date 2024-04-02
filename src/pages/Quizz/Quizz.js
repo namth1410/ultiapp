@@ -2,31 +2,33 @@ import {
   CaretRightOutlined,
   EditOutlined,
   LeftCircleOutlined,
+  LockOutlined,
   RightCircleOutlined,
   RiseOutlined,
   SettingOutlined,
   SoundOutlined,
   StarFilled,
   SwapOutlined,
-  LockOutlined,
 } from "@ant-design/icons";
-import { Badge, Modal, Select } from "antd";
+import { Badge, Button, Input, Modal, Rate, Select } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { auth, firestore } from "../../firebase";
-import styles from "./Quizz.module.css";
 import {
   cacheImages,
   normalizePartsOfSpeech,
   normalizePronunciation,
 } from "ultis/func";
+import { convertISOToCustomFormat } from "ultis/time";
+import { auth, firestore, useAuth } from "../../firebase";
+import styles from "./Quizz.module.css";
 
 function Quizz() {
   const { quizz_id } = useParams();
   const navigate = useNavigate();
+  const currentUser = useAuth();
 
   const infoUser = JSON.parse(localStorage.getItem("ulti_user"));
 
@@ -39,6 +41,11 @@ function Quizz() {
   const [access, setAccess] = useState("public");
   const [voice, setVoice] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRateModalOpen, setIsRateModalOpen] = useState(false);
+  const [rate, setRate] = useState(0);
+  const [rateComment, setRateComment] = useState("");
+  const [rateOfQuizz, setRateOfQuizz] = useState(0);
+  const [countRateOfQuizz, setCountRateOfQuizz] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [isLockTest, setIsLockTest] = useState(false);
 
@@ -55,6 +62,45 @@ function Quizz() {
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const onRate = async () => {
+    const quizzRef = doc(firestore, "quizzs", quizz_id);
+
+    const quizzDoc = await getDoc(quizzRef);
+    if (!quizzDoc.exists()) {
+      console.log("Quizz không tồn tại!");
+      return;
+    }
+
+    const quizzData = quizzDoc.data();
+
+    const existingRateIndex = quizzData.rates.findIndex(
+      (rate) => rate.uid === currentUser.uid
+    );
+
+    if (existingRateIndex !== -1) {
+      const updatedRates = [...quizzData.rates];
+      updatedRates[existingRateIndex] = {
+        uid: currentUser.uid,
+        rate: rate,
+        rateComment: rateComment,
+      };
+
+      await updateDoc(quizzRef, { rates: updatedRates });
+    } else {
+      const updatedRates = [
+        ...quizzData.rates,
+        {
+          uid: currentUser.uid,
+          rate: rate,
+          rateComment: rateComment,
+        },
+      ];
+
+      await updateDoc(quizzRef, { rates: updatedRates });
+    }
+    setIsRateModalOpen(false);
   };
 
   useEffect(() => {
@@ -107,6 +153,24 @@ function Quizz() {
         setIndexQuizzItem(0);
         setIsLockTest(quizzData.quizz_items.length < 5);
         cacheImages(quizzData.quizz_items.map((el) => el.image));
+        setRateOfQuizz(
+          quizzData.rates?.length
+            ? (
+                quizzData.rates.reduce(
+                  (accumulator, currentValue) =>
+                    accumulator + currentValue.rate,
+                  0
+                ) / quizzData.rates.length
+              ).toFixed(1)
+            : 0
+        );
+        setCountRateOfQuizz(quizzData.rates?.length);
+        const a = quizzData.rates?.find(
+          (el) => el.uid === auth.currentUser.uid
+        );
+        setRateComment(a?.rateComment || "");
+
+        setRate(a?.rate || 0);
         if (auth.currentUser.uid === quizzData.uidCreator) {
           setIsOwner(true);
         } else {
@@ -149,7 +213,15 @@ function Quizz() {
           29 người học trong 1 ngày qua
         </span>
         <StarFilled style={{ color: "#FFCD1F", marginRight: "5px" }} />
-        <span>5.0 (2 đánh giá)</span>
+        <span
+          onClick={() => {
+            if (currentUser.uid === dataQuizz.uidCreator) {
+              setIsRateModalOpen(true);
+            }
+          }}
+        >
+          {`${rateOfQuizz} (${countRateOfQuizz} đánh giá)`}
+        </span>
       </div>
 
       <div className={styles.mode_wrapper}>
@@ -409,7 +481,9 @@ function Quizz() {
                 textOverflow: "ellipsis",
               }}
             >
-              {infoUser.email}
+              {dataQuizz
+                ? `Tạo vào ${convertISOToCustomFormat(dataQuizz?.dateCreate)}`
+                : ""}
             </span>
           </div>
         </div>
@@ -450,6 +524,29 @@ function Quizz() {
         </div>
         <p>Có câu chưa làm !!!</p>
         <p>Bạn có muốn nộp bài không?</p>
+      </Modal>
+
+      <Modal
+        title="Bạn đánh giá quizz này như thế nào?"
+        footer={(_, {}) => (
+          <Button type="primary" onClick={onRate}>
+            Gửi
+          </Button>
+        )}
+        open={isRateModalOpen}
+        onCancel={() => {
+          setIsRateModalOpen(false);
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+          <Rate value={rate} onChange={(e) => setRate(e)} />
+          <Input
+            size="large"
+            value={rateComment}
+            onChange={(e) => setRateComment(e.target.value)}
+            placeholder="Nhập đánh giá"
+          />
+        </div>
       </Modal>
     </div>
   );

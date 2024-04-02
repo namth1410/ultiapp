@@ -210,6 +210,9 @@ function Spell() {
     );
     inputRef.current.focus();
     setCountTypeIncorrect(0);
+    if (autoPlayV1) {
+      a();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuizzItem, dataQuizz]);
 
@@ -238,6 +241,7 @@ function Spell() {
       window.removeEventListener("keyup", handleKeyPress);
     };
   }, [isActiveAdd]);
+
   useEffect(() => {
     if (!autoPlayV2) {
       // Nếu autoPlayV2 là false và intervalRef hiện đang lưu trữ một interval, hủy nó.

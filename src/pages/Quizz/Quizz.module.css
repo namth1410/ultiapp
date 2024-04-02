@@ -51,6 +51,7 @@
       justify-content: center;
       align-items: center;
       position: relative;
+      animation: rotateBack 0.5s ease forwards;
 
       .actions {
         position: absolute;
@@ -66,6 +67,7 @@
       justify-content: center;
       align-items: center;
       gap: 30px;
+      animation: rotateBack 0.5s ease forwards;
     }
 
     .text_quizz_item {
@@ -92,5 +94,14 @@
 
   .detail_quizz {
     width: 80%;
+  }
+}
+
+@keyframes rotateBack {
+  from {
+    transform: rotateX(90deg);
+  }
+  to {
+    transform: rotateX(0deg);
   }
 }

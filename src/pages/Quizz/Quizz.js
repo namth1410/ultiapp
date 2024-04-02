@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
 import styles from "./Quizz.module.css";
+import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
 
 function Quizz() {
   const { quizz_id } = useParams();
@@ -278,6 +279,7 @@ function Quizz() {
                   : dataQuizz?.quizz_items[indexQuizzItem].image
                   ? "block"
                   : "none",
+                maxWidth: "250px",
               }}
             />
           </div>
@@ -437,7 +439,7 @@ function Quizz() {
 }
 
 const Item = ({ props, voice }) => {
-  const { term, definition } = props;
+  const { term, definition, pronunciation, partsOfSpeech } = props;
   return (
     <div
       style={{
@@ -451,11 +453,22 @@ const Item = ({ props, voice }) => {
         fontWeight: "500",
       }}
     >
-      <span style={{ width: "180px" }}>{term}</span>
+      <div style={{ width: "180px" }}>
+        <div>{term}</div>
+        {pronunciation !== "" && (
+          <div>{normalizePronunciation(pronunciation)}</div>
+        )}
+      </div>
       <div
         style={{ height: "40px", width: "2px", backgroundColor: "#f6f7fb" }}
       ></div>
-      <span style={{ paddingLeft: "20px", fontWeight: "bold" }}>
+
+      {partsOfSpeech !== "" && (
+        <span style={{ paddingLeft: "10px", fontWeight: "bold" }}>
+          {normalizePartsOfSpeech(partsOfSpeech)}
+        </span>
+      )}
+      <span style={{ paddingLeft: "10px", fontWeight: "bold" }}>
         {definition}
       </span>
 

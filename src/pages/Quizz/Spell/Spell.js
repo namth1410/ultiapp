@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Spell.module.css";
 import { useSpell } from "./SpellContext";
+import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
 
 function Spell() {
   const navigate = useNavigate();
@@ -365,7 +366,7 @@ function Spell() {
             </div>
 
             <div className={styles.auto_listen}>
-              <div>Tự động phát</div>
+              <div style={{ color: "#3ccfcf" }}>Tự động phát</div>
               <div className={styles.auto_item}>
                 <span>Khi chuyển từ</span>
                 <Switch
@@ -488,6 +489,7 @@ function Spell() {
                 {dataQuizz?.quizz_items[indexQuizzItem].image && (
                   <div className={styles.input_prompt_image}>
                     <img
+                      style={{ maxWidth: "500px" }}
                       alt="img"
                       src={dataQuizz.quizz_items[indexQuizzItem].image}
                     />
@@ -687,12 +689,20 @@ const ResultRoundItem = ({ props }) => {
             </div>
           )}
         </div>
-        <span>{props.data.term}</span>
+        <div>{props.data.term}</div>
+        {props.data.pronunciation !== "" && (
+          <div>{normalizePronunciation(props.data.pronunciation)}</div>
+        )}
+        {props.data.partsOfSpeech !== "" && (
+          <div>{normalizePartsOfSpeech(props.data.partsOfSpeech)}</div>
+        )}
       </div>
 
       <div className={styles.SpellAnalysisItem_prompt}>
         <span>{props.data.definition}</span>
-        {props.data.image && <img alt="img" src={props.data.image} />}
+        {props.data.image && (
+          <img style={{ maxWidth: "250px" }} alt="img" src={props.data.image} />
+        )}
       </div>
     </div>
   );

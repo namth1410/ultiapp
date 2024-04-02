@@ -33,6 +33,14 @@ function CreateSet() {
   const [access, setAccess] = useState("public");
   const [isLoading, setIsLoading] = useState(false);
 
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
   const uploadImageList = async (quizz) => {
     const quizz_items = quizz.quizz_items;
 
@@ -76,6 +84,8 @@ function CreateSet() {
     let _quizz_items = values.quizz_items.map((el, index) => ({
       ...el,
       image: imageListURL[index],
+      pronunciation: el.pronunciation || "",
+      partsOfSpeech: el.partsOfSpeech || "",
     }));
 
     const dataToAdd = {
@@ -289,6 +299,30 @@ function CreateSet() {
                       >
                         <Input placeholder="Định nghĩa" />
                       </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "pronunciation"]}
+                        rules={[
+                          {
+                            required: false,
+                            message: "Không để trống!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Phiên âm" />
+                      </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "partsOfSpeech"]}
+                        rules={[
+                          {
+                            required: false,
+                            message: "Không để trống!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Từ loại" />
+                      </Form.Item>
                       <Form.Item name={[name, "image"]}>
                         <Upload
                           name="avatar"
@@ -299,6 +333,7 @@ function CreateSet() {
                             return false;
                           }}
                           maxCount={1}
+                          previewFile={getBase64}
                         >
                           {uploadButton}
                         </Upload>

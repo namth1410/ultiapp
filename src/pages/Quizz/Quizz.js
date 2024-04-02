@@ -24,6 +24,7 @@ import {
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Quizz.module.css";
+import { toast } from "react-toastify";
 
 function Quizz() {
   const { quizz_id } = useParams();
@@ -41,6 +42,8 @@ function Quizz() {
   const [access, setAccess] = useState("public");
   const [voice, setVoice] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditQuizzItemModalOpen, setIsEditQuizzItemModalOpen] =
+    useState(false);
   const [isRateModalOpen, setIsRateModalOpen] = useState(false);
   const [rate, setRate] = useState(0);
   const [rateComment, setRateComment] = useState("");
@@ -48,6 +51,11 @@ function Quizz() {
   const [countRateOfQuizz, setCountRateOfQuizz] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [isLockTest, setIsLockTest] = useState(false);
+
+  const [termEdit, setTermEdit] = useState("");
+  const [definitionEdit, setDefinitionEdit] = useState("");
+  const [pronunciationEdit, setPronunciationEdit] = useState("");
+  const [partsOfSpeechEdit, setPartsOfSpeechEdit] = useState("");
 
   const handleVoiceChange = (event) => {
     const voices = window.speechSynthesis.getVoices();
@@ -101,6 +109,58 @@ function Quizz() {
       await updateDoc(quizzRef, { rates: updatedRates });
     }
     setIsRateModalOpen(false);
+  };
+
+  const onUpdateQuizzItem = async () => {
+    if (termEdit === "") {
+      toast.error("Không để trống thuật ngữ", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+    if (definitionEdit === "") {
+      toast.error("Không để trống thuật ngữ", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    const quizzRef = doc(firestore, "quizzs", quizz_id);
+
+    const quizzDoc = await getDoc(quizzRef);
+    if (!quizzDoc.exists()) {
+      console.log("Quizz không tồn tại!");
+      return;
+    }
+
+    const quizzData = quizzDoc.data();
+
+    const _quizz_items = [...quizzData.quizz_items];
+    _quizz_items[indexQuizzItem] = {
+      ..._quizz_items[indexQuizzItem],
+      term: termEdit,
+      definition: definitionEdit,
+      pronunciation: pronunciationEdit,
+      partsOfSpeech: partsOfSpeechEdit,
+    };
+
+    await updateDoc(quizzRef, { quizz_items: _quizz_items });
+    setIsEditQuizzItemModalOpen(false);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -214,6 +274,7 @@ function Quizz() {
         </span>
         <StarFilled style={{ color: "#FFCD1F", marginRight: "5px" }} />
         <span
+          style={{ cursor: "pointer" }}
           onClick={() => {
             if (currentUser.uid !== dataQuizz.uidCreator) {
               setIsRateModalOpen(true);
@@ -309,6 +370,25 @@ function Quizz() {
         {!hideTerm && (
           <div className={styles.term_wrapper}>
             <div className={styles.actions}>
+              <EditOutlined
+                style={{
+                  fontSize: "20px",
+                  marginRight: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const tmp = isShuffle
+                    ? dataShuffleQuizz?.quizz_items[indexQuizzItem]
+                    : dataQuizz?.quizz_items[indexQuizzItem];
+                  setTermEdit(tmp.term);
+                  setDefinitionEdit(tmp.definition);
+                  setPronunciationEdit(tmp.pronunciation);
+                  setPartsOfSpeechEdit(tmp.partsOfSpeech);
+                  setIsEditQuizzItemModalOpen(true);
+                }}
+              />
+
               <SoundOutlined
                 style={{
                   fontSize: "20px",
@@ -342,16 +422,18 @@ function Quizz() {
                   ? dataShuffleQuizz?.quizz_items[indexQuizzItem].definition
                   : dataQuizz?.quizz_items[indexQuizzItem].definition}
               </div>
-              <div style={{ fontSize: "25px", color: "#3d3d3d" }}>
-                {isShuffle
-                  ? normalizePronunciation(
-                      dataShuffleQuizz?.quizz_items[indexQuizzItem]
-                        .pronunciation
-                    )
-                  : normalizePronunciation(
-                      dataQuizz?.quizz_items[indexQuizzItem].pronunciation
-                    )}
-              </div>
+              {dataQuizz?.quizz_items[indexQuizzItem].pronunciation !== "" && (
+                <div style={{ fontSize: "25px", color: "#3d3d3d" }}>
+                  {isShuffle
+                    ? normalizePronunciation(
+                        dataShuffleQuizz?.quizz_items[indexQuizzItem]
+                          .pronunciation
+                      )
+                    : normalizePronunciation(
+                        dataQuizz?.quizz_items[indexQuizzItem].pronunciation
+                      )}
+                </div>
+              )}
             </span>
             <img
               alt="img"
@@ -524,6 +606,46 @@ function Quizz() {
         </div>
         <p>Có câu chưa làm !!!</p>
         <p>Bạn có muốn nộp bài không?</p>
+      </Modal>
+
+      <Modal
+        title="Sửa"
+        footer={(_) => (
+          <Button type="primary" onClick={onUpdateQuizzItem}>
+            Lưu
+          </Button>
+        )}
+        open={isEditQuizzItemModalOpen}
+        onCancel={() => {
+          setIsEditQuizzItemModalOpen(false);
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+          <Input
+            size="large"
+            value={termEdit}
+            onChange={(e) => setTermEdit(e.target.value)}
+            placeholder="Nhập thuật ngữ"
+          />
+          <Input
+            size="large"
+            value={definitionEdit}
+            onChange={(e) => setDefinitionEdit(e.target.value)}
+            placeholder="Nhập định nghĩa"
+          />
+          <Input
+            size="large"
+            value={pronunciationEdit}
+            onChange={(e) => setPronunciationEdit(e.target.value)}
+            placeholder="Nhập phiên âm"
+          />
+          <Input
+            size="large"
+            value={partsOfSpeechEdit}
+            onChange={(e) => setPartsOfSpeechEdit(e.target.value)}
+            placeholder="Nhập từ loại"
+          />
+        </div>
       </Modal>
 
       <Modal

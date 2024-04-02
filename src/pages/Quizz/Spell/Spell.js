@@ -267,6 +267,7 @@ function Spell() {
         intervalRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlayV2]);
 
   const a = async () => {

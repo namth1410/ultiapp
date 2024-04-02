@@ -215,7 +215,7 @@ function Quizz() {
         <StarFilled style={{ color: "#FFCD1F", marginRight: "5px" }} />
         <span
           onClick={() => {
-            if (currentUser.uid === dataQuizz.uidCreator) {
+            if (currentUser.uid !== dataQuizz.uidCreator) {
               setIsRateModalOpen(true);
             }
           }}

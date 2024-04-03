@@ -62,7 +62,7 @@ function Spell() {
   };
 
   function getMinimumEditDistance(A, B) {
-    if (A === B) {
+    if (A.toLowerCase() === B.toLowerCase()) {
       const _resultRound = resultRound ? [...resultRound] : [];
       setResultRound([
         ..._resultRound,

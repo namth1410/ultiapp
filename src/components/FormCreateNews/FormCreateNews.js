@@ -41,6 +41,11 @@ function FormCreateNews() {
     if (imageNewFeed) {
       await uploadFile();
     }
+    if (content === "") {
+      setIsLoading(false);
+      return;
+    }
+
     const dataToAdd = {
       dateCreate: new Date().toISOString(),
       uidCreator: auth.currentUser.uid,

@@ -80,7 +80,7 @@ export const ClassProvider = ({ children }) => {
       mySelf,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dataClass, dataHomework, requestJoinClass]
+    [creatorId, classId, dataClass, dataHomework, requestJoinClass, mySelf]
   );
 
   return (

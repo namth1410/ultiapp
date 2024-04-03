@@ -1,22 +1,21 @@
+import {
+  getNewsfeedOfClass,
+  snapshotNewsfeedOfClass,
+} from "appdata/newsfeed/newsfeedSlice";
 import { ReactComponent as NewsFeedSvg } from "assets/img/newsfeed.svg";
 import FormCreateNews from "components/FormCreateNews/FormCreateNews";
 import NewItem from "components/NewItem/NewItem";
 import { useClass } from "contexts/class_context/ClassContext";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { firestore } from "../../../firebase";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./NewsFeed.module.css";
 
 function NewsFeed() {
   const classId = window.location.pathname.split("/")[2];
-
+  const dispatch = useDispatch();
   const { dataClass, mySelf } = useClass();
+
+  const newsfeedRedux = useSelector((state) => state.newsfeedRedux);
 
   const [newsfeed, setNewsfeed] = useState(null);
   const [canPostNews, setCanPostNews] = useState(false);
@@ -30,27 +29,16 @@ function NewsFeed() {
   }, [dataClass]);
 
   useEffect(() => {
-    const q = query(
-      collection(firestore, "newsfeed"),
-      where("class", "==", classId),
-      orderBy("dateCreate", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-      if (QuerySnapshot.empty) {
-        setNewsfeed(null);
-        return;
-      }
-      const newsfeed = [];
-
-      QuerySnapshot.forEach((doc) => {
-        newsfeed.push({ ...doc.data(), id: doc.id });
-      });
-      setNewsfeed(newsfeed);
-    });
-    return () => unsubscribe;
+    dispatch(getNewsfeedOfClass({ classId: classId }));
+    dispatch(snapshotNewsfeedOfClass({ classId: classId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!newsfeedRedux?.newsfeed) return;
+    console.log(newsfeedRedux.newsfeed);
+    setNewsfeed(newsfeedRedux.newsfeed);
+  }, [newsfeedRedux]);
 
   return (
     <div className={styles.wrapper}>
@@ -86,9 +74,10 @@ function NewsFeed() {
         </div>
       )}
 
-      {newsfeed?.map((newfeed) => {
-        return <NewItem key={newfeed} newfeed={newfeed} />;
-      })}
+      {newsfeed &&
+        newsfeed?.map((newfeed) => {
+          return <NewItem key={newfeed} newfeed={newfeed} />;
+        })}
     </div>
   );
 }

@@ -1,16 +1,18 @@
 import { DeleteFilled, MessageOutlined, SendOutlined } from "@ant-design/icons";
 import { Button, Input, Modal } from "antd";
 import CommentItem from "components/CommentItem/CommentItem";
+import { useClass } from "contexts/class_context/ClassContext";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { convertDurationToStringV1 } from "ultis/time";
-import { auth, firestore } from "../../firebase";
+import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./NewItem.module.css";
-import { useClass } from "contexts/class_context/ClassContext";
 
 function NewItem({ newfeed }) {
   const { creatorId } = useClass();
+
+  const currentUser = useAuth();
 
   const [commentDraft, setCommentDraft] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,8 +58,8 @@ function NewItem({ newfeed }) {
           </div>
         </div>
 
-        {(newfeed.uidCreator === auth.currentUser.uid ||
-          auth.currentUser.uid === creatorId) && (
+        {(newfeed.uidCreator === currentUser?.uid ||
+          currentUser?.uid === creatorId) && (
           <DeleteFilled
             onClick={() => {
               setIsModalOpen(true);

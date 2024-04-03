@@ -7,12 +7,11 @@ import {
 } from "@ant-design/icons";
 import { Switch } from "antd";
 import listen from "assets/img/listen.svg";
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
 import styles from "./Spell.module.css";
 import { useSpell } from "./SpellContext";
-import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
 
 function Spell() {
   const navigate = useNavigate();
@@ -49,7 +48,6 @@ function Spell() {
 
   const [autoPlayV1, setAutoPlayV1] = useState(false);
   const [autoPlayV2, setAutoPlayV2] = useState(false);
-  const [audioElement, setAudioElement] = useState(null);
   const intervalRef = useRef(null);
 
   const onListen = () => {
@@ -212,7 +210,7 @@ function Spell() {
     inputRef.current.focus();
     setCountTypeIncorrect(0);
     if (autoPlayV1) {
-      a();
+      onListen();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuizzItem, dataQuizz]);
@@ -256,7 +254,7 @@ function Spell() {
     // Nếu autoPlayV2 là true và intervalRef không chứa bất kỳ interval nào, tạo mới interval.
     if (!intervalRef.current) {
       intervalRef.current = setInterval(() => {
-        a();
+        onListen();
       }, 2000);
     }
 
@@ -269,41 +267,6 @@ function Spell() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlayV2]);
-
-  const a = async () => {
-    const apiKey = "AIzaSyCgT0Tj0KP1LvNFgu2c-urP8v-CbJUiRlw";
-    const endpoint = `https://us-central1-texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`;
-    const payload = {
-      audioConfig: {
-        audioEncoding: "MP3",
-        effectsProfileId: ["small-bluetooth-speaker-class-device"],
-        pitch: 0,
-        speakingRate: 1,
-      },
-      input: {
-        text: dataQuizz.quizz_items[indexQuizzItem].term,
-      },
-      voice: {
-        languageCode: "vi-VN",
-        name: "vi-VN-Neural2-A",
-      },
-    };
-    axios
-      .post(endpoint, payload)
-      .then((res) => {
-        if (audioElement) {
-          audioElement.pause();
-        }
-        const newAudioElement = new Audio(
-          `data:audio/mp3;base64,${res.data.audioContent}`
-        );
-        setAudioElement(newAudioElement);
-        newAudioElement.play();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   return (
     <div className={styles.wrapper}>

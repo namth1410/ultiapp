@@ -1,62 +1,37 @@
 import { CloseCircleFilled, FileImageFilled } from "@ant-design/icons";
 import { Button, Input } from "antd";
-import { addDoc, collection } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { postNewsfeed } from "appdata/newsfeed/newsfeedSlice";
 import { useRef, useState } from "react";
-import { auth, firestore, storage } from "../../firebase";
+import { useDispatch } from "react-redux";
+import { auth } from "../../firebase";
 import styles from "./FormCreateNews.module.css";
 
 const { TextArea } = Input;
-let imageUrl = "";
 
 function FormCreateNews() {
   const classId = window.location.pathname.split("/")[2];
-
+  const dispatch = useDispatch();
   const hiddenFileInput = useRef(null);
 
   const [content, setContent] = useState("");
   const [imageNewFeed, setImageNewFeed] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const uploadFile = async () => {
-    const now = new Date().toISOString();
-    const storageRef = ref(storage, `Newsfeed/${classId}/${now}`);
-
-    await uploadBytes(storageRef, imageNewFeed)
-      .then((snapshot) => {
-        console.log("Uploaded a blob or file!");
-        return getDownloadURL(snapshot.ref);
-      })
-      .then((downloadURL) => {
-        console.log("File available at", downloadURL);
-        imageUrl = downloadURL;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
   const onPost = async () => {
     setIsLoading(true);
-    if (imageNewFeed) {
-      await uploadFile();
-    }
     if (content === "") {
       setIsLoading(false);
       return;
     }
-
-    const dataToAdd = {
-      dateCreate: new Date().toISOString(),
-      uidCreator: auth.currentUser.uid,
-      nameCreator: auth.currentUser.displayName,
-      photoURL: auth.currentUser.photoURL,
-      class: classId,
+    const body = {
+      classId: classId,
+      imageNewFeed: imageNewFeed,
+      currentUser: auth.currentUser,
       content: content,
-      image: imageUrl,
     };
-    const docRef = await addDoc(collection(firestore, "newsfeed"), dataToAdd);
-    console.log(docRef);
+
+    dispatch(postNewsfeed({ body: body }));
+
     setIsLoading(false);
     setContent("");
     setImageNewFeed(null);

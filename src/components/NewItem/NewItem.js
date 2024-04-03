@@ -1,25 +1,30 @@
 import { DeleteFilled, MessageOutlined, SendOutlined } from "@ant-design/icons";
 import { Button, Input, Modal } from "antd";
+import {
+  deleteNewsfeed,
+  postCommentNewsfeed,
+} from "appdata/newsfeed/newsfeedSlice";
 import CommentItem from "components/CommentItem/CommentItem";
 import { useClass } from "contexts/class_context/ClassContext";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { convertDurationToStringV1 } from "ultis/time";
-import { auth, firestore, useAuth } from "../../firebase";
+import { auth, useAuth } from "../../firebase";
 import styles from "./NewItem.module.css";
 
 function NewItem({ newfeed }) {
   const { creatorId } = useClass();
 
   const currentUser = useAuth();
+  const dispatch = useDispatch();
 
   const [commentDraft, setCommentDraft] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHiddenComment, setIsHiddenComment] = useState(false);
 
   const onDeletePost = async () => {
-    deleteDoc(doc(firestore, "newsfeed", newfeed.id));
+    dispatch(deleteNewsfeed({ newsfeedId: newfeed.id }));
     setIsModalOpen(false);
   };
 
@@ -39,8 +44,7 @@ function NewItem({ newfeed }) {
       : [newComment];
 
     const dataToAdd = { ...newfeed, comments: newComments };
-    const quizzRef = doc(firestore, "newsfeed", newfeed.id);
-    await updateDoc(quizzRef, dataToAdd);
+    dispatch(postCommentNewsfeed({ body: dataToAdd }));
   };
 
   return (

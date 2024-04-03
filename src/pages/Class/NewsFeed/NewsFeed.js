@@ -36,7 +36,6 @@ function NewsFeed() {
 
   useEffect(() => {
     if (!newsfeedRedux?.newsfeed) return;
-    console.log(newsfeedRedux.newsfeed);
     setNewsfeed(newsfeedRedux.newsfeed);
   }, [newsfeedRedux]);
 
@@ -74,10 +73,9 @@ function NewsFeed() {
         </div>
       )}
 
-      {newsfeed &&
-        newsfeed?.map((newfeed) => {
-          return <NewItem key={newfeed} newfeed={newfeed} />;
-        })}
+      {newsfeed?.map((newfeed) => {
+        return <NewItem key={newfeed} newfeed={newfeed} />;
+      })}
     </div>
   );
 }

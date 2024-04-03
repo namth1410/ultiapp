@@ -370,24 +370,26 @@ function Quizz() {
         {!hideTerm && (
           <div className={styles.term_wrapper}>
             <div className={styles.actions}>
-              <EditOutlined
-                style={{
-                  fontSize: "20px",
-                  marginRight: "20px",
-                  cursor: "pointer",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const tmp = isShuffle
-                    ? dataShuffleQuizz?.quizz_items[indexQuizzItem]
-                    : dataQuizz?.quizz_items[indexQuizzItem];
-                  setTermEdit(tmp.term);
-                  setDefinitionEdit(tmp.definition);
-                  setPronunciationEdit(tmp.pronunciation);
-                  setPartsOfSpeechEdit(tmp.partsOfSpeech);
-                  setIsEditQuizzItemModalOpen(true);
-                }}
-              />
+              {currentUser?.uid === dataQuizz?.uidCreator && (
+                <EditOutlined
+                  style={{
+                    fontSize: "20px",
+                    marginRight: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const tmp = isShuffle
+                      ? dataShuffleQuizz?.quizz_items[indexQuizzItem]
+                      : dataQuizz?.quizz_items[indexQuizzItem];
+                    setTermEdit(tmp.term);
+                    setDefinitionEdit(tmp.definition);
+                    setPronunciationEdit(tmp.pronunciation);
+                    setPartsOfSpeechEdit(tmp.partsOfSpeech);
+                    setIsEditQuizzItemModalOpen(true);
+                  }}
+                />
+              )}
 
               <SoundOutlined
                 style={{
@@ -507,16 +509,18 @@ function Quizz() {
         </div>
 
         <div style={{ display: "flex", gap: "15px" }}>
-          <EditOutlined
-            onClick={() => {
-              navigate(`/quizz/edit-set/${quizz_id}`);
-            }}
-            style={{
-              fontSize: "35px",
-              color: "var(--text-color-primary)",
-              display: isOwner ? "inline-flex" : "none",
-            }}
-          />
+          {currentUser?.uid === dataQuizz?.uidCreator && (
+            <EditOutlined
+              onClick={() => {
+                navigate(`/quizz/edit-set/${quizz_id}`);
+              }}
+              style={{
+                fontSize: "35px",
+                color: "var(--text-color-primary)",
+                display: isOwner ? "inline-flex" : "none",
+              }}
+            />
+          )}
           <SettingOutlined
             onClick={() => {
               showModal();

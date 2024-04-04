@@ -11,31 +11,32 @@ import {
   Spin,
   Switch,
 } from "antd";
+import { addHomework, setStatus } from "appdata/homework/homeworkSlice";
 import j1 from "assets/img/j1.json";
 import j2 from "assets/img/j2.json";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import { useClass } from "contexts/class_context/ClassContext";
-import { addDoc, collection } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Lottie from "lottie-react";
 import PropTypes from "prop-types";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { auth, firestore, storage } from "../../../../firebase";
+import { auth } from "../../../../firebase";
 import styles from "./AddHomeWork.module.css";
-
-let fileURL = "";
 
 function AddHomeWork() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { classId } = useClass();
   const { correctAnswer, setCorrectAnswer, countAnswer, setCountAnswer } =
     useAddHomeWork();
 
   const nameHomeworkInputRef = useRef(null);
   const hiddenFileInput = useRef(null);
+
+  const homeworkRedux = useSelector((state) => state.homeworkRedux);
 
   const [selectedDocs, setSelectedDocs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,24 +66,6 @@ function AddHomeWork() {
     setIsModalOpen(false);
   };
 
-  const uploadFile = async () => {
-    const file = selectedDocs[0];
-    const storageRef = ref(storage, `Homework/${classId}#${file.name}`);
-
-    await uploadBytes(storageRef, file)
-      .then((snapshot) => {
-        console.log("Uploaded a blob or file!");
-        return getDownloadURL(snapshot.ref);
-      })
-      .then((downloadURL) => {
-        console.log("File available at", downloadURL);
-        fileURL = downloadURL;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
   const createHomework = async () => {
     if (nameHomeworkInputRef.current.input.value === "") {
       toast.error("Bạn chưa nhập tên bài tập", {
@@ -98,7 +81,6 @@ function AddHomeWork() {
       return;
     }
     setIsLoading(true);
-    await uploadFile();
     const config = {
       hasReview: hasReview,
       timeLimit: timeLimit,
@@ -107,32 +89,16 @@ function AddHomeWork() {
       wayGetScore: wayGetScore,
       timesLimitDo: timesLimitDo,
     };
-    const dataToAdd = {
-      dateCreate: new Date().toISOString(),
-      uidCreator: auth.currentUser.uid,
-      nameCreator: auth.currentUser.displayName,
-      photoURL: auth.currentUser.photoURL,
-      fileURL: fileURL,
+    const body = {
+      classId: classId,
+      file: selectedDocs[0],
+      currentUser: auth.currentUser,
+      config: JSON.stringify(config),
       correctAnswer: correctAnswer,
-      class: classId,
       nameHomework: nameHomeworkInputRef.current.input.value,
-      config: config,
+      nameFile: selectedDocs[0].name,
     };
-
-    const docRef = await addDoc(collection(firestore, "homework"), dataToAdd);
-    console.log(docRef);
-    setIsLoading(false);
-    toast.success("Đã thêm mới 1 bài tập", {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    navigate(`/class/${classId}/homework`);
+    dispatch(addHomework(body));
   };
 
   const memoizedDocuments = useMemo(
@@ -143,6 +109,25 @@ function AddHomeWork() {
       })),
     [selectedDocs]
   );
+
+  useEffect(() => {
+    if (homeworkRedux.status === "fulfilled") {
+      setIsLoading(false);
+      toast.success("Đã thêm mới 1 bài tập", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      dispatch(setStatus("none"));
+      navigate(`/class/${classId}/homework`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [homeworkRedux]);
 
   return (
     <div className={styles.wrapper}>
@@ -289,7 +274,7 @@ function AddHomeWork() {
                 {countAnswer > 0 &&
                   [...Array(countAnswer)].map((_, index) => (
                     <AnswerInputForAddHomeWork
-                      key={index}
+                      key={_}
                       props={{
                         index,
                         answer: correctAnswer?.[index],

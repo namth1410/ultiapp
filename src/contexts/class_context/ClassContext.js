@@ -3,6 +3,7 @@ import {
   getHomeworkOfClass,
   snapshotDataClass,
 } from "appdata/class/classSlice";
+import { snapshotDataHomework } from "appdata/homework/homeworkSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -67,6 +68,7 @@ export const ClassProvider = ({ children }) => {
 
   useEffect(() => {
     dispatch(snapshotDataClass({ id: classId }));
+    dispatch(snapshotDataHomework({ id: classId }));
     dispatch(getDataClassById({ id: classId }));
     dispatch(getHomeworkOfClass({ id: classId }));
 

@@ -9,8 +9,6 @@ import { Button, Modal, Table } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
 import {
   collection,
-  deleteDoc,
-  doc,
   onSnapshot,
   orderBy,
   query,
@@ -18,15 +16,19 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, firestore } from "../../../firebase";
+import { auth, firestore, useAuth } from "../../../firebase";
 import styles from "./HomeWork.module.css";
 
+import { deleteHomework } from "appdata/homework/homeworkSlice";
 import { useHomework } from "contexts/homework_context/HomeworkContext";
+import { useDispatch } from "react-redux";
 import { convertISOToCustomFormat } from "ultis/time";
 
 function HomeWork() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const currentUser = useAuth();
   const { classId, dataClass, dataHomework } = useClass();
   const { selectedHomework, setSelectedHomework } = useHomework();
 
@@ -66,13 +68,10 @@ function HomeWork() {
   };
 
   const onDeleteHomework = async () => {
-    deleteDoc(doc(firestore, "homework", selectedHomework.id))
-      .then((result) => {
-        setIsModalDeleteHomeworkOpen(false);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    dispatch(
+      deleteHomework({ homeworkId: selectedHomework.id, classId: classId })
+    );
+    setIsModalDeleteHomeworkOpen(false);
   };
 
   useEffect(() => {
@@ -131,7 +130,6 @@ function HomeWork() {
         records.push({ ...doc.data(), id: doc.id });
       });
       setRecordsOfSelectedHomework(records);
-
       setIsAnswered(true);
     });
     return () => unsubscribe;
@@ -140,7 +138,7 @@ function HomeWork() {
 
   return (
     <div className={styles.wrapper}>
-      {dataClass?.uidCreator === auth?.currentUser?.uid && (
+      {dataClass?.uidCreator === currentUser?.uid && (
         <div style={{ display: "flex", width: "100%" }}>
           <div className={styles.tools}>
             <Button

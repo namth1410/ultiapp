@@ -1,4 +1,4 @@
-import { getDataClassById } from "appdata/class/classSlice";
+import { getDataClassById, getHomeworkOfClass } from "appdata/class/classSlice";
 import { getNewsfeedOfClass } from "appdata/newsfeed/newsfeedSlice";
 import Header from "components/Header/Header";
 import { useEffect, useRef, useState } from "react";
@@ -39,6 +39,11 @@ function MainLayout() {
       if (data.dataClass) {
         const classId = data.dataClass;
         dispatch(getDataClassById({ id: classId }));
+      }
+
+      if (data.homework) {
+        const classId = data.homework;
+        dispatch(getHomeworkOfClass({ id: classId }));
       }
     });
 

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import classSlice from "./class/classSlice";
 import classesSlice from "./classes/classesSlice";
+import homeworkSlice from "./homework/homeworkSlice";
 import memberSlice from "./member/memberSlice";
 import newsfeedSlice from "./newsfeed/newsfeedSlice";
 
@@ -10,5 +11,6 @@ export const store = configureStore({
     classRedux: classSlice,
     newsfeedRedux: newsfeedSlice,
     memberRedux: memberSlice,
+    homeworkRedux: homeworkSlice,
   },
 });

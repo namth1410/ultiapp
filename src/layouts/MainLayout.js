@@ -1,3 +1,4 @@
+import { getDataClassById } from "appdata/class/classSlice";
 import { getNewsfeedOfClass } from "appdata/newsfeed/newsfeedSlice";
 import Header from "components/Header/Header";
 import { useEffect, useRef, useState } from "react";
@@ -34,6 +35,10 @@ function MainLayout() {
       if (data.getNewsfeedOfClass) {
         const classId = data.getNewsfeedOfClass;
         dispatch(getNewsfeedOfClass({ classId: classId }));
+      }
+      if (data.dataClass) {
+        const classId = data.dataClass;
+        dispatch(getDataClassById({ id: classId }));
       }
     });
 

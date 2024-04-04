@@ -1,4 +1,8 @@
-import { getDataClassById, getHomeworkOfClass } from "appdata/class/classSlice";
+import {
+  getDataClassById,
+  getHomeworkOfClass,
+  snapshotDataClass,
+} from "appdata/class/classSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -62,6 +66,7 @@ export const ClassProvider = ({ children }) => {
   }, [classRedux]);
 
   useEffect(() => {
+    dispatch(snapshotDataClass({ id: classId }));
     dispatch(getDataClassById({ id: classId }));
     dispatch(getHomeworkOfClass({ id: classId }));
 

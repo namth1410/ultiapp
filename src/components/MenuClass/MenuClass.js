@@ -80,11 +80,7 @@ function MenuClass() {
         type: "normal",
         receiver: [`${dataClass.uidCreator}$unread`],
       };
-      const docRef = await addDoc(
-        collection(firestore, "notifications"),
-        dataToAdd
-      );
-      console.log(docRef);
+      await addDoc(collection(firestore, "notifications"), dataToAdd);
       setIsExitClassModal(false);
       toast.success("Đã rời khỏi lớp", {
         position: "top-center",
@@ -105,7 +101,6 @@ function MenuClass() {
   useEffect(() => {
     if (!currentUser || !dataClass) return;
     setIsOwnClass(currentUser.uid === dataClass.uidCreator);
-    console.log(dataClass);
     setPreventStudentExitClass(dataClass.config.preventStudentExitClass);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser, dataClass]);

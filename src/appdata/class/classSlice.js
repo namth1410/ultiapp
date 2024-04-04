@@ -22,7 +22,6 @@ export const classSlice = createSlice({
       .addCase(getDataClassById.rejected, (state, action) => {})
       .addCase(getHomeworkOfClass.pending, (state, action) => {})
       .addCase(getHomeworkOfClass.fulfilled, (state, action) => {
-        console.log(action.payload);
         return {
           ...state,
           dataHomework: [...action.payload],
@@ -31,6 +30,18 @@ export const classSlice = createSlice({
       .addCase(getHomeworkOfClass.rejected, (state, action) => {});
   },
 });
+
+export const snapshotDataClass = createAsyncThunk(
+  "class/snapshotDataClass",
+  async ({ id }) => {
+    try {
+      const respone = await axiosInstance.get(`/classes/snapshot/${id}`);
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
 
 export const getDataClassById = createAsyncThunk(
   "class/getDataClassById",

@@ -1,31 +1,29 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Input, Modal, Table } from "antd";
+import {
+  addUserToClass,
+  deleteRequestJoinClass,
+  getMembersOfClass,
+  getUserByEmail,
+  removeMemberFromClass,
+} from "appdata/member/memberSlice";
 import empty from "assets/img/empty.json";
 import { useClass } from "contexts/class_context/ClassContext";
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
-import { auth, firestore, useAuth } from "../../../firebase";
-import styles from "./Member.module.css";
-
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  runTransaction,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useAuth } from "../../../firebase";
+import styles from "./Member.module.css";
 
 const { Search } = Input;
 
 function Member() {
   const currentUser = useAuth();
+  const dispatch = useDispatch();
   const { dataClass, classId, requestJoinClass } = useClass();
+
+  const memberRedux = useSelector((state) => state.memberRedux);
 
   const [isModalAddMemberOpen, setIsModalAddMemberOpen] = useState(false);
   const [userSearch, setUserSearch] = useState(null);
@@ -70,22 +68,9 @@ function Member() {
     },
   ]);
 
-  const removeMemberFromClass = async (classId, memberId) => {
+  const onRemoveMemberFromClass = async (classId, memberId) => {
     try {
-      const classRef = doc(firestore, "classes", classId);
-
-      await runTransaction(firestore, async (transaction) => {
-        const classDoc = await transaction.get(classRef);
-        if (!classDoc.exists()) {
-          throw new Error("Class document does not exist.");
-        }
-
-        const members = classDoc.data().members || [];
-
-        const updatedMembers = members.filter((id) => id !== memberId);
-
-        transaction.update(classRef, { members: updatedMembers });
-      });
+      dispatch(removeMemberFromClass({ classId: classId, memberId: memberId }));
       setIsDeleteMemberModal(false);
       toast.success("Đã xóa", {
         position: "top-center",
@@ -97,7 +82,6 @@ function Member() {
         progress: undefined,
         theme: "light",
       });
-      console.log("Member removed successfully.");
     } catch (error) {
       console.error("Error removing member from class:", error);
     }
@@ -114,16 +98,7 @@ function Member() {
 
   const onSearchUser = async (value, _e, info) => {
     setIsSearching(true);
-    const usersRef = collection(firestore, "users");
-    const querySnapshot = await getDocs(
-      query(usersRef, where("email", "==", value))
-    );
-    const usersData = [];
-    querySnapshot?.forEach((doc) => {
-      usersData.push({ id: doc.id, ...doc.data() });
-    });
-    setUserSearch(usersData[0]);
-    setIsSearching(false);
+    dispatch(getUserByEmail({ email: value }));
   };
 
   const onApproveAll = async () => {
@@ -140,72 +115,14 @@ function Member() {
   };
 
   const onAddUserToClass = async (uid) => {
-    const classRef = doc(firestore, "classes", dataClass.id);
-    const docSnap = await getDoc(classRef);
-    if (docSnap.exists()) {
-      const classData = docSnap.data();
-      if (!classData.members?.includes(uid)) {
-        let dataToAdd = {};
-        if (!classData.members || !Array.isArray(classData.members)) {
-          dataToAdd.members = [uid];
-        } else {
-          dataToAdd.members = [...classData.members, uid];
-        }
-        await updateDoc(classRef, dataToAdd);
-        const _notification = {
-          dateCreate: new Date().toISOString(),
-          uidCreator: auth.currentUser.uid,
-          nameCreator: auth.currentUser.displayName,
-          photoURL: auth.currentUser.photoURL,
-          class: classId,
-          content: `Bạn đã được thêm vào lớp ${dataClass.nameClass}`,
-          type: "normal",
-          receiver: [`${uid}$unread`],
-        };
-        const docRef = await addDoc(
-          collection(firestore, "notifications"),
-          _notification
-        );
-        console.log(docRef);
-        toast.success("Đã thêm mới 1 người", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        handleCancel();
-      } else {
-        toast.warning("Người này đã ở trong lớp", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-    } else {
-      toast.error("Lỗi", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
+    dispatch(
+      addUserToClass({ classId: classId, uid: uid, currentUser: currentUser })
+    );
+    handleCancel();
   };
 
   const onDeleteRequestJoinClass = async (id) => {
-    await deleteDoc(doc(firestore, "notifications", id));
+    dispatch(deleteRequestJoinClass({ id: id }));
   };
 
   const onSearch = (value, _e, info) => console.log(info?.source, value);
@@ -261,28 +178,16 @@ function Member() {
   }, [isOwnClass]);
 
   useEffect(() => {
-    if (!dataClass?.members) return;
-    const promises = dataClass.members.map((userId) => {
-      const userQuery = query(
-        collection(firestore, "users"),
-        where("uid", "==", userId)
-      );
-      return getDocs(userQuery);
-    });
+    if (!memberRedux.members) return;
+    setDataMembers(convertToDataTable(memberRedux.members));
+    setUserSearch(memberRedux.searchUser);
+    setIsSearching(false);
+  }, [memberRedux]);
 
-    Promise.all(promises)
-      .then((userSnapshotsArray) => {
-        const usersData = [];
-        userSnapshotsArray.forEach((userSnapshots) => {
-          userSnapshots.forEach((snapshot) => {
-            usersData.push({ id: snapshot.id, ...snapshot.data() });
-          });
-        });
-        setDataMembers(convertToDataTable(usersData));
-      })
-      .catch((error) => {
-        console.error("Error getting user data:", error);
-      });
+  useEffect(() => {
+    if (!dataClass?.members) return;
+    dispatch(getMembersOfClass(dataClass));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataClass]);
 
   return (
@@ -433,7 +338,7 @@ function Member() {
         title="Xóa thành viên"
         open={isDeleteMemberModal}
         onOk={() => {
-          removeMemberFromClass(classId, memberIdWantDelete);
+          onRemoveMemberFromClass(classId, memberIdWantDelete);
           setMemberIdWantDelete(null);
         }}
         onCancel={() => {

@@ -3,6 +3,7 @@ import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
 import styles from "./TTS.module.css";
 import { useTTS } from "./TTSContext";
+import { toast } from "react-toastify";
 
 function TTS() {
   const { ttsItems, setTtsItems, onAddTtsItem, setRunSubmit } = useTTS();
@@ -23,16 +24,21 @@ function TTS() {
       );
 
       const rows = jsonData.table.rows;
-      const a = [];
+      let a = [];
       rows.forEach((row) => {
         const rowData = row.c.map((cell) => cell.v);
-        const tmp = {
-          nameEx: rowData[0],
-          namePose: "",
-          des: rowData[1] || "",
-          id: a.length,
-        };
-        a.push(tmp);
+        const overallDes = rowData[1]?.trim() || "";
+        overallDes.split("$").forEach((el, index) => {
+          if (index !== 0) {
+            const x = {
+              nameEx: rowData[0],
+              namePose: `step_${index}`,
+              des: el,
+              id: a.length,
+            };
+            a.push(x);
+          }
+        });
       });
       console.log(a);
       setTtsItems(a);
@@ -40,6 +46,71 @@ function TTS() {
       console.error("Error fetching data:", error);
     }
   }
+
+  const onJSON = () => {
+    const tmp = ttsItems.map((el) => ({
+      nameFile: `${el.nameEx}_${el.namePose}.mp3`,
+      audioUrl: el.audioUrl,
+    }));
+    console.log(tmp);
+    let codeToCopy = `function downloadAudioFiles(audioArray) {
+        // Lặp qua mỗi phần tử trong mảng
+        audioArray.forEach(function(audio) {
+            // Gửi yêu cầu GET để tải tệp âm thanh từ đường dẫn async
+            fetch(audio.audioUrl)
+                .then(function(response) {
+                    // Kiểm tra xem có phản hồi thành công không
+                    if (!response.ok) {
+                        throw new Error('Có lỗi xảy ra khi tải tệp âm thanh');
+                    }
+                    // Trả về dữ liệu blob từ phản hồi
+                    return response.blob();
+                })
+                .then(function(blob) {
+                    // Tạo một URL tạm thời cho blob
+                    var audioUrl = URL.createObjectURL(blob);
+    
+                    // Tạo một thẻ a để tạo link tải tệp
+                    var link = document.createElement('a');
+                    link.href = audioUrl;
+    
+                    // Đặt thuộc tính download để tải về tệp thay vì hiển thị nó
+                    link.setAttribute('download', audio.nameFile);
+    
+                    // Tạo sự kiện click tự động cho link để bắt đầu quá trình tải xuống
+                    var clickEvent = new MouseEvent('click');
+                    link.dispatchEvent(clickEvent);
+                })
+                .catch(function(error) {
+                    // Xử lý lỗi
+                    console.error('Đã xảy ra lỗi khi tải tệp âm thanh:', error);
+                });
+        });
+    }
+    
+    // Sử dụng hàm với một mảng các đối tượng
+    var audioArray = ${JSON.stringify(tmp)};
+    
+    downloadAudioFiles(audioArray);`;
+    navigator.clipboard
+      .writeText(codeToCopy)
+      .then(function () {
+        toast.success("Đã copy", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      })
+      .catch(function (error) {
+        console.error("Đã xảy ra lỗi khi sao chép đoạn mã:", error);
+      });
+    return tmp;
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -62,7 +133,12 @@ function TTS() {
         >
           Run
         </Button>
-        <Button style={{ width: "fit-content" }} type="primary" size="large">
+        <Button
+          style={{ width: "fit-content" }}
+          type="primary"
+          size="large"
+          onClick={onJSON}
+        >
           Xuất JSON
         </Button>
       </div>
@@ -174,6 +250,19 @@ const TTSItem = ({ index, data }) => {
     handleUpdateTtsItems(index, item);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
+
+  useEffect(() => {
+    if (url !== "") {
+      setTtsItems((prevItems) => {
+        let updatedItems = [...prevItems];
+
+        updatedItems[index].audioUrl = url;
+
+        return updatedItems;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
 
   return (
     <div className={styles.tts_item_wrapper}>

@@ -18,6 +18,7 @@ function TTS() {
         const parsedCsvData = parseCSV(response.data);
         setCsvData(parsedCsvData);
         console.log(parsedCsvData);
+        console.log(csvData);
       })
       .catch((error) => {
         console.error("Error fetching CSV data:", error);
@@ -41,6 +42,7 @@ function TTS() {
 
   useEffect(() => {
     fetchCSVData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -141,6 +143,7 @@ const TTSItem = ({ index, data }) => {
     if (runSubmit) {
       onSubmit();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runSubmit]);
 
   useEffect(() => {

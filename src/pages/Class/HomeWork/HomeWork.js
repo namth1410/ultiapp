@@ -110,7 +110,6 @@ function HomeWork() {
 
   useEffect(() => {
     if (!selectedHomework) return;
-
     const q = query(
       collection(firestore, "homework_results"),
       where("userUid", "==", auth.currentUser.uid),
@@ -286,9 +285,7 @@ function HomeWork() {
 
                 <button
                   onClick={() => {
-                    navigate(
-                      `/class/${classId}/homework/${selectedHomework.id}/edit`
-                    );
+                    window.location.href = `${process.env.REACT_APP_HOST}/class/${classId}/homework/${selectedHomework.id}/edit`;
                   }}
                   className={styles.action_homework_item}
                 >

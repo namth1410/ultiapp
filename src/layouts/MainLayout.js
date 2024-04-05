@@ -8,7 +8,6 @@ import { io } from "socket.io-client";
 
 function MainLayout() {
   const socket = io(process.env.REACT_APP_API_URL);
-
   const dispatch = useDispatch();
   const headerRef = useRef(null);
   const contentRef = useRef(null);

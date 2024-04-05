@@ -1,13 +1,16 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { doc, getDoc } from "firebase/firestore";
+import { getDataHomeworkById } from "appdata/homework/homeworkSlice";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useState } from "react";
-import { firestore } from "../../../../firebase";
+import { useDispatch, useSelector } from "react-redux";
 import RightBox from "./RightBox";
 import styles from "./TestHomework.module.css";
 
 function TestHomework() {
   const homeworkId = window.location.pathname.split("/")[4];
+  const dispatch = useDispatch();
+
+  const homeworkRedux = useSelector((state) => state.homeworkRedux);
 
   const [dataHomework, setDataHomework] = useState(null);
 
@@ -20,12 +23,11 @@ function TestHomework() {
   }, [dataHomework?.fileURL]);
 
   useEffect(() => {
-    const getDataHomework = async () => {
-      const homeworkRef = doc(firestore, "homework", homeworkId);
-      const docSnapshot = await getDoc(homeworkRef);
-      setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
-    };
-    getDataHomework();
+    setDataHomework(homeworkRedux.dataHomeworkById);
+  }, [homeworkRedux]);
+
+  useEffect(() => {
+    dispatch(getDataHomeworkById({ homeworkId: homeworkId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

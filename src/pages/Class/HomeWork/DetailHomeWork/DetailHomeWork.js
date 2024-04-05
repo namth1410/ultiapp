@@ -1,29 +1,25 @@
 import { Table } from "antd";
-import { useClass } from "contexts/class_context/ClassContext";
-import { onAuthStateChanged } from "firebase/auth";
 import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+  getAllResultOfHomework,
+  getUsersNotDoHomework,
+} from "appdata/homework/homeworkSlice";
+import { useClass } from "contexts/class_context/ClassContext";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { convertDurationToString, convertISOToCustomFormat } from "ultis/time";
-import { auth, firestore } from "../../../../firebase";
 import styles from "./DetailHomeWork.module.css";
 
-const splitRecordId = window.location.pathname.split("/");
-const homeworkId = splitRecordId[4];
-
 function DetailHomeWork() {
+  const splitRecordId = window.location.pathname.split("/");
+  const homeworkId = splitRecordId[4];
+
+  const dispatch = useDispatch();
   const { dataClass } = useClass();
+
+  const homeworkRedux = useSelector((state) => state.homeworkRedux);
 
   const [dataTable, setDataTable] = useState(null);
   const [dataUserNotDoHomework, setDataUserNotDoHomework] = useState(null);
-  const [dataHomework, setDataHomework] = useState(null);
   const [allResultOfHomework, setAllResultOfHomework] = useState(null);
   const [usersNotDoHomeworkInfo, setUsersNotDoHomeworkInfo] = useState(null);
   const [option, setOption] = useState("Tất cả");
@@ -82,21 +78,8 @@ function DetailHomeWork() {
 
   useEffect(() => {
     if (!dataUserNotDoHomework) return;
-
-    const promises = dataUserNotDoHomework.map((uid) =>
-      getDocs(query(collection(firestore, "users"), where("uid", "==", uid)))
-    );
-
-    Promise.all(promises)
-      .then((docs) => {
-        const userData = docs.map(
-          (querySnapshot) => querySnapshot.docs.map((doc) => doc.data())[0]
-        );
-        setUsersNotDoHomeworkInfo(userData);
-      })
-      .catch((error) => {
-        console.error("Error getting user information:", error);
-      });
+    dispatch(getUsersNotDoHomework(dataUserNotDoHomework));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUserNotDoHomework]);
 
   useEffect(() => {
@@ -111,53 +94,15 @@ function DetailHomeWork() {
       setDataTable(convertToDataTable(dataUserNotDoHomework) || []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allResultOfHomework, dataHomework]);
+  }, [allResultOfHomework]);
 
   useEffect(() => {
-    const homeworkRef = doc(firestore, "homework", homeworkId);
+    setUsersNotDoHomeworkInfo(homeworkRedux.usersNotDoHomework);
+    setAllResultOfHomework(homeworkRedux.allResultOfHomework);
+  }, [homeworkRedux]);
 
-    const unsub = onSnapshot(homeworkRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const homeworkData = { id: docSnapshot.id, ...docSnapshot.data() };
-        setDataHomework(homeworkData);
-      } else {
-        console.log("Không tìm thấy homework với id đã cho");
-      }
-    });
-
-    const q = query(
-      collection(firestore, "homework_results"),
-      where("homework_id", "==", homeworkId),
-      orderBy("dateCreate", "asc")
-    );
-
-    const unsub1 = onSnapshot(q, (QuerySnapshot) => {
-      if (QuerySnapshot.empty) {
-        setAllResultOfHomework(null);
-        return;
-      }
-      const records = [];
-
-      QuerySnapshot.forEach((doc) => {
-        records.push({ ...doc.data(), id: doc.id });
-      });
-
-      setAllResultOfHomework(records);
-    });
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User is signed in:", user);
-      } else {
-        console.log("User is signed out");
-      }
-    });
-
-    return () => {
-      unsubscribe();
-      unsub();
-      unsub1();
-    };
+  useEffect(() => {
+    dispatch(getAllResultOfHomework({ homeworkId: homeworkId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

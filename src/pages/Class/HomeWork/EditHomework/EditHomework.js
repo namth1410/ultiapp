@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { SettingOutlined } from "@ant-design/icons";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import {
@@ -11,22 +10,26 @@ import {
   Select,
   Switch,
 } from "antd";
+import {
+  getDataHomeworkById,
+  updateHomeworkById,
+} from "appdata/homework/homeworkSlice";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import { useClass } from "contexts/class_context/ClassContext";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { auth, firestore } from "../../../../firebase";
 import styles from "./EditHomework.module.css";
 
 function EditHomework() {
   const homeworkId = window.location.pathname.split("/")[4];
-
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { classId } = useClass();
+
+  const homeworkRedux = useSelector((state) => state.homeworkRedux);
   const { correctAnswer, setCorrectAnswer, countAnswer, setCountAnswer } =
     useAddHomeWork();
 
@@ -71,50 +74,37 @@ function EditHomework() {
   }, [dataHomework?.fileURL]);
 
   const onUpdateHomework = async () => {
-    const homeworkRef = doc(firestore, "homework", dataHomework.id);
-    const docSnap = await getDoc(homeworkRef);
-    if (docSnap.exists()) {
-      const config = {
-        hasReview: hasReview,
-        timeLimit: timeLimit,
-        timeStart: timeStart,
-        deadline: deadline,
-        wayGetScore: wayGetScore,
-        timesLimitDo: timesLimitDo,
-      };
-
-      const dataToAdd = {
-        dateCreate: new Date().toISOString(),
-        uidCreator: auth.currentUser.uid,
-        nameCreator: auth.currentUser.displayName,
-        photoURL: auth.currentUser.photoURL,
-        fileURL: dataHomework.fileURL,
-        correctAnswer: correctAnswer,
-        class: classId,
-        nameHomework: nameHomeworkInputRef.current.input.value,
+    const config = {
+      hasReview: hasReview,
+      timeLimit: timeLimit,
+      timeStart: timeStart,
+      deadline: deadline,
+      wayGetScore: wayGetScore,
+      timesLimitDo: timesLimitDo,
+    };
+    dispatch(
+      updateHomeworkById({
+        homeworkId: dataHomework.id,
         config: config,
-      };
-
-      console.log(dataToAdd);
-
-      await updateDoc(homeworkRef, dataToAdd);
-      toast.success("Đã cập nhật bài tập", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      navigate(`/class/${classId}/homework`);
-    }
+        correctAnswer: correctAnswer,
+        nameHomework: nameHomeworkInputRef.current.input.value,
+      })
+    );
+    toast.success("Đã cập nhật bài tập", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    window.location.href = `${process.env.REACT_APP_HOST}/class/${classId}/homework`;
   };
 
   useEffect(() => {
     if (!dataHomework) return;
-    console.log(dataHomework);
     setCountAnswer(dataHomework.correctAnswer.length);
 
     setHasTimeLimit(!!dataHomework.config.timeLimit);
@@ -146,12 +136,11 @@ function EditHomework() {
   }, [dataHomework]);
 
   useEffect(() => {
-    const getDataHomework = async () => {
-      const homeworkRef = doc(firestore, "homework", homeworkId);
-      const docSnapshot = await getDoc(homeworkRef);
-      setDataHomework({ id: docSnapshot.id, ...docSnapshot.data() });
-    };
-    getDataHomework();
+    setDataHomework(homeworkRedux.dataHomeworkById);
+  }, [homeworkRedux]);
+
+  useEffect(() => {
+    dispatch(getDataHomeworkById({ homeworkId: homeworkId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

@@ -94,7 +94,7 @@ function AddHomeWork() {
       file: selectedDocs[0],
       currentUser: auth.currentUser,
       config: JSON.stringify(config),
-      correctAnswer: correctAnswer,
+      correctAnswer: JSON.stringify(correctAnswer),
       nameHomework: nameHomeworkInputRef.current.input.value,
       nameFile: selectedDocs[0].name,
     };

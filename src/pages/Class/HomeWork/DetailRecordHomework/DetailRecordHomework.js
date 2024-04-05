@@ -1,16 +1,19 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { Select, Table } from "antd";
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { getDataRecordsHomeworkByUID } from "appdata/homework/homeworkSlice";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { convertDurationToString, convertISOToCustomFormat } from "ultis/time";
-import { auth, firestore } from "../../../../firebase";
 import styles from "./DetailRecordHomework.module.css";
 
 function DetailRecordHomework() {
   const splitRecordId = window.location.pathname.split("/");
   const homeworkId = splitRecordId[4];
+
+  const dispatch = useDispatch();
+
+  const homeworkRedux = useSelector((state) => state.homeworkRedux);
 
   const [dataDetailRecordHomework, setDataDetailRecordHomework] =
     useState(null);
@@ -109,50 +112,31 @@ function DetailRecordHomework() {
   }, [dataDetailRecordHomework]);
 
   useEffect(() => {
-    const getDataRecordsHomework = async () => {
-      const QuerySnapshot = await getDocs(
-        query(
-          collection(firestore, "homework_results"),
-          where("userUid", "==", auth.currentUser.uid),
-          where("homework_id", "==", homeworkId),
-          orderBy("dateCreate", "desc")
-        )
+    setRecordsOfHomework(homeworkRedux.recordsHomeworkOfUser);
+    setOptions(
+      homeworkRedux.recordsHomeworkOfUser?.map((el, index) => {
+        return {
+          value: index + 1,
+          label: `Lần làm bài ${
+            homeworkRedux.recordsHomeworkOfUser.length - index
+          }`,
+        };
+      })
+    );
+    setDataDetailRecordHomework(homeworkRedux.recordsHomeworkOfUser?.[0]);
+    homeworkRedux.recordsHomeworkOfUser &&
+      setDataRecord(
+        convertToDataTable(homeworkRedux.recordsHomeworkOfUser?.[0])
       );
+  }, [homeworkRedux]);
 
-      if (QuerySnapshot.empty) {
-        setRecordsOfHomework(null);
-        return;
-      }
-      const records = [];
-
-      QuerySnapshot.forEach((doc) => {
-        records.push({ ...doc.data(), id: doc.id });
-      });
-      setOptions(
-        records.map((el, index) => {
-          return {
-            value: index + 1,
-            label: `Lần làm bài ${records.length - index}`,
-          };
-        })
-      );
-      setDataDetailRecordHomework(records[0]);
-      setDataRecord(convertToDataTable(records[0]));
-      setRecordsOfHomework(records);
-    };
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User is signed in:", user);
-        getDataRecordsHomework();
-      } else {
-        console.log("User is signed out");
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
+  useEffect(() => {
+    dispatch(
+      getDataRecordsHomeworkByUID({
+        uid: JSON.parse(localStorage.getItem("ulti_user")).uid,
+        homeworkId: homeworkId,
+      })
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

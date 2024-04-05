@@ -3,6 +3,10 @@ import axiosInstance from "ultis/api";
 
 const initialState = {
   status: "none",
+  usersNotDoHomework: null,
+  allResultOfHomework: null,
+  recordsHomeworkOfUser: null,
+  dataHomeworkById: null,
 };
 
 export const homeworkSlice = createSlice({
@@ -34,10 +38,43 @@ export const homeworkSlice = createSlice({
       })
       .addCase(addHomework.rejected, (state, action) => {
         console.log(action);
-      });
+      })
+      .addCase(getUsersNotDoHomework.pending, (state, action) => {})
+      .addCase(getUsersNotDoHomework.fulfilled, (state, action) => {
+        return {
+          ...state,
+          usersNotDoHomework: [...action.payload],
+        };
+      })
+      .addCase(getUsersNotDoHomework.rejected, (state, action) => {})
+      .addCase(getAllResultOfHomework.pending, (state, action) => {})
+      .addCase(getAllResultOfHomework.fulfilled, (state, action) => {
+        return {
+          ...state,
+          allResultOfHomework: [...action.payload],
+        };
+      })
+      .addCase(getAllResultOfHomework.rejected, (state, action) => {})
+      .addCase(getDataRecordsHomeworkByUID.pending, (state, action) => {})
+      .addCase(getDataRecordsHomeworkByUID.fulfilled, (state, action) => {
+        return {
+          ...state,
+          recordsHomeworkOfUser: [...action.payload],
+        };
+      })
+      .addCase(getDataRecordsHomeworkByUID.rejected, (state, action) => {})
+      .addCase(getDataHomeworkById.pending, (state, action) => {})
+      .addCase(getDataHomeworkById.fulfilled, (state, action) => {
+        return {
+          ...state,
+          dataHomeworkById: { ...action.payload },
+        };
+      })
+      .addCase(getDataHomeworkById.rejected, (state, action) => {});
   },
 });
 
+// đây là tất cả homework của 1 class
 export const snapshotDataHomework = createAsyncThunk(
   "class/snapshotDataHomework",
   async ({ id }) => {
@@ -92,6 +129,81 @@ export const deleteHomework = createAsyncThunk(
       const respone = await axiosInstance.delete(`/homework/delete`, {
         data: body,
       });
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const getUsersNotDoHomework = createAsyncThunk(
+  "homework/getUsersNotDoHomework",
+  async (body) => {
+    try {
+      const respone = await axiosInstance.post(
+        `/homework/get-users-not-do-homework`,
+        body
+      );
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const getAllResultOfHomework = createAsyncThunk(
+  "homework/getAllResultOfHomework",
+  async ({ homeworkId }) => {
+    try {
+      const respone = await axiosInstance.get(
+        `/homework/get-all-result-of-homework/${homeworkId}`
+      );
+      console.log(respone.data);
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const getDataRecordsHomeworkByUID = createAsyncThunk(
+  "homework/getDataRecordsHomeworkByUID",
+  async (body) => {
+    try {
+      const respone = await axiosInstance.post(
+        `/homework/get-records-homework-by-uid`,
+        body
+      );
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const getDataHomeworkById = createAsyncThunk(
+  "homework/getDataHomeworkById",
+  async (body) => {
+    try {
+      const respone = await axiosInstance.post(
+        `/homework/get-data-homework-by-id`,
+        body
+      );
+      return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const updateHomeworkById = createAsyncThunk(
+  "homework/updateHomeworkById",
+  async (body) => {
+    try {
+      const respone = await axiosInstance.post(
+        `/homework/update-homework-by-id`,
+        body
+      );
       return respone.data;
     } catch (error) {
       throw new Error(error);

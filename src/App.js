@@ -41,12 +41,22 @@ import TestOnline from "pages/TestOnline/TestOnline";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { SpellProvider } from "pages/Quizz/Spell/SpellContext";
+import TTS from "pages/TTS/TTS";
+import { TTSProvider } from "pages/TTS/TTSContext";
 
 function App() {
   const needLogin = !localStorage.getItem("ulti_auth");
 
   return (
     <Routes>
+      <Route
+        path="/tts"
+        element={
+          <TTSProvider>
+            <TTS />
+          </TTSProvider>
+        }
+      ></Route>
       <Route path="/" element={<MainLayout />}>
         {needLogin ? (
           <>

@@ -23,7 +23,7 @@ export const TTSProvider = ({ children }) => {
       onAddTtsItem,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ttsItems, onAddTtsItem]
+    [ttsItems]
   );
 
   return (

@@ -3,9 +3,45 @@ import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
 import styles from "./TTS.module.css";
 import { useTTS } from "./TTSContext";
+import axios from "axios";
 
 function TTS() {
-  const { ttsItems, onAddTtsItem } = useTTS();
+  const { ttsItems, onAddTtsItem, setRunSubmit } = useTTS();
+  const [csvData, setCsvData] = useState([]);
+
+  const fetchCSVData = () => {
+    const csvUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpAQGqdB9KcUYd7RflaK-J3LW27cZlNt9oHZ8QlFv4_h59OimYgj67Cqy4TwdLdyU0DQmFoM-2WeMM/pub?output=csv";
+    axios
+      .get(csvUrl)
+      .then((response) => {
+        const parsedCsvData = parseCSV(response.data);
+        setCsvData(parsedCsvData);
+        console.log(parsedCsvData);
+      })
+      .catch((error) => {
+        console.error("Error fetching CSV data:", error);
+      });
+  };
+
+  function parseCSV(csvText) {
+    const rows = csvText.split(/\r?\n/);
+    const headers = rows[0].split(",");
+    const data = [];
+    for (let i = 1; i < rows.length; i++) {
+      const rowData = rows[i].split(",");
+      const rowObject = {};
+      for (let j = 0; j < headers.length; j++) {
+        rowObject[headers[j]] = rowData[j];
+      }
+      data.push(rowObject);
+    }
+    return data;
+  }
+
+  useEffect(() => {
+    fetchCSVData();
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -20,17 +56,14 @@ function TTS() {
         <Button
           style={{ width: "fit-content" }}
           type="primary"
-          onClick={onAddTtsItem}
+          onClick={() => {
+            setRunSubmit(true);
+          }}
           size="large"
         >
           Run
         </Button>
-        <Button
-          style={{ width: "fit-content" }}
-          type="primary"
-          onClick={onAddTtsItem}
-          size="large"
-        >
+        <Button style={{ width: "fit-content" }} type="primary" size="large">
           Xuất JSON
         </Button>
       </div>
@@ -49,7 +82,7 @@ function TTS() {
 }
 
 const TTSItem = ({ index, data }) => {
-  const { ttsItems, setTtsItems } = useTTS();
+  const { ttsItems, setTtsItems, runSubmit } = useTTS();
 
   const [item, setItem] = useState(data);
 
@@ -103,6 +136,12 @@ const TTSItem = ({ index, data }) => {
         console.error("Đã xảy ra lỗi:", error);
       });
   };
+
+  useEffect(() => {
+    if (runSubmit) {
+      onSubmit();
+    }
+  }, [runSubmit]);
 
   useEffect(() => {
     handleUpdateTtsItems(index, item);

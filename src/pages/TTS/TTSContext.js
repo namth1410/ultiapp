@@ -11,6 +11,8 @@ export const TTSProvider = ({ children }) => {
   };
 
   const [ttsItems, setTtsItems] = useState([]);
+  const [urlTtsItems, setUrlTtsItems] = useState([]);
+  const [runSubmit, setRunSubmit] = useState(false);
 
   const onAddTtsItem = () => {
     setTtsItems([...ttsItems, { ...initialState, id: ttsItems.length }]);
@@ -21,9 +23,13 @@ export const TTSProvider = ({ children }) => {
       ttsItems,
       setTtsItems,
       onAddTtsItem,
+      runSubmit,
+      setRunSubmit,
+      urlTtsItems,
+      setUrlTtsItems,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ttsItems]
+    [ttsItems, runSubmit, urlTtsItems]
   );
 
   return (

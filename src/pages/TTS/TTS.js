@@ -3,47 +3,43 @@ import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
 import styles from "./TTS.module.css";
 import { useTTS } from "./TTSContext";
-import axios from "axios";
 
 function TTS() {
-  const { ttsItems, onAddTtsItem, setRunSubmit } = useTTS();
-  const [csvData, setCsvData] = useState([]);
+  const { ttsItems, setTtsItems, onAddTtsItem, setRunSubmit } = useTTS();
 
-  const fetchCSVData = () => {
-    const csvUrl =
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpAQGqdB9KcUYd7RflaK-J3LW27cZlNt9oHZ8QlFv4_h59OimYgj67Cqy4TwdLdyU0DQmFoM-2WeMM/pub?output=csv";
-    axios
-      .get(csvUrl)
-      .then((response) => {
-        const parsedCsvData = parseCSV(response.data);
-        setCsvData(parsedCsvData);
-        console.log(parsedCsvData);
-        console.log(csvData);
-      })
-      .catch((error) => {
-        console.error("Error fetching CSV data:", error);
+  const [keyGGS, setKeyGGS] = useState(
+    "1UqiKR4OQd2hnFaQjzifbmrWDw96M8O17zE56OJi9skY"
+  );
+  async function fetchData() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${keyGGS}/gviz/tq?tqx=out:json`
+      );
+      const rawData = await response.text();
+      const dataStartIndex = rawData.indexOf("{");
+      const dataEndIndex = rawData.lastIndexOf("}");
+      const jsonData = JSON.parse(
+        rawData.substring(dataStartIndex, dataEndIndex + 1)
+      );
+
+      const rows = jsonData.table.rows;
+      const a = [];
+      rows.forEach((row) => {
+        const rowData = row.c.map((cell) => cell.v);
+        const tmp = {
+          nameEx: rowData[0],
+          namePose: "",
+          des: rowData[1] || "",
+          id: a.length,
+        };
+        a.push(tmp);
       });
-  };
-
-  function parseCSV(csvText) {
-    const rows = csvText.split(/\r?\n/);
-    const headers = rows[0].split(",");
-    const data = [];
-    for (let i = 1; i < rows.length; i++) {
-      const rowData = rows[i].split(",");
-      const rowObject = {};
-      for (let j = 0; j < headers.length; j++) {
-        rowObject[headers[j]] = rowData[j];
-      }
-      data.push(rowObject);
+      console.log(a);
+      setTtsItems(a);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    return data;
   }
-
-  useEffect(() => {
-    fetchCSVData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -53,6 +49,7 @@ function TTS() {
           width: "100%",
           justifyContent: "center",
           gap: "20px",
+          marginTop: "20px",
         }}
       >
         <Button
@@ -69,11 +66,38 @@ function TTS() {
           Xuất JSON
         </Button>
       </div>
+
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "center",
+          gap: "20px",
+          marginTop: "20px",
+        }}
+      >
+        <Input
+          placeholder="Nhập key gg sheet"
+          value={keyGGS}
+          onChange={(e) => {
+            setKeyGGS(e.target.value);
+          }}
+        ></Input>
+        <Button
+          style={{ width: "fit-content" }}
+          type="primary"
+          onClick={fetchData}
+          size="large"
+        >
+          Đọc ggs
+        </Button>
+      </div>
+
       {ttsItems?.map((el, index) => (
         <TTSItem key={el.id} index={index} data={el} />
       ))}
       <Button
-        style={{ width: "fit-content" }}
+        style={{ width: "fit-content", marginTop: "20px" }}
         type="primary"
         onClick={onAddTtsItem}
       >

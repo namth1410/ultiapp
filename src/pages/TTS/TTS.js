@@ -1,9 +1,9 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import styles from "./TTS.module.css";
 import { useTTS } from "./TTSContext";
-import { toast } from "react-toastify";
 
 function TTS() {
   const { ttsItems, setTtsItems, onAddTtsItem, setRunSubmit } = useTTS();
@@ -11,10 +11,11 @@ function TTS() {
   const [keyGGS, setKeyGGS] = useState(
     "1UqiKR4OQd2hnFaQjzifbmrWDw96M8O17zE56OJi9skY"
   );
+  const [rangeGGS, setRangeGGS] = useState("A2:B2");
   async function fetchData() {
     try {
       const response = await fetch(
-        `https://docs.google.com/spreadsheets/d/${keyGGS}/gviz/tq?tqx=out:json`
+        `https://docs.google.com/spreadsheets/d/${keyGGS}/gviz/tq?tqx=out:json&range=${rangeGGS}`
       );
       const rawData = await response.text();
       const dataStartIndex = rawData.indexOf("{");
@@ -159,6 +160,13 @@ function TTS() {
             setKeyGGS(e.target.value);
           }}
         ></Input>
+        <Input
+          placeholder="Nhập range A3:B4"
+          value={rangeGGS}
+          onChange={(e) => {
+            setRangeGGS(e.target.value);
+          }}
+        ></Input>
         <Button
           style={{ width: "fit-content" }}
           type="primary"
@@ -266,6 +274,9 @@ const TTSItem = ({ index, data }) => {
 
   return (
     <div className={styles.tts_item_wrapper}>
+      <span style={{ alignSelf: "center", marginRight: "5px" }}>
+        {index + 1}
+      </span>
       <Button
         type="primary"
         shape="circle"

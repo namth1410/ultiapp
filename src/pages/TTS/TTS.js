@@ -35,7 +35,7 @@ function TTS() {
               nameEx: rowData[0],
               namePose: `step_${index}`,
               des: el,
-              id: a.length,
+              id: `${a.length}${Date.now()}`,
             };
             a.push(x);
           }

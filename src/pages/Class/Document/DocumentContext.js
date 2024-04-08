@@ -1,8 +1,10 @@
 import { useClass } from "contexts/class_context/ClassContext";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { ref, listAll, getDownloadURL } from "firebase/storage";
 import PropTypes from "prop-types";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { firestore } from "../../../firebase";
+import { firestore, storage } from "../../../firebase";
+
 const DocumentContext = createContext();
 
 export const DocumentProvider = ({ children }) => {
@@ -26,7 +28,34 @@ export const DocumentProvider = ({ children }) => {
     });
     setDocuments(_documents.length === 0 ? null : _documents);
   };
+
   useEffect(() => {
+    const storageRef = ref(storage, "Homework");
+
+    listAll(storageRef)
+      .then((res) => {
+        res.items.forEach((itemRef) => {
+          // Lấy tên của tệp
+          const fileName = itemRef.name;
+          // Kiểm tra nếu tên của tệp bắt đầu bằng classID
+          if (fileName.startsWith(classId)) {
+            // Nếu tên của tệp bắt đầu bằng classID, bạn có thể xử lý tệp tin ở đây
+            console.log("Tên tệp:", fileName);
+
+            // Nếu bạn muốn lấy URL để tải xuống tệp, bạn có thể sử dụng getDownloadURL
+            getDownloadURL(itemRef)
+              .then((url) => {
+                console.log("URL tải xuống:", url);
+              })
+              .catch((error) => {
+                console.log("Lỗi khi lấy URL tải xuống:", error);
+              });
+          }
+        });
+      })
+      .catch((error) => {
+        console.log("Lỗi khi lấy danh sách tệp:", error);
+      });
     getAllDocument();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

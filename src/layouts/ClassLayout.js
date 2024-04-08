@@ -1,8 +1,7 @@
 import MenuClass from "components/MenuClass/MenuClass";
 import { ClassProvider } from "contexts/class_context/ClassContext";
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 function ClassLayout() {
   const location = useLocation();
@@ -17,7 +16,6 @@ function ClassLayout() {
   ];
 
   useEffect(() => {
-    console.log("window pathname thay doi");
     if (pathDisableMenu.some((path) => location.pathname.includes(path))) {
       setVisibleMenu(false);
     } else {

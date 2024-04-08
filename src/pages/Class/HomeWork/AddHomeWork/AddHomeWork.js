@@ -96,7 +96,7 @@ function AddHomeWork() {
       config: JSON.stringify(config),
       correctAnswer: JSON.stringify(correctAnswer),
       nameHomework: nameHomeworkInputRef.current.input.value,
-      nameFile: selectedDocs[0].name,
+      nameFile: `${nameHomeworkInputRef.current.input.value}#${selectedDocs[0].name}`,
     };
     dispatch(addHomework(body));
   };

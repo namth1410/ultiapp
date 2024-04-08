@@ -7,6 +7,7 @@ const initialState = {
   allResultOfHomework: null,
   recordsHomeworkOfUser: null,
   dataHomeworkById: null,
+  loading: false,
 };
 
 export const homeworkSlice = createSlice({
@@ -70,7 +71,25 @@ export const homeworkSlice = createSlice({
           dataHomeworkById: { ...action.payload },
         };
       })
-      .addCase(getDataHomeworkById.rejected, (state, action) => {});
+      .addCase(getDataHomeworkById.rejected, (state, action) => {})
+      .addCase(uploadFile.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+        };
+      })
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+        };
+      })
+      .addCase(uploadFile.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+        };
+      });
   },
 });
 
@@ -205,6 +224,32 @@ export const updateHomeworkById = createAsyncThunk(
         body
       );
       return respone.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const uploadFile = createAsyncThunk(
+  "homework/uploadFile",
+  async (body) => {
+    const { classId, file, nameFile } = body;
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("classId", classId);
+      formData.append("nameFile", nameFile);
+
+      const response = await axiosInstance.post(
+        `/homework/upload-file`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
     } catch (error) {
       throw new Error(error);
     }

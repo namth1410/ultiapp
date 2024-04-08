@@ -3,20 +3,32 @@ import {
   DownloadOutlined,
   EyeOutlined,
   PartitionOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { Badge, Button, Input, Select } from "antd";
 import empty from "assets/img/empty.json";
 import pdf from "assets/img/pdf.png";
 import ShowFile from "components/ShowFile/ShowFile";
 import Lottie from "lottie-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./Document.module.css";
 import { useDocument } from "./DocumentContext";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadFile } from "appdata/homework/homeworkSlice";
+import { useClass } from "contexts/class_context/ClassContext";
 
 function MyDocument() {
+  const dispatch = useDispatch();
+  const hiddenFileInput = useRef(null);
+  const { classId } = useClass();
+
   const { documents, setDocuments, selectedDocument, setSelectedDocument } =
     useDocument();
   const { Search } = Input;
+  const homeworkRedux = useSelector((state) => state.homeworkRedux);
+
+  const [preUpLoadDocs, setPreUpLoadDocs] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const filters = [
     {
@@ -69,6 +81,7 @@ function MyDocument() {
   }
 
   const handleDownload = () => {
+    if (!selectedDocument.fileURL) return;
     const xhr = new XMLHttpRequest();
     xhr.open("GET", selectedDocument.fileURL, true);
     xhr.responseType = "blob";
@@ -89,6 +102,29 @@ function MyDocument() {
     // Gửi yêu cầu
     xhr.send();
   };
+
+  const onDeletePreUploadDoc = () => {
+    setPreUpLoadDocs(
+      preUpLoadDocs.filter((el) => el.name !== selectedDocument.name)
+    );
+  };
+
+  const onUploadDoc = () => {
+    preUpLoadDocs.forEach((el) => {
+      const body = {
+        classId: classId,
+        file: el,
+        nameFile: `${el.name}`,
+      };
+      dispatch(uploadFile(body));
+    });
+    setPreUpLoadDocs(null);
+    hiddenFileInput.current.value = "";
+  };
+
+  useEffect(() => {
+    setUploading(homeworkRedux.loading);
+  }, [homeworkRedux]);
 
   useEffect(() => {
     if (!documents) return;
@@ -130,14 +166,34 @@ function MyDocument() {
                 width: "fit-content",
                 height: "100%",
               }}
+              onClick={() => {
+                hiddenFileInput.current.click();
+              }}
             >
               Tải lên tài liệu
             </Button>
+            <input
+              id="fileUpload"
+              type="file"
+              accept=".pdf"
+              multiple
+              ref={hiddenFileInput}
+              onChange={(el) => {
+                console.log(el.target.files);
+                setPreUpLoadDocs(Array.from(el.target.files));
+              }}
+              style={{ display: "none" }}
+            />
           </div>
         )}
         {isShowDocument ? (
           <div>
-            <ShowFile fileUri={selectedDocument.fileURL} />
+            <ShowFile
+              fileUri={
+                selectedDocument.fileURL ||
+                URL.createObjectURL(selectedDocument)
+              }
+            />
           </div>
         ) : (
           <div
@@ -148,6 +204,40 @@ function MyDocument() {
               flexWrap: "wrap",
             }}
           >
+            {(preUpLoadDocs || uploading) && (
+              <div style={{ width: "100%" }}>
+                <Button
+                  onClick={onUploadDoc}
+                  type="primary"
+                  loading={uploading}
+                >
+                  Tải lên
+                </Button>
+              </div>
+            )}
+            {preUpLoadDocs && (
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  flexDirection: "column",
+                  borderBottom: "2px solid #d8dcf0",
+                  paddingBottom: "10px",
+                }}
+              >
+                <div style={{ marginBottom: "10px" }}>Chuẩn bị tải lên</div>
+                <div style={{ display: "flex", gap: "15px" }}>
+                  {preUpLoadDocs.map((el) => (
+                    <DocumentItem
+                      key={el.name}
+                      document={el}
+                      selectedDocument={selectedDocument}
+                      setSelectedDocument={setSelectedDocument}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             {documents ? (
               documents.map((document) => (
                 <DocumentItem
@@ -200,6 +290,16 @@ function MyDocument() {
               <span>Tải xuống</span>
               <DownloadOutlined />
             </button>
+
+            {!selectedDocument.fileURL && (
+              <button
+                className={styles.action_homework_item}
+                onClick={onDeletePreUploadDoc}
+              >
+                <span style={{ color: "#ff4141" }}>Xóa</span>
+                <DeleteOutlined style={{ color: "#ff4141" }} />
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -208,14 +308,18 @@ function MyDocument() {
 }
 
 const DocumentItem = ({ document, selectedDocument, setSelectedDocument }) => {
-  const { fileURL, nameHomework } = document;
-  const typeDocument = fileURL.includes("pdf") ? "PDF" : "Doc";
+  const { fileURL, nameHomework, name } = document;
+  const typeDocument = fileURL?.includes("pdf") ? "PDF" : "Doc";
   return (
     <div style={{ width: "fit-content" }}>
       <Badge.Ribbon text={typeDocument} color="var(--blue)">
         <button
           className={`${styles.document_item} ${
-            selectedDocument?.fileURL === fileURL ? styles.selected : ""
+            selectedDocument?.fileURL === fileURL && fileURL
+              ? styles.selected
+              : ""
+          } ${
+            selectedDocument?.name === name && !fileURL ? styles.selected : ""
           }`}
           onClick={() => {
             setSelectedDocument(document);
@@ -224,7 +328,7 @@ const DocumentItem = ({ document, selectedDocument, setSelectedDocument }) => {
           <div className={styles.img_wrapper}>
             <img alt="img" src={pdf} />
           </div>
-          <div className={styles.nameDocument}>{nameHomework}</div>
+          <div className={styles.nameDocument}>{nameHomework || name}</div>
         </button>
       </Badge.Ribbon>
     </div>

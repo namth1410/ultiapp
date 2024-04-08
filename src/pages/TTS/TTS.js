@@ -48,45 +48,114 @@ function TTS() {
     }
   }
 
+  function downloadAudioFiles(audioArray) {
+    audioArray.forEach(function (audio) {
+      let payload = audio.des;
+      let options = {
+        method: "POST",
+        headers: {
+          "api-key": "jqjW6riV0AzGlePhcX4ocvzIYuQS7PiN",
+          speed: "",
+          voice: "banmai",
+        },
+        body: payload,
+      };
+
+      fetch("https://api.fpt.ai/hmi/tts/v5", options)
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("Có lỗi xảy ra khi gửi yêu cầu");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          fetch(data.async)
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Có lỗi xảy ra khi tải tệp âm thanh");
+              }
+              return response.blob();
+            })
+            .then(function (blob) {
+              // Tạo một URL tạm thời cho blob
+              var audioUrl = URL.createObjectURL(blob);
+
+              // Tạo một thẻ a để tạo link tải tệp
+              var link = document.createElement("a");
+              link.href = audioUrl;
+
+              // Đặt thuộc tính download để tải về tệp thay vì hiển thị nó
+              link.setAttribute("download", audio.nameFile);
+
+              // Tạo sự kiện click tự động cho link để bắt đầu quá trình tải xuống
+              var clickEvent = new MouseEvent("click");
+              link.dispatchEvent(clickEvent);
+            })
+            .catch(function (error) {
+              // Xử lý lỗi
+              console.error("Đã xảy ra lỗi khi tải tệp âm thanh:", error);
+            });
+          console.log("Dữ liệu nhận được:", data);
+        });
+    });
+  }
+
   const onJSON = () => {
     const tmp = ttsItems.map((el) => ({
       nameFile: `${el.nameEx}_${el.namePose}.mp3`,
       audioUrl: el.audioUrl,
+      des: el.des,
     }));
     console.log(tmp);
-    let codeToCopy = `function downloadAudioFiles(audioArray) {
-        // Lặp qua mỗi phần tử trong mảng
-        audioArray.forEach(function(audio) {
-            // Gửi yêu cầu GET để tải tệp âm thanh từ đường dẫn async
-            fetch(audio.audioUrl)
-                .then(function(response) {
-                    // Kiểm tra xem có phản hồi thành công không
-                    if (!response.ok) {
-                        throw new Error('Có lỗi xảy ra khi tải tệp âm thanh');
-                    }
-                    // Trả về dữ liệu blob từ phản hồi
-                    return response.blob();
-                })
-                .then(function(blob) {
-                    // Tạo một URL tạm thời cho blob
-                    var audioUrl = URL.createObjectURL(blob);
-    
-                    // Tạo một thẻ a để tạo link tải tệp
-                    var link = document.createElement('a');
-                    link.href = audioUrl;
-    
-                    // Đặt thuộc tính download để tải về tệp thay vì hiển thị nó
-                    link.setAttribute('download', audio.nameFile);
-    
-                    // Tạo sự kiện click tự động cho link để bắt đầu quá trình tải xuống
-                    var clickEvent = new MouseEvent('click');
-                    link.dispatchEvent(clickEvent);
-                })
-                .catch(function(error) {
-                    // Xử lý lỗi
-                    console.error('Đã xảy ra lỗi khi tải tệp âm thanh:', error);
-                });
-        });
+    let codeToCopy = `  function downloadAudioFiles(audioArray) {
+      audioArray.forEach(function (audio) {
+        let payload = audio.des;
+        let options = {
+          method: "POST",
+          headers: {
+            "api-key": "jqjW6riV0AzGlePhcX4ocvzIYuQS7PiN",
+            speed: "",
+            voice: "banmai",
+          },
+          body: payload,
+        };
+  
+        fetch("https://api.fpt.ai/hmi/tts/v5", options)
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error("Có lỗi xảy ra khi gửi yêu cầu");
+            }
+            return response.json();
+          })
+          .then(function (data) {
+            fetch(data.async)
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Có lỗi xảy ra khi tải tệp âm thanh");
+              }
+              return response.blob();
+            })
+            .then(function (blob) {
+              // Tạo một URL tạm thời cho blob
+              var audioUrl = URL.createObjectURL(blob);
+
+              // Tạo một thẻ a để tạo link tải tệp
+              var link = document.createElement("a");
+              link.href = audioUrl;
+
+              // Đặt thuộc tính download để tải về tệp thay vì hiển thị nó
+              link.setAttribute("download", audio.nameFile);
+
+              // Tạo sự kiện click tự động cho link để bắt đầu quá trình tải xuống
+              var clickEvent = new MouseEvent("click");
+              link.dispatchEvent(clickEvent);
+            })
+            .catch(function (error) {
+              // Xử lý lỗi
+              console.error("Đã xảy ra lỗi khi tải tệp âm thanh:", error);
+            });
+          });
+      });
     }
     
     // Sử dụng hàm với một mảng các đối tượng

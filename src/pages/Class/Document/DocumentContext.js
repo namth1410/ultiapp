@@ -24,7 +24,7 @@ export const DocumentProvider = ({ children }) => {
     querySnapshot?.forEach((doc) => {
       _documents.push({ id: doc.id, ...doc.data() });
     });
-    setDocuments(_documents);
+    setDocuments(_documents.length === 0 ? null : _documents);
   };
   useEffect(() => {
     getAllDocument();

@@ -4,14 +4,16 @@ import {
   EyeOutlined,
   PartitionOutlined,
 } from "@ant-design/icons";
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { Badge, Button, Input, Select } from "antd";
+import empty from "assets/img/empty.json";
 import pdf from "assets/img/pdf.png";
-import React, { useEffect, useState } from "react";
+import ShowFile from "components/ShowFile/ShowFile";
+import Lottie from "lottie-react";
+import { useEffect, useState } from "react";
 import styles from "./Document.module.css";
 import { useDocument } from "./DocumentContext";
 
-function Document() {
+function MyDocument() {
   const { documents, setDocuments, selectedDocument, setSelectedDocument } =
     useDocument();
   const { Search } = Input;
@@ -135,13 +137,7 @@ function Document() {
         )}
         {isShowDocument ? (
           <div>
-            <MemoizedDocViewer
-              documents={[
-                {
-                  uri: selectedDocument.fileURL,
-                },
-              ]}
-            />
+            <ShowFile fileUri={selectedDocument.fileURL} />
           </div>
         ) : (
           <div
@@ -152,14 +148,22 @@ function Document() {
               flexWrap: "wrap",
             }}
           >
-            {documents?.map((document) => (
-              <DocumentItem
-                key={document.dateCreate}
-                document={document}
-                selectedDocument={selectedDocument}
-                setSelectedDocument={setSelectedDocument}
+            {documents ? (
+              documents.map((document) => (
+                <DocumentItem
+                  key={document.dateCreate}
+                  document={document}
+                  selectedDocument={selectedDocument}
+                  setSelectedDocument={setSelectedDocument}
+                />
+              ))
+            ) : (
+              <Lottie
+                style={{ width: "40%", margin: "auto", marginTop: "10%" }}
+                animationData={empty}
+                loop={true}
               />
-            ))}
+            )}
           </div>
         )}
       </div>
@@ -227,8 +231,4 @@ const DocumentItem = ({ document, selectedDocument, setSelectedDocument }) => {
   );
 };
 
-const MemoizedDocViewer = React.memo(({ documents }) => (
-  <DocViewer documents={documents} pluginRenderers={DocViewerRenderers} />
-));
-
-export default Document;
+export default MyDocument;

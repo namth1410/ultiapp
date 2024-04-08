@@ -3,10 +3,11 @@ import { getNewsfeedOfClass } from "appdata/newsfeed/newsfeedSlice";
 import Header from "components/Header/Header";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 
 function MainLayout() {
+  const location = useLocation();
   const socket = io(process.env.REACT_APP_API_URL);
   const dispatch = useDispatch();
   const headerRef = useRef(null);
@@ -63,7 +64,7 @@ function MainLayout() {
       setVisibleHeader(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.location.pathname]);
+  }, [location.pathname]);
 
   return (
     <>

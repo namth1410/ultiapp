@@ -9,7 +9,7 @@ import { Badge, Menu, Modal } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
 import { addDoc, collection, doc, runTransaction } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { firestore, useAuth } from "../../firebase";
 import styles from "./MenuClass.module.css";
@@ -25,6 +25,7 @@ function getItem(label, key, icon, children, type) {
 }
 
 function MenuClass() {
+  const location = useLocation();
   const currentUser = useAuth();
   const { dataClass, requestJoinClass, classId } = useClass();
 
@@ -149,7 +150,7 @@ function MenuClass() {
       setSelectedKeys(["document"]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.location.pathname]);
+  }, [location.pathname]);
 
   return (
     <div className={styles.wrapper}>

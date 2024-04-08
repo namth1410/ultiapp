@@ -27,7 +27,12 @@ export const classSlice = createSlice({
           dataHomework: [...action.payload],
         };
       })
-      .addCase(getHomeworkOfClass.rejected, (state, action) => {});
+      .addCase(getHomeworkOfClass.rejected, (state, action) => {
+        return {
+          ...state,
+          dataHomework: null,
+        };
+      });
   },
 });
 

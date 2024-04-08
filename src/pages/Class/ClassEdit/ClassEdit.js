@@ -194,6 +194,7 @@ function ClassEdit() {
             <div className={styles.a1}>
               <span>Mã bảo vệ</span>
               <Switch
+                value={hasPassword}
                 onChange={(e) => {
                   setHasPassword(e);
                   if (!e) setPassword("");

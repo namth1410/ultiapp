@@ -1,6 +1,8 @@
 import { Card, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./Speaking.module.css";
+
 const { Meta } = Card;
 
 function importAll(r) {
@@ -73,6 +75,7 @@ function Speaking() {
             {data.map((item, index) => (
               <Col key={index} xs={24} sm={12} md={8} lg={6} xl={6}>
                 <Card
+                  className={styles.card}
                   hoverable
                   style={{
                     width: 240,

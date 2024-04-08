@@ -1,5 +1,4 @@
 import { SettingOutlined } from "@ant-design/icons";
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import {
   Button,
   ConfigProvider,
@@ -15,11 +14,11 @@ import {
   updateHomeworkById,
 } from "appdata/homework/homeworkSlice";
 import AnswerInputForAddHomeWork from "components/AnswerInputForAddHomeWork/AnswerInputForAddHomeWork";
+import ShowFile from "components/ShowFile/ShowFile";
 import { useAddHomeWork } from "contexts/add_homework_context/AddHomeWorkContext";
 import { useClass } from "contexts/class_context/ClassContext";
 import dayjs from "dayjs";
-import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import styles from "./EditHomework.module.css";
@@ -64,14 +63,6 @@ function EditHomework() {
     setCountAnswer(0);
     setIsModalOpen(false);
   };
-
-  const memoizedDocuments = useMemo(() => {
-    return [
-      {
-        uri: dataHomework?.fileURL,
-      },
-    ];
-  }, [dataHomework?.fileURL]);
 
   const onUpdateHomework = async () => {
     const config = {
@@ -177,7 +168,7 @@ function EditHomework() {
 
             <div style={{ display: "flex", width: "100%" }}>
               <div className={styles.left_box}>
-                <MemoizedDocViewer documents={memoizedDocuments} />
+                <ShowFile fileUri={dataHomework?.fileURL} />
               </div>
 
               <div className={styles.right_box}>
@@ -437,13 +428,5 @@ function EditHomework() {
     </div>
   );
 }
-
-const MemoizedDocViewer = React.memo(({ documents }) => (
-  <DocViewer documents={documents} pluginRenderers={DocViewerRenderers} />
-));
-
-MemoizedDocViewer.propTypes = {
-  documents: PropTypes.any,
-};
 
 export default EditHomework;

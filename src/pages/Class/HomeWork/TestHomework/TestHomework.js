@@ -1,7 +1,6 @@
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { getDataHomeworkById } from "appdata/homework/homeworkSlice";
-import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useState } from "react";
+import ShowFile from "components/ShowFile/ShowFile";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RightBox from "./RightBox";
 import styles from "./TestHomework.module.css";
@@ -13,14 +12,6 @@ function TestHomework() {
   const homeworkRedux = useSelector((state) => state.homeworkRedux);
 
   const [dataHomework, setDataHomework] = useState(null);
-
-  const memoizedDocuments = useMemo(() => {
-    return [
-      {
-        uri: dataHomework?.fileURL,
-      },
-    ];
-  }, [dataHomework?.fileURL]);
 
   useEffect(() => {
     setDataHomework(homeworkRedux.dataHomeworkById);
@@ -36,7 +27,7 @@ function TestHomework() {
       {dataHomework && (
         <>
           <div className={styles.left_box}>
-            <MemoizedDocViewer documents={memoizedDocuments} />
+            <ShowFile fileUri={dataHomework?.fileURL} />
           </div>
           {dataHomework && (
             <div className={styles.right_box}>
@@ -48,13 +39,5 @@ function TestHomework() {
     </div>
   );
 }
-
-const MemoizedDocViewer = React.memo(({ documents }) => (
-  <DocViewer documents={documents} pluginRenderers={DocViewerRenderers} />
-));
-
-MemoizedDocViewer.propTypes = {
-  documents: PropTypes.any,
-};
 
 export default TestHomework;

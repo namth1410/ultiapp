@@ -12,7 +12,7 @@
   }
 
   .item_wrapper_select {
-    border-left: 10px solid #3498db;
+    border-left: 10px solid #87cfff;
     position: relative;
     z-index: 2;
   }
@@ -32,7 +32,7 @@
   .item_wrapper_select:hover:before {
     content: "";
     width: 100%;
-    background: #3498db;
+    background: #87cfff;
   }
 
   .item_wrapper:not(.item_wrapper_select):hover {

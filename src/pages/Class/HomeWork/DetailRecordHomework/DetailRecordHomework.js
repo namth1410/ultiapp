@@ -1,8 +1,7 @@
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { Select, Table } from "antd";
 import { getDataRecordsHomeworkByUID } from "appdata/homework/homeworkSlice";
-import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useState } from "react";
+import ShowFile from "components/ShowFile/ShowFile";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { convertDurationToString, convertISOToCustomFormat } from "ultis/time";
 import styles from "./DetailRecordHomework.module.css";
@@ -75,14 +74,6 @@ function DetailRecordHomework() {
     }));
   };
 
-  const memoizedDocuments = useMemo(() => {
-    return [
-      {
-        uri: dataDetailRecordHomework?.fileURL,
-      },
-    ];
-  }, [dataDetailRecordHomework?.fileURL]);
-
   function compareAnswers(answer, correctAnswer) {
     let correctCount = 0;
     let wrongCount = 0;
@@ -146,7 +137,7 @@ function DetailRecordHomework() {
       {dataDetailRecordHomework && (
         <>
           <div className={styles.left_box}>
-            <MemoizedDocViewer documents={memoizedDocuments} />
+            <ShowFile fileUri={dataDetailRecordHomework?.fileURL} />
           </div>
           <div className={styles.right_box}>
             <div className={styles.scrollbar}>
@@ -236,13 +227,5 @@ function DetailRecordHomework() {
     </div>
   );
 }
-
-const MemoizedDocViewer = React.memo(({ documents }) => (
-  <DocViewer documents={documents} pluginRenderers={DocViewerRenderers} />
-));
-
-MemoizedDocViewer.propTypes = {
-  documents: PropTypes.any,
-};
 
 export default DetailRecordHomework;

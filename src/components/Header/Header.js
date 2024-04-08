@@ -12,7 +12,7 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "ultis/api";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
@@ -24,6 +24,7 @@ provider.setCustomParameters({
 });
 
 function Header() {
+  const location = useLocation();
   const navigate = useNavigate();
   const currentUser = useAuth();
 
@@ -178,9 +179,9 @@ function Header() {
   }, [currentUser]);
 
   useEffect(() => {
-    setMenuItem(window.location.pathname);
+    setMenuItem(location.pathname);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.location.pathname]);
+  }, [location.pathname]);
 
   return (
     <div className={styles.wrapper_header}>

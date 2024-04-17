@@ -1,22 +1,33 @@
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  CheckCircleFilled,
   TableOutlined,
   UnorderedListOutlined,
-  CheckCircleFilled,
 } from "@ant-design/icons";
-import { Button, Radio, Select, Spin, Steps } from "antd";
+import { Button, Input, Radio, Select, Spin, Steps } from "antd";
+import empty from "assets/img/empty.json";
 import j1 from "assets/img/j1.json";
 import j2 from "assets/img/j2.json";
 import QuizzItem from "components/QuizzItem/QuizzItem";
 import { useCreateSpeaking } from "contexts/create_speaking_context/CreateSpeakingContext";
 import { onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
 import { auth, firestore } from "../../firebase";
 import styles from "./CreateCollectionSpeakingFromQuizz.module.css";
 
+const { Search } = Input;
 const steps = [
   {
     title: "Anh",
@@ -33,7 +44,15 @@ const steps = [
 ];
 
 function CreateCollectionSpeakingFromQuizz() {
-  const { selectedQuizzs, current, setCurrent } = useCreateSpeaking();
+  const {
+    selectedQuizzs,
+    current,
+    setCurrent,
+    isCreateFromMyQuizz,
+    setIsCreateFromMyQuizz,
+    resultSearchQuizz,
+    setResultSearchQuizz,
+  } = useCreateSpeaking();
 
   const [myQuizzs, setMyQuizzs] = useState(null);
   const [filter, setFilter] = useState("time_desc");
@@ -66,7 +85,6 @@ function CreateCollectionSpeakingFromQuizz() {
 
   function sortArrayByFilter(array, filter) {
     let sortedArray = [...array];
-    console.log(sortedArray);
 
     if (filter === "asc" || filter === "desc") {
       sortedArray.sort((a, b) => {
@@ -114,6 +132,32 @@ function CreateCollectionSpeakingFromQuizz() {
       speakingCollections.push(collection);
     });
     return speakingCollections;
+  }
+
+  async function onSearch(value) {
+    let querySnapshot = await getDoc(doc(firestore, "quizzs", value));
+    if (querySnapshot.exists()) {
+      return setResultSearchQuizz([
+        {
+          id: querySnapshot.id,
+          ...querySnapshot.data(),
+        },
+      ]);
+    } else {
+      const quizzsRef = collection(firestore, "quizzs");
+      querySnapshot = await getDocs(
+        query(quizzsRef, where("title", "==", value))
+      );
+      if (querySnapshot.empty) {
+        return setResultSearchQuizz(null);
+      } else {
+        const res = [];
+        querySnapshot?.forEach((doc) => {
+          res.push({ id: doc.id, ...doc.data() });
+        });
+        return setResultSearchQuizz(res);
+      }
+    }
   }
 
   async function createCollectionFromQuizzs() {
@@ -206,7 +250,7 @@ function CreateCollectionSpeakingFromQuizz() {
             <div className={styles.anim}>
               <Lottie animationData={j1} loop={true} />
             </div>
-            <div className={styles.title}>Tạo mới</div>
+            <div className={styles.title}>Tạo từ quizz cộng đồng</div>
             <Button
               type="primary"
               size="large"
@@ -214,6 +258,10 @@ function CreateCollectionSpeakingFromQuizz() {
                 fontFamily: "Gilroy",
                 padding: "15px 30px",
                 height: "auto",
+              }}
+              onClick={() => {
+                setCurrent(current + 1);
+                setIsCreateFromMyQuizz(false);
               }}
             >
               Tải lên
@@ -235,6 +283,7 @@ function CreateCollectionSpeakingFromQuizz() {
               }}
               onClick={() => {
                 setCurrent(current + 1);
+                setIsCreateFromMyQuizz(true);
               }}
             >
               Tải File
@@ -242,7 +291,8 @@ function CreateCollectionSpeakingFromQuizz() {
           </div>
         </div>
       )}
-      {current === 1 && (
+
+      {current === 1 && isCreateFromMyQuizz && (
         <div
           className={styles.option}
           style={{ justifyContent: "flex-start", alignItems: "flex-start" }}
@@ -315,6 +365,7 @@ function CreateCollectionSpeakingFromQuizz() {
             type="primary"
             icon={<ArrowRightOutlined />}
             onClick={() => {
+              if (!selectedQuizzs) return;
               setCurrent((pre) => pre + 1);
             }}
           >
@@ -322,6 +373,74 @@ function CreateCollectionSpeakingFromQuizz() {
           </Button>
         </div>
       )}
+
+      {current === 1 && !isCreateFromMyQuizz && (
+        <div
+          className={styles.option}
+          style={{ justifyContent: "flex-start", alignItems: "flex-start" }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <ArrowLeftOutlined
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setCurrent((pre) => pre - 1);
+              }}
+            />
+            {selectedQuizzs && (
+              <div>{`Bạn đã chọn ${selectedQuizzs.length} quizz`}</div>
+            )}
+          </div>
+
+          <Search
+            placeholder="Tìm kiếm..."
+            allowClear
+            enterButton="Tìm kiếm"
+            size="large"
+            onSearch={(e) => {
+              onSearch(e.trim());
+            }}
+            style={{ marginTop: "5px" }}
+          />
+
+          <div
+            style={{
+              width: "100%",
+              overflow: "auto",
+              margin: "5px 0",
+              display: "flex",
+              flexDirection: "column",
+              gap: "5px",
+            }}
+          >
+            {resultSearchQuizz ? (
+              resultSearchQuizz?.map((quizz) => (
+                <QuizzItem key={quizz.id} props={quizz} typeShow={typeShow} />
+              ))
+            ) : (
+              <div>
+                <Lottie
+                  style={{ width: "40%", margin: "auto", marginTop: "10%" }}
+                  animationData={empty}
+                  loop={true}
+                />
+              </div>
+            )}
+          </div>
+
+          <Button
+            style={{ marginLeft: "auto", marginTop: "auto" }}
+            type="primary"
+            icon={<ArrowRightOutlined />}
+            onClick={() => {
+              if (!selectedQuizzs) return;
+              setCurrent((pre) => pre + 1);
+            }}
+          >
+            Tiếp
+          </Button>
+        </div>
+      )}
+
       {current === 2 && (
         <div className={styles.option}>
           {statusUpload === "done" ? (

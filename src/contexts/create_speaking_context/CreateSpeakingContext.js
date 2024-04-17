@@ -6,6 +6,8 @@ const CreateSpeakingContext = createContext();
 export const CreateSpeakingProvider = ({ children }) => {
   const [selectedQuizzs, setSelectedQuizzs] = useState(null);
   const [current, setCurrent] = useState(0);
+  const [isCreateFromMyQuizz, setIsCreateFromMyQuizz] = useState(false);
+  const [resultSearchQuizz, setResultSearchQuizz] = useState(null);
 
   const contextValue = useMemo(
     () => ({
@@ -13,9 +15,13 @@ export const CreateSpeakingProvider = ({ children }) => {
       setSelectedQuizzs,
       current,
       setCurrent,
+      isCreateFromMyQuizz,
+      setIsCreateFromMyQuizz,
+      resultSearchQuizz,
+      setResultSearchQuizz,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedQuizzs, current]
+    [selectedQuizzs, current, isCreateFromMyQuizz, resultSearchQuizz]
   );
 
   return (

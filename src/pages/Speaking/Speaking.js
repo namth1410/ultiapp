@@ -31,7 +31,8 @@ const images = importAll(
 function Speaking() {
   const navigate = useNavigate();
   const currentUser = useAuth();
-  const { setCurrent, setSelectedQuizzs } = useCreateSpeaking();
+  const { setCurrent, setSelectedQuizzs, setResultSearchQuizz } =
+    useCreateSpeaking();
 
   const [data, setData] = useState([
     "Animals",
@@ -187,6 +188,7 @@ function Speaking() {
           setIsModalOpen(false);
           setCurrent(0);
           setSelectedQuizzs(null);
+          setResultSearchQuizz(null);
         }}
         width={"50vw"}
         height={"50vw"}

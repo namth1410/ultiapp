@@ -183,6 +183,7 @@ function TTS() {
           onChange={(e) => {
             setRangeGGS(e.target.value);
           }}
+          onPressEnter={fetchData}
         ></Input>
         <Button
           style={{ width: "fit-content" }}

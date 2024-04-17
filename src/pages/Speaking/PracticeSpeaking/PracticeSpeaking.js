@@ -1,7 +1,14 @@
 import { ReactComponent as ListenSvg } from "assets/img/listen.svg";
 import { ReactComponent as MicrophoneSvg } from "assets/img/microphone.svg";
 import { ReactComponent as PlaySvg } from "assets/img/play.svg";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import SpeechRecognition, {
@@ -14,6 +21,14 @@ import styles from "./PracticeSpeaking.module.css";
 function PracticeSpeaking() {
   const { transcript, resetTranscript } = useSpeechRecognition();
   const topic = window.location.pathname.split("/")[3];
+  const topicHardCode = [
+    "animals",
+    "colors",
+    "grocery",
+    "hours",
+    "jobs",
+    "weather",
+  ];
 
   let chunks = [];
 
@@ -101,17 +116,28 @@ function PracticeSpeaking() {
 
   useEffect(() => {
     const getWords = async () => {
-      const _topic = topic.charAt(0).toUpperCase() + topic.slice(1);
-      const quizzsRef = collection(firestore, "speaking");
-      const querySnapshot = await getDocs(
-        query(quizzsRef, where("topic", "==", _topic))
-      );
-      if (querySnapshot.empty) {
-        setWords(null);
+      let querySnapshot = null;
+      if (!topicHardCode.includes(topic)) {
+        querySnapshot = await getDoc(doc(firestore, "speaking", topic));
+        if (querySnapshot.exists()) {
+          const collection = { id: querySnapshot.id, ...querySnapshot.data() };
+          setWords(collection.words);
+          setSelectedWord(collection.words[0]);
+        }
       } else {
-        const a = querySnapshot.docs[0].data();
-        setWords(a.words);
-        setSelectedWord(a.words[0]);
+        let _topic = topic.charAt(0).toUpperCase() + topic.slice(1);
+
+        const quizzsRef = collection(firestore, "speaking");
+        querySnapshot = await getDocs(
+          query(quizzsRef, where("topic", "==", _topic))
+        );
+        if (querySnapshot.empty) {
+          setWords(null);
+        } else {
+          const a = querySnapshot.docs[0].data();
+          setWords(a.words);
+          setSelectedWord(a.words[0]);
+        }
       }
     };
 
@@ -119,7 +145,6 @@ function PracticeSpeaking() {
 
     const synth = window.speechSynthesis;
     const voices = synth.getVoices();
-
     setVoice(voices[0]);
 
     return () => {
@@ -136,7 +161,7 @@ function PracticeSpeaking() {
           {words?.map((el) => {
             return (
               <WordItem
-                key={el}
+                key={el.term}
                 item={el}
                 selectedWord={selectedWord}
                 setSelectedWord={setSelectedWord}
@@ -153,8 +178,14 @@ function PracticeSpeaking() {
             <div className={styles.word_detail_content_group}>
               <div className={styles.word_image_preview}>
                 <img
-                  src="https://img.hoclieu.vn/sgv_TA/lop12_globalsuccess/image/Unit1/jpeg-optimizer_GS-TA12-U1-achievement-2265726729.jpg"
+                  src={
+                    selectedWord.image ||
+                    "https://img.hoclieu.vn/sgv_TA/lop12_globalsuccess/image/Unit1/jpeg-optimizer_GS-TA12-U1-achievement-2265726729.jpg"
+                  }
                   alt=""
+                  style={{
+                    imageRendering: "auto",
+                  }}
                 />
               </div>
 

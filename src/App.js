@@ -43,6 +43,7 @@ import "./App.css";
 import { SpellProvider } from "pages/Quizz/Spell/SpellContext";
 import TTS from "pages/TTS/TTS";
 import { TTSProvider } from "pages/TTS/TTSContext";
+import { CreateSpeakingProvider } from "contexts/create_speaking_context/CreateSpeakingContext";
 
 function App() {
   const needLogin = !localStorage.getItem("ulti_auth");
@@ -161,7 +162,14 @@ function App() {
               path="game/searchword/:quizz_id"
               element={<SearchWordGame />}
             />
-            <Route path="speaking" element={<Speaking />} />
+            <Route
+              path="speaking"
+              element={
+                <CreateSpeakingProvider>
+                  <Speaking />
+                </CreateSpeakingProvider>
+              }
+            />
             <Route
               path="speaking/practice/:topic_id"
               element={<PracticeSpeaking />}

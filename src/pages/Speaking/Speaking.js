@@ -1,6 +1,17 @@
-import { Card, Col, Row } from "antd";
+import { Card, Col, Modal, Row } from "antd";
+import img from "assets/img/Animals.png";
+import CreateCollectionSpeakingFromQuizz from "components/CreateCollectionSpeakingFromQuizz/CreateCollectionSpeakingFromQuizz";
+import { useCreateSpeaking } from "contexts/create_speaking_context/CreateSpeakingContext";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { firestore, useAuth } from "../../firebase";
 import styles from "./Speaking.module.css";
 
 const { Meta } = Card;
@@ -19,6 +30,8 @@ const images = importAll(
 
 function Speaking() {
   const navigate = useNavigate();
+  const currentUser = useAuth();
+  const { setCurrent, setSelectedQuizzs } = useCreateSpeaking();
 
   const [data, setData] = useState([
     "Animals",
@@ -28,10 +41,31 @@ function Speaking() {
     "Jobs",
     "Weather",
   ]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [collectionFromQuizz, setCollectionFromQuizz] = useState(null);
+
   useEffect(() => {
-    console.log(images);
     setData(["Animals", "Colors", "Grocery", "Hours", "Jobs", "Weather"]);
-  }, []);
+    if (!currentUser) return;
+
+    const unsubscribe = onSnapshot(
+      query(
+        collection(firestore, "speaking"),
+        where("origin", "==", `quizz`),
+        where("uidCreator", "==", `${currentUser.uid}`),
+        orderBy("dateCreate", "desc")
+      ),
+      (snapshot) => {
+        const _collectionFromQuizz = snapshot.docs.map((doc) => {
+          return { id: doc.id, ...doc.data() };
+        });
+        setCollectionFromQuizz(_collectionFromQuizz);
+      }
+    );
+    return () => {
+      unsubscribe();
+    };
+  }, [currentUser]);
 
   return (
     <div
@@ -41,28 +75,64 @@ function Speaking() {
     >
       <div>
         <div style={{ fontSize: "22px", marginBottom: "20px" }}>
-          Tự tạo bộ sưu tập của bạn
+          Bộ sưu tập của bạn
         </div>
         <div>
-          <Card
-            hoverable
-            style={{
-              width: 240,
-            }}
-          >
-            <div
+          <Row gutter={[24, 16]}>
+            {collectionFromQuizz?.map((item, index) => (
+              <Col key={index} xs={24} sm={12} md={8} lg={6} xl={6}>
+                <Card
+                  className={styles.card}
+                  hoverable
+                  style={{
+                    width: 240,
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    boxShadow: "0 0 10px 0 rgba(0,0,0,.15)",
+                  }}
+                  onClick={() => {
+                    navigate(`practice/${item.id}`);
+                  }}
+                  cover={
+                    <img
+                      style={{ width: "170px", marginTop: "10px" }}
+                      alt="example"
+                      src={img}
+                    />
+                  }
+                >
+                  <Meta
+                    style={{ textAlign: "center", textDecoration: "underline" }}
+                    title={item.topic}
+                  />
+                </Card>
+              </Col>
+            ))}
+            <Card
+              hoverable
               style={{
-                display: "flex",
-                width: "100%",
-                height: "190px",
-                fontSize: "40px",
-                justifyContent: "center",
-                alignItems: "center",
+                width: 240,
+              }}
+              onClick={() => {
+                setIsModalOpen(true);
               }}
             >
-              +
-            </div>
-          </Card>
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  height: "190px",
+                  fontSize: "40px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                +
+              </div>
+            </Card>
+          </Row>
         </div>
       </div>
 
@@ -106,6 +176,24 @@ function Speaking() {
           </Row>
         </div>
       </div>
+
+      <Modal
+        title=""
+        open={isModalOpen}
+        onOk={() => {
+          setIsModalOpen(false);
+        }}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setCurrent(0);
+          setSelectedQuizzs(null);
+        }}
+        width={"50vw"}
+        height={"50vw"}
+        footer={() => <></>}
+      >
+        <CreateCollectionSpeakingFromQuizz />
+      </Modal>
     </div>
   );
 }

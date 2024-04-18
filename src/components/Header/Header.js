@@ -188,6 +188,22 @@ function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const contentLeft = document.querySelector(`.${styles.content_left}`);
+      const isClickedOutside = !contentLeft.contains(event.target);
+      if (isClickedOutside) {
+        document.getElementById("check").checked = false;
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className={styles.wrapper_header}>
       <div className={styles.header}>
@@ -435,6 +451,7 @@ function Header() {
                       cursor: "pointer",
                       userSelect: "none",
                     }}
+                    className={styles.avatar_wrapper}
                   >
                     <img
                       style={{

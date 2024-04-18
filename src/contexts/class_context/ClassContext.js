@@ -71,7 +71,6 @@ export const ClassProvider = ({ children }) => {
     dispatch(snapshotDataHomework({ id: classId }));
     dispatch(getDataClassById({ id: classId }));
     dispatch(getHomeworkOfClass({ id: classId }));
-    console.log("dispatch");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

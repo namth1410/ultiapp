@@ -1,9 +1,10 @@
 import { Button } from "antd";
 import Splash from "assets/img/splash.jpg";
+import styles from "./Login.module.css";
 
 const Login = () => {
   return (
-    <div style={{ position: "relative" }}>
+    <div className={styles.login_wrapper} style={{ position: "relative" }}>
       <img
         style={{ width: "100%", objectFit: "cover" }}
         src={Splash}

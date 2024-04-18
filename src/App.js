@@ -26,7 +26,7 @@ import CreateClass from "pages/CreateClass/CreateClass";
 import CreateSet from "pages/CreateSet/CreateSet";
 import EditSet from "pages/EditSet/EditSet";
 import Home from "pages/Home/Home";
-import Login from "pages/Login";
+import Login from "pages/Login/Login";
 import MenuGame from "pages/MenuGame/MenuGame";
 import Quizz from "pages/Quizz/Quizz";
 import Spell from "pages/Quizz/Spell/Spell";

@@ -10,7 +10,7 @@ import {
 } from "ultis/time";
 import { auth, firestore } from "../../firebase";
 import "./TestOnline.css";
-import styles from "./TestOnline.module.css";
+import styles from "./TestOnline.module.scss";
 
 function TestOnline() {
   const navigate = useNavigate();
@@ -315,7 +315,7 @@ function TestOnline() {
       {examsToShow && (
         <div className={styles.container}>
           {examsToShow.map((test) => (
-            <TestItem props={test} navigate={navigate} />
+            <TestItem key={test.id} props={test} navigate={navigate} />
           ))}
         </div>
       )}
@@ -356,13 +356,20 @@ const TestItem = ({ props, navigate }) => {
             color: "#333333",
             textTransform: "uppercase",
           }}
+          className={styles.name_test}
         >
           {name}
         </div>
-        <div style={{ fontSize: "14px", color: "#bbbbbb", fontWeight: "500" }}>
+        <div
+          className={styles.sub_text}
+          style={{ fontSize: "14px", color: "#bbbbbb", fontWeight: "500" }}
+        >
           17812 lượt hoàn thành
         </div>
-        <div style={{ fontSize: "14px", color: "#bbbbbb", fontWeight: "500" }}>
+        <div
+          className={styles.sub_text}
+          style={{ fontSize: "14px", color: "#bbbbbb", fontWeight: "500" }}
+        >
           29/06/2023 22:45
         </div>
         <div
@@ -370,6 +377,7 @@ const TestItem = ({ props, navigate }) => {
             display: "flex",
             gap: "10px",
           }}
+          className={styles.btn_wrapper}
         >
           <button>Test ngay</button>
           <button

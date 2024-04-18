@@ -35,3 +35,14 @@
     }
   }
 }
+
+
+@media screen and (max-width: 650px) {
+  h2 {
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 12px;
+  }
+}

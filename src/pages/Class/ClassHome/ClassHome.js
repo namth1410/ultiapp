@@ -3,7 +3,7 @@ import { Button, Input, Select } from "antd";
 import CardClass from "components/CardClass/CardClass";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./ClassHome.module.css";
+import styles from "./ClassHome.module.scss";
 
 import {
   getClassById,
@@ -108,13 +108,11 @@ function ClassHome() {
           onSearch={(e) => {
             onSearch(e.trim());
           }}
+          className={styles.search_tool}
         />
         <Select
           defaultValue="time_desc"
-          style={{
-            width: 160,
-            height: "100%",
-          }}
+          className={styles.filter_tool}
           options={filters}
           onChange={(e) => {
             setFilter(e);
@@ -128,10 +126,12 @@ function ClassHome() {
             fontFamily: "Gilroy",
             width: "fit-content",
             height: "100%",
+            padding: "calc(10 * 100vw / 1920) calc(20 * 100vw / 1920)",
           }}
           onClick={() => {
             navigate("/class/create-class");
           }}
+          className={styles.create_class_btn}
         >
           + Tạo lớp học
         </Button>

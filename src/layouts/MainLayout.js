@@ -31,7 +31,6 @@ function MainLayout() {
     });
 
     socket.on("reload", (data) => {
-      console.log(data);
       if (data.getNewsfeedOfClass) {
         const classId = data.getNewsfeedOfClass;
         dispatch(getNewsfeedOfClass({ classId: classId }));

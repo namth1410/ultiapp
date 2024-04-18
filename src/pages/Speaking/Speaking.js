@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { firestore, useAuth } from "../../firebase";
-import styles from "./Speaking.module.css";
+import styles from "./Speaking.module.scss";
 
 const { Meta } = Card;
 
@@ -73,6 +73,7 @@ function Speaking() {
       style={{
         padding: "20px",
       }}
+      className={styles.speaking_wrapper}
     >
       <div>
         <div style={{ fontSize: "22px", marginBottom: "20px" }}>
@@ -85,24 +86,10 @@ function Speaking() {
                 <Card
                   className={styles.card}
                   hoverable
-                  style={{
-                    width: 240,
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    boxShadow: "0 0 10px 0 rgba(0,0,0,.15)",
-                  }}
                   onClick={() => {
                     navigate(`practice/${item.id}`);
                   }}
-                  cover={
-                    <img
-                      style={{ width: "170px", marginTop: "10px" }}
-                      alt="example"
-                      src={img}
-                    />
-                  }
+                  cover={<img alt="example" src={img} />}
                 >
                   <Meta
                     style={{ textAlign: "center", textDecoration: "underline" }}
@@ -113,9 +100,7 @@ function Speaking() {
             ))}
             <Card
               hoverable
-              style={{
-                width: 240,
-              }}
+              className={styles.card}
               onClick={() => {
                 setIsModalOpen(true);
               }}
@@ -124,7 +109,7 @@ function Speaking() {
                 style={{
                   display: "flex",
                   width: "100%",
-                  height: "190px",
+                  height: "150px",
                   fontSize: "40px",
                   justifyContent: "center",
                   alignItems: "center",

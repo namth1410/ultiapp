@@ -107,7 +107,7 @@
             .word_col {
               display: grid;
               gap: 2px;
-              gap: min(6 * 20vmin vmin / 56, 20 * 100vw / 1920);
+              gap: min(6 * 20vmin / 56, 20 * 100vw / 1920);
               position: relative;
 
               .word {
@@ -223,6 +223,93 @@
 
   .select {
     outline: none;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .wrapper {
+    .left_box {
+      .wordlist {
+        display: flex !important;
+        flex-direction: column;
+        gap: 10px;
+
+        .word_item {
+          border-radius: 4px;
+          padding: 4px 8px;
+          span {
+            font-size: 12px !important;
+          }
+        }
+      }
+    }
+
+    .right_box {
+      .word_detail_content {
+        display: flex;
+        flex-direction: column;
+
+        .word_detail_content_group {
+          display: flex;
+          flex-direction: column !important;
+          height: fit-content !important;
+
+          .word_image_preview {
+            width: 80% !important;
+          }
+
+          .word_detail_content_group_right {
+            padding: 0 !important;
+            margin-top: 15px;
+
+            .word_pronunciation {
+              .word_pronunciation_audio {
+                padding: 0 !important;
+                width: 20px !important;
+                height: 20px !important;
+                .listen_icon {
+                  width: 18px;
+                  height: 18px;
+                }
+              }
+
+              .word_col {
+                .word {
+                  font-size: 16px !important;
+                }
+                .word_phonetics {
+                  font-size: 14px !important;
+                }
+              }
+
+              .word_type_and_record {
+                .word_type {
+                  font-size: 16px !important;
+                }
+
+                .word_record {
+                  padding: 0 !important;
+                  width: 20px !important;
+                  height: 20px !important;
+                  .micro_icon {
+                    width: 18px;
+                    height: 18px;
+                  }
+                }
+              }
+            }
+
+            .word_meaning {
+              font-size: 16px !important;
+            }
+          }
+        }
+      }
+
+      .audio {
+        margin-top: 20px;
+      }
+    }
   }
 }
 

@@ -5,7 +5,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, firestore } from "../../firebase";
-import styles from "./Home.module.css";
+import styles from "./Home.module.scss";
 
 const Home = () => {
   const navigate = useNavigate();

@@ -125,6 +125,41 @@
   }
 }
 
+@media screen and (max-width: 650px) {
+  .menu_item {
+    font-size: 12px !important;
+    padding: 4px 4px !important;
+  }
+
+  .menu_item_spec {
+    font-size: 12px !important;
+    padding: 4px 4px !important;
+  }
+  .test_item {
+    .img {
+      width: 120px !important;
+      font-size: 14px !important;
+      height: 120px !important;
+    }
+
+    .item_info {
+      .name_test {
+        font-size: 14px !important;
+      }
+      .sub_text {
+        font-size: 10px !important;
+      }
+
+      .btn_wrapper {
+        button {
+          font-size: 12px !important;
+          padding: 4px 8px !important;
+        }
+      }
+    }
+  }
+}
+
 @keyframes slideInFromRight {
   0% {
     transform: translateX(100%);

@@ -1,4 +1,9 @@
-import { BellFilled, UserOutlined } from "@ant-design/icons";
+import {
+  BarsOutlined,
+  BellFilled,
+  CloseOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Badge, Button, Divider, Dropdown, Space } from "antd";
 import Logo from "assets/img/logo.svg";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -16,7 +21,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "ultis/api";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
-import styles from "./Header.module.css";
+import styles from "./Header.module.scss";
 
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
@@ -187,59 +192,61 @@ function Header() {
     <div className={styles.wrapper_header}>
       <div className={styles.header}>
         <div className={styles.content_left}>
-          <Button
-            type="link"
-            onClick={() => {
-              navigate("/class");
-            }}
-            style={{
-              height: "auto",
-            }}
-          >
-            <img
-              style={{ height: "60px" }}
-              src={Logo}
-              alt="Notifications Icon"
-            />
-          </Button>
-
-          <div className={styles.menu_item_box}>
-            <Link
-              to="/class"
-              className={`${styles.menu_item} ${
-                menuItem.includes("/class") ? styles.active : ""
-              }`}
-              onClick={handleClickMenu}
-            >
-              <div>Lớp học</div>
-            </Link>
-            <Link
-              to="/quizz"
-              className={`${styles.menu_item} ${
-                menuItem.includes("/quizz") ? styles.active : ""
-              }`}
-              onClick={handleClickMenu}
-            >
-              <div>Quizz</div>
-            </Link>
-            <Link
-              to="/speaking"
-              className={`${styles.menu_item} ${
-                menuItem.includes("/speaking") ? styles.active : ""
-              }`}
-              onClick={handleClickMenu}
-            >
-              <div>Luyện nói</div>
-            </Link>
-            <Link
-              to="/online"
-              className={`${styles.menu_item} ${
-                menuItem.includes("/online") ? styles.active : ""
-              }`}
-              onClick={handleClickMenu}
-            >
-              <div>Luyện đề</div>
-            </Link>
+          <div className={styles.menu_mb_btn}>
+            <input type="checkbox" id="check" />
+            <label htmlFor="check">
+              <BarsOutlined className={styles.bars_btn} />
+              <CloseOutlined className={styles.close_btn} />
+            </label>
+            <div className={styles.menu_item_box}>
+              <Button
+                type="link"
+                onClick={() => {
+                  navigate("/class");
+                }}
+                style={{
+                  height: "auto",
+                }}
+              >
+                <img className={styles.logo} src={Logo} alt="Logo Icon" />
+              </Button>
+              <Link
+                to="/class"
+                className={`${styles.menu_item} ${
+                  menuItem.includes("/class") ? styles.active : ""
+                }`}
+                onClick={handleClickMenu}
+              >
+                <div>Lớp học</div>
+              </Link>
+              <Link
+                to="/quizz"
+                className={`${styles.menu_item} ${
+                  menuItem.includes("/quizz") ? styles.active : ""
+                }`}
+                onClick={handleClickMenu}
+              >
+                <div>Quizz</div>
+              </Link>
+              <Link
+                to="/speaking"
+                className={`${styles.menu_item} ${
+                  menuItem.includes("/speaking") ? styles.active : ""
+                }`}
+                onClick={handleClickMenu}
+              >
+                <div>Luyện nói</div>
+              </Link>
+              <Link
+                to="/online"
+                className={`${styles.menu_item} ${
+                  menuItem.includes("/online") ? styles.active : ""
+                }`}
+                onClick={handleClickMenu}
+              >
+                <div>Luyện đề</div>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -255,8 +262,6 @@ function Header() {
                   arrow={{ pointAtCenter: true }}
                   onOpenChange={async (e) => {
                     if (e && notificationsUnRead) {
-                      console.log(e);
-                      console.log(notificationsUnRead);
                       notificationsUnRead.forEach((noti) => {
                         const classRef = doc(
                           firestore,
@@ -449,31 +454,19 @@ function Header() {
               </div>
             </>
           ) : (
-            <>
-              <Button
-                size="large"
-                type="primary"
-                style={{
-                  fontFamily: "Gilroy",
-                  border: "none",
-                  boxShadow: "none",
-                }}
-                onClick={signInWithGoogle}
-              >
-                Đăng nhập
-              </Button>
-              <Button
-                size="large"
-                type="primary"
-                style={{
-                  background: "#ffcd1f",
-                  fontFamily: "Gilroy",
-                  display: "none",
-                }}
-              >
-                Đăng ký
-              </Button>
-            </>
+            <Button
+              size="large"
+              type="primary"
+              style={{
+                fontFamily: "Gilroy",
+                border: "none",
+                boxShadow: "none",
+              }}
+              className={styles.login_btn}
+              onClick={signInWithGoogle}
+            >
+              Đăng nhập
+            </Button>
           )}
         </div>
       </div>

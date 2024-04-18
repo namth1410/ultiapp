@@ -1,21 +1,21 @@
 import {
+  DeleteOutlined,
   DesktopOutlined,
   DownloadOutlined,
   EyeOutlined,
   PartitionOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
 import { Badge, Button, Input, Select } from "antd";
+import { uploadFile } from "appdata/homework/homeworkSlice";
 import empty from "assets/img/empty.json";
 import pdf from "assets/img/pdf.png";
 import ShowFile from "components/ShowFile/ShowFile";
+import { useClass } from "contexts/class_context/ClassContext";
 import Lottie from "lottie-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./Document.module.css";
 import { useDocument } from "./DocumentContext";
-import { useDispatch, useSelector } from "react-redux";
-import { uploadFile } from "appdata/homework/homeworkSlice";
-import { useClass } from "contexts/class_context/ClassContext";
 
 function MyDocument() {
   const dispatch = useDispatch();
@@ -322,7 +322,11 @@ const DocumentItem = ({ document, selectedDocument, setSelectedDocument }) => {
             selectedDocument?.name === name && !fileURL ? styles.selected : ""
           }`}
           onClick={() => {
-            setSelectedDocument(document);
+            if (document.fileURL === selectedDocument?.fileURL) {
+              setSelectedDocument(null);
+            } else {
+              setSelectedDocument(document);
+            }
           }}
         >
           <div className={styles.img_wrapper}>

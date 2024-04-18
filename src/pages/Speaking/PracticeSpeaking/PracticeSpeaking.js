@@ -16,7 +16,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import Swal from "sweetalert2";
 import { firestore } from "../../../firebase";
-import styles from "./PracticeSpeaking.module.css";
+import styles from "./PracticeSpeaking.module.scss";
 
 function PracticeSpeaking() {
   const { transcript, resetTranscript } = useSpeechRecognition();
@@ -198,7 +198,7 @@ function PracticeSpeaking() {
                       listenWord();
                     }}
                   >
-                    <ListenSvg />
+                    <ListenSvg className={styles.listen_icon} />
                   </button>
 
                   <div className={styles.word_col}>
@@ -216,7 +216,7 @@ function PracticeSpeaking() {
                       }`}
                       onClick={startRecording}
                     >
-                      <MicrophoneSvg />
+                      <MicrophoneSvg className={styles.micro_icon} />
                     </div>
                     {audioUrl && (
                       <div className={styles.word_record}>
@@ -264,7 +264,7 @@ function PracticeSpeaking() {
             <p>{transcript}</p>
 
             {audioUrl && (
-              <audio controls>
+              <audio controls className={styles.audio}>
                 <source src={audioUrl} type="audio/wav"></source>
               </audio>
             )}

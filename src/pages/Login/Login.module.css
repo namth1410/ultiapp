@@ -1,0 +1,10 @@
+.login_wrapper {
+  overflow: hidden;
+  h1 {
+    font-size: min(6 * 60vmin / 56, 60 * 100vw / 1920);
+  }
+
+  p {
+    font-size: min(4 * 60vmin / 56, 40 * 100vw / 1920);
+  }
+}

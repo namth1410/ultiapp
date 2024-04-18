@@ -1,0 +1,44 @@
+.speaking_wrapper {
+  .card {
+    width: 240px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+
+    img {
+      width: 170px;
+      margin-top: 10px;
+    }
+    &:hover {
+      img {
+        animation: shake 0.5s;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .card {
+    width: 180px !important;
+
+    img {
+      width: 120px !important;
+    }
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  30%,
+  80% {
+    transform: translateX(-5px) rotateZ(-2deg);
+  }
+  60%,
+  100% {
+    transform: translateX(5px) rotateZ(2deg);
+  }
+}

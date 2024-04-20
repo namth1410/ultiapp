@@ -30,15 +30,15 @@ import styles from "./CreateCollectionSpeakingFromQuizz.module.css";
 const { Search } = Input;
 const steps = [
   {
-    title: "Anh",
+    title: "Bước 1",
     content: "First-content",
   },
   {
-    title: "yêu",
+    title: "Bước 2",
     content: "Second-content",
   },
   {
-    title: "em",
+    title: "Bước 3",
     content: "Last-content",
   },
 ];

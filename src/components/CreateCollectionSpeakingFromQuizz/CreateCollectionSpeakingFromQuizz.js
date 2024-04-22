@@ -136,8 +136,8 @@ function CreateCollectionSpeakingFromQuizz() {
 
   async function onSearch(value) {
     let querySnapshot = await getDoc(doc(firestore, "quizzs", value));
-    if (querySnapshot.exists()) {
-      return setResultSearchQuizz([
+    if (querySnapshot.exists() && querySnapshot.data().access === "public") {
+      setResultSearchQuizz([
         {
           id: querySnapshot.id,
           ...querySnapshot.data(),
@@ -146,7 +146,11 @@ function CreateCollectionSpeakingFromQuizz() {
     } else {
       const quizzsRef = collection(firestore, "quizzs");
       querySnapshot = await getDocs(
-        query(quizzsRef, where("title", "==", value))
+        query(
+          quizzsRef,
+          where("title", "==", value),
+          where("access", "==", "public")
+        )
       );
       if (querySnapshot.empty) {
         return setResultSearchQuizz(null);
@@ -169,7 +173,8 @@ function CreateCollectionSpeakingFromQuizz() {
         const querySnapshot = await getDocs(
           query(
             collection(firestore, "speaking"),
-            where("topic", "==", _collection.topic)
+            where("topic", "==", _collection.topic),
+            where("uidCreator", "==", _collection.uidCreator)
           )
         );
 

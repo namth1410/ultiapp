@@ -64,12 +64,13 @@ function NewItem({ newfeed }) {
 
         {(newfeed.uidCreator === currentUser?.uid ||
           currentUser?.uid === creatorId) && (
-          <DeleteFilled
+          <Button
+            icon={<DeleteFilled />}
             onClick={() => {
               setIsModalOpen(true);
             }}
-            style={{ color: "#ff5c5c" }}
-          />
+            className={styles.delete_btn}
+          >Xóa</Button>
         )}
       </div>
 

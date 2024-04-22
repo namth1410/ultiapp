@@ -49,6 +49,7 @@ export const convertDurationToStringV1 = (isoString) => {
 };
 
 export const convertISOToCustomFormat = (isoString) => {
+  if (!isoString) return "--/--/----";
   const date = new Date(isoString);
   const day = date.getDate();
   const month = date.getMonth() + 1; // Tháng bắt đầu từ 0

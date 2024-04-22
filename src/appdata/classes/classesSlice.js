@@ -32,7 +32,6 @@ export const classesSlice = createSlice({
       .addCase(getUserJoinedClasses.rejected, (state, action) => {})
       .addCase(getClassById.pending, (state, action) => {})
       .addCase(getClassById.fulfilled, (state, action) => {
-        console.log(action.payload);
         return {
           ...state,
           searchClass: action.payload,

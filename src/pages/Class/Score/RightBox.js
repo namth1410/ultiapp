@@ -44,8 +44,8 @@ function RightBox() {
     return data.map((el, index) => ({
       name: el.username,
       dateCreate: convertISOToCustomFormat(el.dateCreate),
-      duration: convertDurationToStringV2(el.timeSpent / 100),
-      score: Math.random(),
+      duration: convertDurationToStringV2(el.timeSpent / 1000),
+      score: (Math.random() * 10).toFixed(0),
     }));
   };
 

@@ -1,9 +1,8 @@
 import { useClass } from "contexts/class_context/ClassContext";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
+import { getDownloadURL, getMetadata, listAll, ref } from "firebase/storage";
 import PropTypes from "prop-types";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { firestore, storage } from "../../../firebase";
+import { storage } from "../../../firebase";
 
 const DocumentContext = createContext();
 
@@ -13,50 +12,39 @@ export const DocumentProvider = ({ children }) => {
   const [documents, setDocuments] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState(null);
 
-  const getAllDocument = async () => {
-    const homeworksRef = collection(firestore, "homework");
-    const querySnapshot = await getDocs(
-      query(
-        homeworksRef,
-        where("class", "==", classId),
-        orderBy("dateCreate", "desc")
-      )
-    );
-    const _documents = [];
-    querySnapshot?.forEach((doc) => {
-      _documents.push({ id: doc.id, ...doc.data() });
-    });
-    setDocuments(_documents.length === 0 ? null : _documents);
-  };
-
   useEffect(() => {
     const storageRef = ref(storage, "Homework");
+    const _documents = [];
 
     listAll(storageRef)
       .then((res) => {
-        res.items.forEach((itemRef) => {
-          // Lấy tên của tệp
+        const promises = res.items.map(async (itemRef) => {
+          const metadata = await getMetadata(itemRef);
+          const timeCreated = metadata.timeCreated;
           const fileName = itemRef.name;
-          // Kiểm tra nếu tên của tệp bắt đầu bằng classID
           if (fileName.startsWith(classId)) {
-            // Nếu tên của tệp bắt đầu bằng classID, bạn có thể xử lý tệp tin ở đây
-            console.log("Tên tệp:", fileName);
-
-            // Nếu bạn muốn lấy URL để tải xuống tệp, bạn có thể sử dụng getDownloadURL
-            getDownloadURL(itemRef)
+            return getDownloadURL(itemRef)
               .then((url) => {
-                console.log("URL tải xuống:", url);
+                const tmp = fileName.split("#");
+                _documents.push({
+                  name: tmp[tmp.length - 1],
+                  fileURL: url,
+                  dateCreate: timeCreated,
+                });
               })
               .catch((error) => {
                 console.log("Lỗi khi lấy URL tải xuống:", error);
               });
           }
         });
+        return Promise.all(promises);
+      })
+      .then(() => {
+        setDocuments(_documents.length === 0 ? null : _documents);
       })
       .catch((error) => {
         console.log("Lỗi khi lấy danh sách tệp:", error);
       });
-    getAllDocument();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

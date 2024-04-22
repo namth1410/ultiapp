@@ -69,11 +69,7 @@ function CardClass({ props, isSearching = false }) {
               class: id,
               type: "request_join_class",
             };
-            const docRef = await addDoc(
-              collection(firestore, "notifications"),
-              dataToAdd
-            );
-            console.log(docRef);
+            await addDoc(collection(firestore, "notifications"), dataToAdd);
             setInputPassword("");
           }
         } else {

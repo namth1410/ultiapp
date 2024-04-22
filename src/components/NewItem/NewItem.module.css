@@ -26,6 +26,16 @@
         flex-direction: column;
       }
     }
+
+    .delete_btn {
+      color: #000;
+      transition: all 0.5s;
+    }
+
+    .delete_btn:hover {
+      color: #ff5c5c;
+      border-color: #ff5c5c;
+    }
   }
 
   .image_wrapper {
@@ -67,7 +77,7 @@
     margin-top: 16px;
     flex-direction: column;
     max-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .avatar {

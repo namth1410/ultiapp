@@ -33,7 +33,6 @@ function LeftBox() {
 }
 const HomeWorkItem = ({ homework, selectedHomework, setSelectedHomework }) => {
   const { id, nameHomework, config } = homework;
-  console.log(homework);
   return (
     <div
       className={`${styles.item_wrapper} ${

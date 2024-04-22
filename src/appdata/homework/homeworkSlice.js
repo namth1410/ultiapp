@@ -23,7 +23,6 @@ export const homeworkSlice = createSlice({
       .addCase(deleteHomework.pending, (state, action) => {})
       .addCase(deleteHomework.fulfilled, (state, action) => {})
       .addCase(deleteHomework.rejected, (state, action) => {
-        console.log(action);
       })
       .addCase(addHomework.pending, (state, action) => {
         return {
@@ -38,7 +37,6 @@ export const homeworkSlice = createSlice({
         };
       })
       .addCase(addHomework.rejected, (state, action) => {
-        console.log(action);
       })
       .addCase(getUsersNotDoHomework.pending, (state, action) => {})
       .addCase(getUsersNotDoHomework.fulfilled, (state, action) => {
@@ -177,7 +175,6 @@ export const getAllResultOfHomework = createAsyncThunk(
       const respone = await axiosInstance.get(
         `/homework/get-all-result-of-homework/${homeworkId}`
       );
-      console.log(respone.data);
       return respone.data;
     } catch (error) {
       throw new Error(error);

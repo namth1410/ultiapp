@@ -175,6 +175,7 @@ function Speaking() {
           setSelectedQuizzs(null);
           setResultSearchQuizz(null);
         }}
+        maskClosable={false}
         width={"50vw"}
         height={"50vw"}
         footer={() => <></>}

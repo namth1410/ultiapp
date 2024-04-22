@@ -224,7 +224,7 @@ function Quizz() {
               ).toFixed(1)
             : 0
         );
-        setCountRateOfQuizz(quizzData.rates?.length);
+        setCountRateOfQuizz(quizzData.rates?.length || 0);
         const a = quizzData.rates?.find(
           (el) => el.uid === auth.currentUser.uid
         );

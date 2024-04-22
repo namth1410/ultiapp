@@ -22,11 +22,11 @@ function MyDocument() {
   const hiddenFileInput = useRef(null);
   const { classId } = useClass();
 
-  const { documents, setDocuments, selectedDocument, setSelectedDocument } =
-    useDocument();
+  const { documents, selectedDocument, setSelectedDocument } = useDocument();
   const { Search } = Input;
   const homeworkRedux = useSelector((state) => state.homeworkRedux);
 
+  const [documentsToShow, setDocumentsToShow] = useState(null);
   const [preUpLoadDocs, setPreUpLoadDocs] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -57,8 +57,8 @@ function MyDocument() {
 
     if (filter === "asc" || filter === "desc") {
       sortedArray.sort((a, b) => {
-        const nameA = a.nameHomework.toUpperCase();
-        const nameB = b.nameHomework.toUpperCase();
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
         if (filter === "asc") {
           return nameA.localeCompare(nameB);
         } else {
@@ -127,13 +127,17 @@ function MyDocument() {
   }, [homeworkRedux]);
 
   useEffect(() => {
-    if (!documents) return;
+    if (!documentsToShow) return;
 
-    let _documents = [...documents];
+    let _documents = [...documentsToShow];
     _documents = sortArrayByFilter(_documents, filter);
-    setDocuments(_documents);
+    setDocumentsToShow(_documents);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
+
+  useEffect(() => {
+    setDocumentsToShow(documents);
+  }, [documents]);
 
   return (
     <div className={styles.wrapper}>
@@ -145,6 +149,19 @@ function MyDocument() {
               allowClear
               enterButton="Tìm kiếm"
               size="large"
+              onChange={(e) => {
+                setSelectedDocument(null);
+                const key = e.target.value.trim();
+                if (key === "") {
+                  setDocumentsToShow(documents);
+                } else {
+                  const a =
+                    documentsToShow?.filter((el) => el.name.includes(key)) ||
+                    [];
+
+                  setDocumentsToShow(a.length === 0 ? null : a);
+                }
+              }}
             />
             <Select
               defaultValue="time_desc"
@@ -238,8 +255,8 @@ function MyDocument() {
                 </div>
               </div>
             )}
-            {documents ? (
-              documents.map((document) => (
+            {documentsToShow ? (
+              documentsToShow.map((document) => (
                 <DocumentItem
                   key={document.dateCreate}
                   document={document}

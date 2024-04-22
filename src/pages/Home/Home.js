@@ -13,10 +13,6 @@ const Home = () => {
   const [maybeCareQuizzs, setMaybeCareQuizzs] = useState([]);
 
   useEffect(() => {
-    console.log(myQuizzs);
-  }, [myQuizzs]);
-
-  useEffect(() => {
     const getDataQuizz = async (uid) => {
       const quizzsRef = collection(firestore, "quizzs");
       const querySnapshot = await getDocs(

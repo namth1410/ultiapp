@@ -39,7 +39,10 @@ function ClassHome() {
   ];
 
   const [userCreatedClasses, setUserCreatedClasses] = useState(null);
+  const [userCreatedClassesToShow, setUserCreatedClassesToShow] =
+    useState(null);
   const [userJoinedClasses, setUserJoinedClasses] = useState(null);
+  const [userJoinedClassesToShow, setUserJoinedClassesToShow] = useState(null);
   const [filter, setFilter] = useState("time_desc");
   const [typeShow, setTypeShow] = useState("normal");
 
@@ -73,8 +76,10 @@ function ClassHome() {
     return sortedArray;
   }
 
-  const onSearch = (id) => {
-    dispatch(getClassById({ id }));
+  const onSearch = (value) => {
+    if (typeShow === "normal") {
+      dispatch(getClassById({ value }));
+    }
   };
 
   useEffect(() => {
@@ -88,7 +93,9 @@ function ClassHome() {
 
   useEffect(() => {
     setUserCreatedClasses(classesRedux.userCreatedClasses || []);
+    setUserCreatedClassesToShow(classesRedux.userCreatedClasses || []);
     setUserJoinedClasses(classesRedux.userJoinedClasses || []);
+    setUserJoinedClassesToShow(classesRedux.userJoinedClasses || []);
     setSearchClass(classesRedux.searchClass || null);
   }, [classesRedux]);
 
@@ -108,6 +115,30 @@ function ClassHome() {
           size="large"
           onSearch={(e) => {
             onSearch(e.trim());
+          }}
+          onChange={(e) => {
+            if (typeShow === "lopbantao") {
+              if (e.target.value === "") {
+                setUserCreatedClassesToShow(userCreatedClasses);
+                return;
+              }
+              setUserCreatedClassesToShow(
+                userCreatedClasses.filter((el) =>
+                  el.nameClass.toLowerCase().includes(e.target.value)
+                )
+              );
+            }
+            if (typeShow === "lopbanthamgia") {
+              if (e.target.value === "") {
+                setUserJoinedClassesToShow(userJoinedClasses);
+                return;
+              }
+              setUserJoinedClassesToShow(
+                userJoinedClasses.filter((el) =>
+                  el.nameClass.toLowerCase().includes(e.target.value)
+                )
+              );
+            }
           }}
           className={styles.search_tool}
         />
@@ -184,7 +215,7 @@ function ClassHome() {
                 typeShow !== "normal" && styles.mode_expand
               }`}
             >
-              {userCreatedClasses.map((item, index) => {
+              {userCreatedClassesToShow.map((item, index) => {
                 return index < 3 ? (
                   <div key={item.id}>
                     <CardClass props={item}></CardClass>
@@ -237,7 +268,7 @@ function ClassHome() {
                 typeShow !== "normal" && styles.mode_expand
               }`}
             >
-              {userJoinedClasses.map((item, index) => {
+              {userJoinedClassesToShow.map((item, index) => {
                 return index < 3 ? (
                   <div key={item.id}>
                     <CardClass props={item}></CardClass>

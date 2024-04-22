@@ -83,11 +83,24 @@ function ClassHome() {
   };
 
   useEffect(() => {
-    if (!userCreatedClasses) return;
+    if (userCreatedClasses) {
+      let _userCreatedClassesToShow = [...userCreatedClassesToShow];
+      _userCreatedClassesToShow = sortArrayByFilter(
+        _userCreatedClassesToShow,
+        filter
+      );
+      setUserCreatedClassesToShow(_userCreatedClassesToShow);
+    }
 
-    let _userCreatedClasses = [...userCreatedClasses];
-    _userCreatedClasses = sortArrayByFilter(_userCreatedClasses, filter);
-    setUserCreatedClasses(_userCreatedClasses);
+    if (userJoinedClasses) {
+      let _userJoinedClassesToShow = [...userJoinedClassesToShow];
+      _userJoinedClassesToShow = sortArrayByFilter(
+        _userJoinedClassesToShow,
+        filter
+      );
+      setUserJoinedClassesToShow(_userJoinedClassesToShow);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 

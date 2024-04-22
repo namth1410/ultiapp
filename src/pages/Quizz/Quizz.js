@@ -16,15 +16,11 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  cacheImages,
-  normalizePartsOfSpeech,
-  normalizePronunciation,
-} from "ultis/func";
+import { toast } from "react-toastify";
+import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Quizz.module.css";
-import { toast } from "react-toastify";
 
 function Quizz() {
   const { quizz_id } = useParams();
@@ -212,7 +208,6 @@ function Quizz() {
         setTotalQuizzItem(quizzData.quizz_items.length);
         setIndexQuizzItem(0);
         setIsLockTest(quizzData.quizz_items.length < 5);
-        cacheImages(quizzData.quizz_items.map((el) => el.image));
         setRateOfQuizz(
           quizzData.rates?.length
             ? (
@@ -262,6 +257,9 @@ function Quizz() {
   }, []);
   return (
     <div className={styles.quizz_wrapper}>
+      {dataQuizz?.quizz_items?.map((e) => (
+        <img src={e.image} style={{ display: "none" }} alt="img" />
+      ))}
       <h1>{dataQuizz?.title}</h1>
       <div
         style={{
@@ -364,6 +362,7 @@ function Quizz() {
       <button
         className={styles.flash_card_wrapper}
         onClick={() => {
+          if (!dataQuizz) return;
           setHideTerm((pre) => !pre);
         }}
       >

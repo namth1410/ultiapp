@@ -1,4 +1,4 @@
-import { RightOutlined } from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Button, Input, Select } from "antd";
 import CardClass from "components/CardClass/CardClass";
 import { useEffect, useState } from "react";
@@ -41,6 +41,7 @@ function ClassHome() {
   const [userCreatedClasses, setUserCreatedClasses] = useState(null);
   const [userJoinedClasses, setUserJoinedClasses] = useState(null);
   const [filter, setFilter] = useState("time_desc");
+  const [typeShow, setTypeShow] = useState("normal");
 
   const [searchClass, setSearchClass] = useState(null);
 
@@ -143,7 +144,7 @@ function ClassHome() {
           </div>
         )}
 
-        {userCreatedClasses && (
+        {userCreatedClasses && typeShow !== "lopbanthamgia" && (
           <div className={styles.a1_wrapper}>
             <div
               style={{
@@ -152,7 +153,7 @@ function ClassHome() {
                 justifyContent: "space-between",
               }}
             >
-              <h2>Lớp bạn tạo</h2>
+              <h2>{`Lớp bạn tạo (${userCreatedClasses.length})`}</h2>
               <div
                 style={{
                   display: "flex",
@@ -160,17 +161,29 @@ function ClassHome() {
                   cursor: "pointer",
                 }}
               >
-                <span
-                  style={{
-                    color: "var(--primary-color)",
+                {typeShow !== "normal" && (
+                  <LeftOutlined style={{ color: "var(--primary-color)" }} />
+                )}
+                <button
+                  className={styles.expand_btn}
+                  onClick={() => {
+                    return typeShow === "normal"
+                      ? setTypeShow("lopbantao")
+                      : setTypeShow("normal");
                   }}
                 >
-                  Xem thêm
-                </span>
-                <RightOutlined style={{ color: "var(--primary-color)" }} />
+                  {typeShow === "normal" ? "Xem thêm" : "Quay lại"}
+                </button>
+                {typeShow === "normal" && (
+                  <RightOutlined style={{ color: "var(--primary-color)" }} />
+                )}
               </div>
             </div>
-            <div className={styles.quizzs}>
+            <div
+              className={`${styles.quizzs} ${
+                typeShow !== "normal" && styles.mode_expand
+              }`}
+            >
               {userCreatedClasses.map((item, index) => {
                 return index < 3 ? (
                   <div key={item.id}>
@@ -184,7 +197,7 @@ function ClassHome() {
           </div>
         )}
 
-        {userJoinedClasses && (
+        {userJoinedClasses && typeShow !== "lopbantao" && (
           <div className={styles.a1_wrapper}>
             <div
               style={{
@@ -193,7 +206,7 @@ function ClassHome() {
                 justifyContent: "space-between",
               }}
             >
-              <h2>Lớp bạn tham gia</h2>
+              <h2>{`Lớp bạn tham gia (${userJoinedClasses.length})`}</h2>
               <div
                 style={{
                   display: "flex",
@@ -201,17 +214,29 @@ function ClassHome() {
                   cursor: "pointer",
                 }}
               >
-                <span
-                  style={{
-                    color: "var(--primary-color)",
+                {typeShow !== "normal" && (
+                  <LeftOutlined style={{ color: "var(--primary-color)" }} />
+                )}
+                <button
+                  className={styles.expand_btn}
+                  onClick={() => {
+                    return typeShow === "normal"
+                      ? setTypeShow("lopbanthamgia")
+                      : setTypeShow("normal");
                   }}
                 >
-                  Xem thêm
-                </span>
-                <RightOutlined style={{ color: "var(--primary-color)" }} />
+                  {typeShow === "normal" ? "Xem thêm" : "Quay lại"}
+                </button>
+                {typeShow === "normal" && (
+                  <RightOutlined style={{ color: "var(--primary-color)" }} />
+                )}
               </div>
             </div>
-            <div className={styles.quizzs}>
+            <div
+              className={`${styles.quizzs} ${
+                typeShow !== "normal" && styles.mode_expand
+              }`}
+            >
               {userJoinedClasses.map((item, index) => {
                 return index < 3 ? (
                   <div key={item.id}>

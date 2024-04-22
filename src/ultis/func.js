@@ -37,22 +37,3 @@ export function normalizePartsOfSpeech(p) {
 
   return result;
 }
-
-export function cacheImages(srcArray) {
-  console.log(srcArray);
-  const promises = [];
-
-  srcArray.forEach((src) => {
-    if (src === "") return;
-    promises.push(
-      new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = resolve;
-        img.onerror = reject;
-      })
-    );
-  });
-
-  return Promise.all(promises);
-}

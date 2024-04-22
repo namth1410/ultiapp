@@ -70,7 +70,9 @@ function NewItem({ newfeed }) {
               setIsModalOpen(true);
             }}
             className={styles.delete_btn}
-          >Xóa</Button>
+          >
+            Xóa
+          </Button>
         )}
       </div>
 

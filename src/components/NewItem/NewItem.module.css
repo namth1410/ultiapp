@@ -28,12 +28,14 @@
     }
 
     .delete_btn {
-      color: #000;
       transition: all 0.5s;
+      color: #ff5c5c;
+      border-color: #ff5c5c;
     }
 
     .delete_btn:hover {
-      color: #ff5c5c;
+      color: #fff;
+      background-color: #ff5c5c;
       border-color: #ff5c5c;
     }
   }

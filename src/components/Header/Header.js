@@ -1,9 +1,4 @@
-import {
-  BarsOutlined,
-  BellFilled,
-  CloseOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { BarsOutlined, CloseOutlined, UserOutlined } from "@ant-design/icons";
 import { Badge, Button, Divider, Dropdown, Space } from "antd";
 import Logo from "assets/img/logo.svg";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -353,7 +348,7 @@ function Header() {
                         alignItems: "center",
                       }}
                     >
-                      <BellFilled />
+                      <i className="bi bi-bell-fill"></i>
                     </div>
                   </Badge>
                 </Dropdown>

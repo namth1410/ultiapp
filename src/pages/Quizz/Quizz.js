@@ -1,15 +1,4 @@
-import {
-  CaretRightOutlined,
-  EditOutlined,
-  LeftCircleOutlined,
-  LockOutlined,
-  RightCircleOutlined,
-  RiseOutlined,
-  SettingOutlined,
-  SoundOutlined,
-  StarFilled,
-  SwapOutlined,
-} from "@ant-design/icons";
+import { LockOutlined, RiseOutlined, StarFilled } from "@ant-design/icons";
 import { Badge, Button, Input, Modal, Rate, Select } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -345,7 +334,7 @@ function Quizz() {
         <select
           style={{
             padding: "10px",
-            borderRadius: "10px",
+            borderRadius: "4px",
             fontFamily: "Gilroy",
           }}
           value={voice?.name}
@@ -370,12 +359,7 @@ function Quizz() {
           <div className={styles.term_wrapper}>
             <div className={styles.actions}>
               {currentUser?.uid === dataQuizz?.uidCreator && (
-                <EditOutlined
-                  style={{
-                    fontSize: "20px",
-                    marginRight: "20px",
-                    cursor: "pointer",
-                  }}
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     const tmp = isShuffle
@@ -387,13 +371,19 @@ function Quizz() {
                     setPartsOfSpeechEdit(tmp.partsOfSpeech);
                     setIsEditQuizzItemModalOpen(true);
                   }}
-                />
+                >
+                  <i
+                    className="bi bi-pencil-square"
+                    style={{
+                      fontSize: "20px",
+                      color: "var(--primary-color)",
+                      marginRight: "20px",
+                    }}
+                  ></i>
+                </button>
               )}
 
-              <SoundOutlined
-                style={{
-                  fontSize: "20px",
-                }}
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   const synth = window.speechSynthesis;
@@ -406,7 +396,12 @@ function Quizz() {
                   u.voice = voice;
                   synth.speak(u);
                 }}
-              />
+              >
+                <i
+                  className="bi bi-volume-up-fill"
+                  style={{ fontSize: "26px", color: "var(--primary-color)" }}
+                ></i>
+              </button>
             </div>
             <span className={styles.text_quizz_item}>
               {isShuffle
@@ -460,72 +455,102 @@ function Quizz() {
 
       <div className={styles.tools_box}>
         <div style={{ display: "flex", gap: "15px" }}>
-          <CaretRightOutlined
-            onClick={() => {}}
-            style={{ fontSize: "35px", color: "var(--text-color-primary)" }}
-          />
-          <SwapOutlined
+          <button>
+            <i
+              className="bi bi-play-fill"
+              style={{ fontSize: "35px", color: "var(--primary-color)" }}
+            ></i>
+          </button>
+          <button
             onClick={() => {
               setIsShuffle(!isShuffle);
             }}
-            style={{
-              fontSize: "35px",
-              color: isShuffle ? "red" : "var(--text-color-primary)",
-            }}
-          />
+          >
+            <i
+              className="bi bi-shuffle"
+              style={{
+                fontSize: "28px",
+                color: isShuffle
+                  ? "var(--primary-color)"
+                  : "var(--text-color-primary)",
+                transition: "all 0.3s",
+              }}
+            ></i>
+          </button>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <LeftCircleOutlined
+          <button
             onClick={() => {
               if (indexQuizzItem === 0) return;
               setIndexQuizzItem(indexQuizzItem - 1);
               setHideTerm(false);
             }}
-            style={{
-              fontSize: "40px",
-              color:
-                indexQuizzItem === 0 ? "#E7EAF1" : "var(--text-color-primary)",
-            }}
-          />
-          <span
-            style={{ color: "var(--text-color-primary)", fontSize: "20px" }}
-          >{`${indexQuizzItem + 1} / ${totalQuizzItem}`}</span>
-          <RightCircleOutlined
+          >
+            <i
+              className="bi bi-arrow-left-circle"
+              style={{
+                fontSize: "40px",
+                color:
+                  indexQuizzItem === 0 ? "#E7EAF1" : "var(--primary-color)",
+                transition: "all 0.3s",
+              }}
+            ></i>
+          </button>
+
+          <span style={{ color: "var(--primary-color)", fontSize: "20px" }}>{`${
+            indexQuizzItem + 1
+          } / ${totalQuizzItem}`}</span>
+
+          <button
             onClick={() => {
               if (indexQuizzItem === totalQuizzItem - 1) return;
               setIndexQuizzItem(indexQuizzItem + 1);
               setHideTerm(false);
             }}
-            style={{
-              fontSize: "40px",
-              color:
-                indexQuizzItem === totalQuizzItem - 1
-                  ? "#E7EAF1"
-                  : "var(--text-color-primary)",
-            }}
-          />
+          >
+            <i
+              className="bi bi-arrow-right-circle"
+              style={{
+                fontSize: "40px",
+                color:
+                  indexQuizzItem === totalQuizzItem - 1
+                    ? "#E7EAF1"
+                    : "var(--primary-color)",
+                transition: "all 0.3s",
+              }}
+            ></i>
+          </button>
         </div>
 
         <div style={{ display: "flex", gap: "15px" }}>
           {currentUser?.uid === dataQuizz?.uidCreator && (
-            <EditOutlined
+            <button
               onClick={() => {
                 navigate(`/quizz/edit-set/${quizz_id}`);
               }}
-              style={{
-                fontSize: "35px",
-                color: "var(--text-color-primary)",
-                display: isOwner ? "inline-flex" : "none",
-              }}
-            />
+            >
+              <i
+                className="bi bi-pencil-square"
+                style={{
+                  fontSize: "30px",
+                  color: "var(--primary-color)",
+                  display: isOwner ? "inline-flex" : "none",
+                }}
+              ></i>
+            </button>
           )}
-          <SettingOutlined
+
+          <button
             onClick={() => {
               showModal();
             }}
-            style={{ fontSize: "35px", color: "var(--text-color-primary)" }}
-          />
+          >
+            <i
+              className="bi bi-gear"
+              style={{ fontSize: "30px", color: "var(--primary-color)" }}
+            ></i>
+          </button>
         </div>
       </div>
 
@@ -711,21 +736,27 @@ const Item = ({ props, voice }) => {
         {definition}
       </span>
 
-      <div style={{ marginLeft: "auto" }}>
-        <SoundOutlined
-          style={{
-            fontSize: "20px",
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            const synth = window.speechSynthesis;
-            const u = new SpeechSynthesisUtterance(term);
+      <button
+        style={{
+          marginLeft: "auto",
+          border: "none",
+          backgroundColor: "unset",
+          cursor: "pointer",
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          const synth = window.speechSynthesis;
+          const u = new SpeechSynthesisUtterance(term);
 
-            u.voice = voice;
-            synth.speak(u);
-          }}
-        />
-      </div>
+          u.voice = voice;
+          synth.speak(u);
+        }}
+      >
+        <i
+          className="bi bi-volume-up-fill"
+          style={{ fontSize: "20px", color: "var(--primary-color)" }}
+        ></i>
+      </button>
     </div>
   );
 };

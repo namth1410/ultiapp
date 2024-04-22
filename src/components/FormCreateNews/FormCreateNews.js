@@ -76,6 +76,7 @@ function FormCreateNews() {
               setImageNewFeed(null);
               hiddenFileInput.current.value = "";
             }}
+            style={{ color: "var(--primary-color)" }}
           />
           <img alt="img" src={URL.createObjectURL(imageNewFeed)} />
         </div>

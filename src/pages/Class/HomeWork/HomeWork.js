@@ -1,10 +1,4 @@
-import {
-  DeleteOutlined,
-  DesktopOutlined,
-  EditOutlined,
-  PartitionOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { Button, Modal, Table } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
 import {
@@ -23,6 +17,8 @@ import { deleteHomework } from "appdata/homework/homeworkSlice";
 import { useHomework } from "contexts/homework_context/HomeworkContext";
 import { useDispatch } from "react-redux";
 import { convertISOToCustomFormat } from "ultis/time";
+
+const symbNull = "--";
 
 function HomeWork() {
   const navigate = useNavigate();
@@ -181,7 +177,7 @@ function HomeWork() {
               <span>
                 {selectedHomework.config.timesLimitDo
                   ? selectedHomework.config.timesLimitDo
-                  : "NaN"}
+                  : symbNull}
               </span>
             </div>
 
@@ -190,7 +186,7 @@ function HomeWork() {
               <span>
                 {selectedHomework.dateCreate
                   ? convertISOToCustomFormat(selectedHomework.dateCreate)
-                  : "NaN"}
+                  : symbNull}
               </span>
             </div>
 
@@ -199,7 +195,7 @@ function HomeWork() {
               <span>
                 {selectedHomework.config.timeStart
                   ? convertISOToCustomFormat(selectedHomework.config.timeStart)
-                  : "NaN"}
+                  : symbNull}
               </span>
             </div>
 
@@ -208,7 +204,7 @@ function HomeWork() {
               <span>
                 {selectedHomework.config.deadline
                   ? convertISOToCustomFormat(selectedHomework.config.deadline)
-                  : "NaN"}
+                  : symbNull}
               </span>
             </div>
 
@@ -217,7 +213,7 @@ function HomeWork() {
               <span>
                 {selectedHomework.config.timeLimit
                   ? selectedHomework.config.timeLimit
-                  : "NaN"}
+                  : symbNull}
               </span>
             </div>
 
@@ -268,9 +264,12 @@ function HomeWork() {
                   paddingTop: "20px",
                 }}
               >
-                <button className={styles.action_homework_item}>
+                <button
+                  className={styles.action_homework_item}
+                  style={{ color: "var(--primary-color)" }}
+                >
                   <span>Làm thử</span>
-                  <DesktopOutlined />
+                  <i className="bi bi-collection-play"></i>
                 </button>
 
                 <button
@@ -278,9 +277,10 @@ function HomeWork() {
                   onClick={() => {
                     navigate(`${selectedHomework.id}/detail`);
                   }}
+                  style={{ color: "var(--primary-color)" }}
                 >
                   <span>Chi tiết</span>
-                  <PartitionOutlined />
+                  <i className="bi bi-ticket-detailed-fill"></i>
                 </button>
 
                 <button
@@ -288,9 +288,10 @@ function HomeWork() {
                     window.location.href = `${process.env.REACT_APP_HOST}/class/${classId}/homework/${selectedHomework.id}/edit`;
                   }}
                   className={styles.action_homework_item}
+                  style={{ color: "var(--primary-color)" }}
                 >
                   <span>Chỉnh sửa</span>
-                  <EditOutlined />
+                  <i className="bi bi-pencil-square"></i>
                 </button>
 
                 <button
@@ -298,9 +299,10 @@ function HomeWork() {
                     setIsModalDeleteHomeworkOpen(true);
                   }}
                   className={styles.action_homework_item}
+                  style={{ color: "#ff4141" }}
                 >
                   <span>Xóa</span>
-                  <DeleteOutlined />
+                  <i className="bi bi-trash3-fill"></i>
                 </button>
               </div>
             )}

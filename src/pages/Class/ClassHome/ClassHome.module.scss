@@ -48,6 +48,7 @@
         flex-direction: row;
         max-width: 100%;
         overflow-x: auto;
+        gap: 10px;
 
         &::-webkit-scrollbar {
           width: 12px;

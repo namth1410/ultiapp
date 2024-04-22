@@ -1,4 +1,5 @@
 import { store } from "appdata/store";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";

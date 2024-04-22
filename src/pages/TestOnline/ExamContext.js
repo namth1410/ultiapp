@@ -298,7 +298,6 @@ export const ExamProvider = ({ children }) => {
                 });
                 _urlList.sort((a, b) => a.localeCompare(b));
 
-                console.log(_urlList);
                 setUrlList(_urlList);
               }
             })

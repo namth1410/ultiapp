@@ -246,7 +246,7 @@ function PracticeSpeaking() {
                   className={styles.select}
                   style={{
                     padding: "10px",
-                    borderRadius: "10px",
+                    borderRadius: "4px",
                     fontFamily: "Gilroy",
                   }}
                   value={voice?.name}

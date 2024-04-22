@@ -57,6 +57,13 @@ p {
   margin: 0;
 }
 
+button {
+  border: none;
+  background-color: unset;
+  cursor: pointer;
+  padding-inline: 0;
+}
+
 /* Normal */
 @font-face {
   font-family: "Gilroy";

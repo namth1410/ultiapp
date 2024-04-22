@@ -1,13 +1,8 @@
-import {
-  CheckOutlined,
-  CloseOutlined,
-  CloseSquareOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button, InputNumber, Modal, Select, Space, Switch } from "antd";
 import MultipleChoiceItem from "components/MultipleChoiceItem/MultipleChoiceItem";
 import { MODE, useTest } from "contexts/test_context/TestContext";
-import { memo, useRef, useState, useEffect } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import EssayItem from "components/EssayItem/EssayItem";
 import { useNavigate } from "react-router-dom";
@@ -162,23 +157,32 @@ function Test() {
         </div>
 
         <div className={styles.actions_wrapper}>
-          <SettingOutlined
+          <button
             onClick={() => {
               if (isSubmited) return;
               setIsSettingModalOpen(true);
             }}
-            style={{
-              fontSize: "28px",
-              marginRight: "20px",
-              color: isSubmited ? "#939bb4" : "unset",
-            }}
-          />
-          <CloseSquareOutlined
+          >
+            <i
+              className="bi bi-gear"
+              style={{
+                fontSize: "28px",
+                marginRight: "20px",
+                color: isSubmited ? "#939bb4" : "var(--primary-color)",
+              }}
+            ></i>
+          </button>
+
+          <button
             onClick={() => {
               navigate("/quizz");
             }}
-            style={{ fontSize: "28px" }}
-          />
+          >
+            <i
+              className="bi bi-x-square"
+              style={{ fontSize: "28px", color: "#ff7979" }}
+            ></i>
+          </button>
         </div>
       </div>
 

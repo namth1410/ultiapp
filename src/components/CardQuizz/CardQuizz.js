@@ -31,6 +31,8 @@ function CardQuizz({ props }) {
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+    setPasswordModal("");
+    setStatusPassword("");
   };
 
   return (
@@ -87,6 +89,7 @@ function CardQuizz({ props }) {
             setStatusPassword("");
             setPasswordModal(e.target.value);
           }}
+          value={passwordModal}
         />
       </Modal>
     </>

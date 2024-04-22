@@ -1,4 +1,3 @@
-import { DeleteFilled, MessageOutlined, SendOutlined } from "@ant-design/icons";
 import { Button, Input, Modal } from "antd";
 import {
   deleteNewsfeed,
@@ -65,7 +64,9 @@ function NewItem({ newfeed }) {
         {(newfeed.uidCreator === currentUser?.uid ||
           currentUser?.uid === creatorId) && (
           <Button
-            icon={<DeleteFilled />}
+            icon={
+              <i className="bi bi-trash3-fill" style={{ fontSize: "16px" }}></i>
+            }
             onClick={() => {
               setIsModalOpen(true);
             }}
@@ -87,7 +88,11 @@ function NewItem({ newfeed }) {
       {newfeed.comments && (
         <div className={styles.comment_wrapper}>
           <p>
-            <MessageOutlined /> {`${newfeed.comments.length} bình luận`}
+            <i
+              className="bi bi-chat-dots-fill"
+              style={{ color: "var(--primary-color", marginRight: "5px" }}
+            ></i>
+            {`${newfeed.comments.length} bình luận`}
           </p>
 
           <button
@@ -124,7 +129,12 @@ function NewItem({ newfeed }) {
           onPressEnter={onComment}
         />
         <Button
-          icon={<SendOutlined />}
+          icon={
+            <i
+              className="bi bi-send-fill"
+              style={{ fontSize: "20px", color: "var(--primary-color)" }}
+            ></i>
+          }
           onClick={onComment}
           disabled={commentDraft.length <= 0}
           style={{ color: "primary", border: "none", backgroundColor: "#fff" }}

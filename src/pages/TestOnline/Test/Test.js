@@ -1,4 +1,5 @@
 import { Button, Modal, Spin } from "antd";
+import { ReactComponent as SpinnerSvg } from "assets/img/spinner.svg";
 import { addDoc, collection } from "firebase/firestore";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -397,15 +398,19 @@ function Exam() {
               alignItems: "center",
             }}
           >
-            <button
-              className={styles.start_btn}
-              onClick={() => {
-                setIsReady(true);
-              }}
-              disabled={!urlList}
-            >
-              Bắt đầu
-            </button>
+            {urlList ? (
+              <button
+                className={styles.start_btn}
+                onClick={() => {
+                  setIsReady(true);
+                }}
+                disabled={!urlList}
+              >
+                Bắt đầu
+              </button>
+            ) : (
+              <SpinnerSvg />
+            )}
           </div>
         )}
       </div>

@@ -45,6 +45,7 @@ function ClassHome() {
   const [userJoinedClassesToShow, setUserJoinedClassesToShow] = useState(null);
   const [filter, setFilter] = useState("time_desc");
   const [typeShow, setTypeShow] = useState("normal");
+  const [searchValue, setSearchValue] = useState("");
 
   const [searchClass, setSearchClass] = useState(null);
 
@@ -78,9 +79,44 @@ function ClassHome() {
 
   const onSearch = (value) => {
     if (typeShow === "normal") {
-      dispatch(getClassById({ value }));
+      dispatch(getClassById({ id: value }));
     }
   };
+
+  useEffect(() => {
+    setSearchClass(null);
+    if (typeShow === "lopbantao") {
+      if (searchValue === "") {
+        setUserCreatedClassesToShow(userCreatedClasses);
+        return;
+      }
+      setUserCreatedClassesToShow(
+        userCreatedClasses.filter((el) =>
+          el.nameClass.toLowerCase().includes(searchValue)
+        )
+      );
+    }
+    if (typeShow === "lopbanthamgia") {
+      if (searchValue === "") {
+        setUserJoinedClassesToShow(userJoinedClasses);
+        return;
+      }
+      setUserJoinedClassesToShow(
+        userJoinedClasses.filter((el) =>
+          el.nameClass.toLowerCase().includes(searchValue)
+        )
+      );
+    }
+    let a = null;
+    if (typeShow === "normal") {
+      a = setTimeout(() => {
+        dispatch(getClassById({ id: searchValue }));
+      }, 1000);
+    }
+
+    return () => clearTimeout(a);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue]);
 
   useEffect(() => {
     if (userCreatedClasses) {
@@ -130,28 +166,7 @@ function ClassHome() {
             onSearch(e.trim());
           }}
           onChange={(e) => {
-            if (typeShow === "lopbantao") {
-              if (e.target.value === "") {
-                setUserCreatedClassesToShow(userCreatedClasses);
-                return;
-              }
-              setUserCreatedClassesToShow(
-                userCreatedClasses.filter((el) =>
-                  el.nameClass.toLowerCase().includes(e.target.value)
-                )
-              );
-            }
-            if (typeShow === "lopbanthamgia") {
-              if (e.target.value === "") {
-                setUserJoinedClassesToShow(userJoinedClasses);
-                return;
-              }
-              setUserJoinedClassesToShow(
-                userJoinedClasses.filter((el) =>
-                  el.nameClass.toLowerCase().includes(e.target.value)
-                )
-              );
-            }
+            setSearchValue(e.target.value);
           }}
           className={styles.search_tool}
         />
@@ -182,6 +197,11 @@ function ClassHome() {
         </Button>
       </div>
       <div className={styles.list_wrapper}>
+        {searchValue !== "" && (
+          <div style={{ padding: "0px 32px", color: "#1e88e5" }}>{`${
+            searchClass ? 1 : 0
+          } kết quả`}</div>
+        )}
         {searchClass && (
           <div className={styles.a1_wrapper}>
             <CardClass props={searchClass} isSearching={true}></CardClass>

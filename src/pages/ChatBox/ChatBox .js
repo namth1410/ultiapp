@@ -7,8 +7,8 @@ import {
   limit,
 } from "firebase/firestore";
 import { firestore } from "../../firebase";
-import Message from "pages/Message/Message";
-import SendMessage from "pages/SendMessage/SendMessage";
+import Message from "pages/ChatBox/Message/Message";
+import SendMessage from "pages/ChatBox/SendMessage/SendMessage";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);

@@ -1,7 +1,7 @@
 import { Radio } from "antd";
 import React, { useEffect, useState } from "react";
 import { useExam } from "../ExamContext";
-import styles from "./Part1.module.css";
+import styles from "./Part1.module.scss";
 
 function Part1() {
   const {
@@ -48,9 +48,7 @@ function Part1() {
             value={isShowKey ? answer[indexQuestion] : selectedValue}
             disabled={isShowKey}
           >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
+            <div className={styles.container_answer}>
               <Radio style={{ fontSize: "20px" }} value={1}>
                 A {isShowKey && checkKey(1)}
               </Radio>

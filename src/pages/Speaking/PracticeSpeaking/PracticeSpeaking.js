@@ -210,14 +210,14 @@ function PracticeSpeaking() {
 
                   <div className={styles.word_type_and_record}>
                     <div className={styles.word_type}>(n)</div>
-                    <div
+                    <button
                       className={`${styles.word_record} ${
                         isRecording ? styles.listening_playing : ""
                       }`}
                       onClick={startRecording}
                     >
                       <MicrophoneSvg className={styles.micro_icon} />
-                    </div>
+                    </button>
                     {audioUrl && (
                       <div className={styles.word_record}>
                         <PlaySvg />

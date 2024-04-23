@@ -82,7 +82,7 @@ function Speaking() {
         <div>
           <Row gutter={[24, 16]}>
             {collectionFromQuizz?.map((item, index) => (
-              <Col key={index} xs={24} sm={12} md={8} lg={6} xl={6}>
+              <Col key={item.topic} xs={24} sm={12} md={8} lg={6} xl={6}>
                 <Card
                   className={styles.card}
                   hoverable
@@ -129,7 +129,7 @@ function Speaking() {
         <div>
           <Row gutter={[24, 16]}>
             {data.map((item, index) => (
-              <Col key={index} xs={24} sm={12} md={8} lg={6} xl={6}>
+              <Col key={item} xs={24} sm={12} md={8} lg={6} xl={6}>
                 <Card
                   className={styles.card}
                   hoverable

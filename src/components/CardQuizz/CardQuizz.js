@@ -1,12 +1,14 @@
 import { Card, Input, Modal, Tag } from "antd";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function CardQuizz({ props }) {
   const { id, title, quizz_items, photoURL, nameCreator, access, password } =
     props;
   const navigate = useNavigate();
+
+  const inputRef = useRef();
 
   const COLOR_ACCESS = {
     public: "#87d068",
@@ -34,6 +36,12 @@ function CardQuizz({ props }) {
     setPasswordModal("");
     setStatusPassword("");
   };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      inputRef.current.focus();
+    }
+  }, [isModalOpen]);
 
   return (
     <>
@@ -90,6 +98,7 @@ function CardQuizz({ props }) {
             setPasswordModal(e.target.value);
           }}
           value={passwordModal}
+          ref={inputRef}
         />
       </Modal>
     </>

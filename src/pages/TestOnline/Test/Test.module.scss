@@ -16,11 +16,35 @@
       -ms-flex-pack: justify;
       justify-content: space-between;
       position: relative;
+
+      .title_part_text {
+        font-size: 26px;
+        color: var(--blue);
+      }
+
+      .timer {
+        border: none;
+        padding: 15px 20px;
+        color: #fff;
+        font-size: 20px;
+        background-color: var(--blue);
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: Gilroy, Arial, Helvetica, sans-serif;
+        width: 80px;
+        text-align: center;
+      }
+
+      .process_test {
+        padding: 25px 40px;
+        background-color: var(--blue);
+        color: #fff;
+        border-radius: 8px;
+      }
     }
   }
 
   .next_btn {
-    transition: 0.5s;
     position: relative;
     padding: 15px 20px;
     transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
@@ -51,7 +75,11 @@
   }
 
   .back_btn {
-    transition: 0.5s;
+    color: var(--blue);
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: Gilroy, Arial, Helvetica, sans-serif;
     position: relative;
     padding: 15px 20px;
     transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
@@ -84,12 +112,14 @@
   .submit_btn {
     background: linear-gradient(90deg, #0066cc 0%, #c500cc 100%);
     padding: 10px 30px;
-    border: 2px solid #0066cc;
+    border: none;
     box-shadow: #b1c1ff 3px 5px 25px 5px;
     border-radius: 25px 50px;
     transition: 500ms;
     transform: translateY(0);
     color: #fff;
+    cursor: pointer;
+    font-size: 20px;
   }
 
   .submit_btn:hover {
@@ -153,8 +183,9 @@
     border: 2px solid var(--blue);
     padding: 1rem 2rem;
     box-shadow: 0.9px 1px 0 0 var(--blue), 1.5px 2px 0 0 var(--blue),
-      2.5px 3px 0 0 var(--blue), 3.5px 4px 0 0 var(--blue), 4.5px 5px 0 0 var(--blue),
-      5.5px 6px 0 0 var(--blue), 6.5px 7px 0 0 var(--blue), 7.5px 8px 0 0 var(--blue),
+      2.5px 3px 0 0 var(--blue), 3.5px 4px 0 0 var(--blue),
+      4.5px 5px 0 0 var(--blue), 5.5px 6px 0 0 var(--blue),
+      6.5px 7px 0 0 var(--blue), 7.5px 8px 0 0 var(--blue),
       8.5px 9px 0 0 var(--blue), 9.5px 10px 0 0 var(--blue);
     position: relative;
     inset: 0;
@@ -169,5 +200,69 @@
     inset: 6px 0 5.5px 0;
     transform: rotateX(5deg) rotateY(3deg) rotateZ(0.25deg);
     box-shadow: none;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .wrapper {
+    .wrapper_1 {
+      .title_flex {
+        flex-wrap: wrap;
+        gap: 10px;
+        .title_part_text {
+          font-size: 14px;
+          color: var(--blue);
+        }
+
+        .submit_btn {
+          background: var(--blue);
+          padding: 4px 8px;
+          border: none;
+          border-radius: 4px;
+          transition: 500ms;
+          transform: translateY(0);
+          color: #fff;
+          cursor: pointer;
+          font-size: 14px;
+        }
+
+        .back_btn {
+          font-size: 12px;
+          padding: 4px 8px;
+
+          &::before {
+            content: "«";
+            position: absolute;
+            opacity: 0;
+            top: 16px;
+            left: -20px;
+            transition: 0.5s;
+          }
+        }
+
+        .next_btn {
+          font-size: 12px;
+          padding: 4px 8px;
+
+          &::after {
+            content: "»";
+            position: absolute;
+            opacity: 0;
+            top: 16px;
+            left: -20px;
+            transition: 0.5s;
+          }
+        }
+
+        .timer {
+          font-size: 12px;
+        }
+
+        .process_test {
+          font-size: 14px;
+          padding: 10px 12px;
+        }
+      }
+    }
   }
 }

@@ -73,11 +73,11 @@ function MenuClass() {
       });
       const dataToAdd = {
         dateCreate: new Date().toISOString(),
-        uidCreator: currentUser.uid,
-        nameCreator: currentUser.displayName,
-        photoURL: currentUser.photoURL,
+        uidCreator: currentUser?.uid,
+        nameCreator: currentUser?.displayName,
+        photoURL: currentUser?.photoURL,
         class: classId,
-        content: `${currentUser.displayName} đã rời khỏi lớp ${dataClass.nameClass} của bạn`,
+        content: `${currentUser?.displayName} đã rời khỏi lớp ${dataClass.nameClass} của bạn`,
         type: "normal",
         receiver: [`${dataClass.uidCreator}$unread`],
       };
@@ -174,7 +174,7 @@ function MenuClass() {
         items={items}
       />
       {!preventStudentExitClass && !isOwnClass && (
-        <div
+        <button
           style={{
             marginTop: "auto",
             borderTop: "1px solid rgb(216, 220, 240)",
@@ -184,6 +184,8 @@ function MenuClass() {
             alignItems: "center",
             paddingTop: "10px",
             cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "16px",
           }}
           onClick={() => {
             setIsExitClassModal(true);
@@ -199,14 +201,14 @@ function MenuClass() {
           <div style={{ verticalAlign: "middle", color: "#ff4949" }}>
             Rời khỏi lớp
           </div>
-        </div>
+        </button>
       )}
 
       <Modal
         title="Xóa thành viên"
         open={isExitClassModal}
         onOk={() => {
-          removeMemberFromClass(classId, currentUser.uid);
+          removeMemberFromClass(classId, currentUser?.uid);
         }}
         onCancel={() => {
           setIsExitClassModal(false);

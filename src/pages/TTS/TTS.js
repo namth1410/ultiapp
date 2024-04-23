@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import styles from "./TTS.module.css";
 import { useTTS } from "./TTSContext";
 
-function TTS() {
+function Tts() {
   const { ttsItems, setTtsItems, onAddTtsItem, setRunSubmit } = useTTS();
 
   const [keyGGS, setKeyGGS] = useState(
@@ -331,4 +331,4 @@ const TTSItem = ({ index, data }) => {
     </div>
   );
 };
-export default TTS;
+export default Tts;

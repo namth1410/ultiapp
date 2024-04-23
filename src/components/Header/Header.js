@@ -148,7 +148,7 @@ function Header() {
     const unsubscribe = onSnapshot(
       query(
         collection(firestore, "notifications"),
-        where("receiver", "array-contains", `${currentUser.uid}$unread`),
+        where("receiver", "array-contains", `${currentUser?.uid}$unread`),
         orderBy("dateCreate", "desc")
       ),
       (snapshot) => {
@@ -162,7 +162,7 @@ function Header() {
     const unsubscribe1 = onSnapshot(
       query(
         collection(firestore, "notifications"),
-        where("receiver", "array-contains", `${currentUser.uid}`),
+        where("receiver", "array-contains", `${currentUser?.uid}`),
         orderBy("dateCreate", "desc")
       ),
       (snapshot) => {
@@ -282,10 +282,10 @@ function Header() {
                         let dataToAdd = { ...noti };
 
                         const index = dataToAdd.receiver.findIndex(
-                          (el) => el === `${currentUser.uid}$unread`
+                          (el) => el === `${currentUser?.uid}$unread`
                         );
 
-                        dataToAdd.receiver[index] = `${currentUser.uid}`;
+                        dataToAdd.receiver[index] = `${currentUser?.uid}`;
                         updateDoc(classRef, dataToAdd);
                       });
                     }
@@ -488,7 +488,7 @@ function Header() {
 
 const NotificationItem = ({ notification, navigate }) => {
   return (
-    <div
+    <button
       style={{
         display: "flex",
         width: "100%",
@@ -526,9 +526,11 @@ const NotificationItem = ({ notification, navigate }) => {
         />
       </div>
       <div
-        className="text"
         style={{
           padding: "6px 8px",
+          fontWeight: "bold",
+          textAlign: "start",
+          lineHeight: "1.57"
         }}
       >
         <p>{notification.content}</p>
@@ -536,7 +538,7 @@ const NotificationItem = ({ notification, navigate }) => {
           {convertISOToCustomFormat(notification.dateCreate)}
         </p>
       </div>
-    </div>
+    </button>
   );
 };
 export default Header;

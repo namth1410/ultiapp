@@ -69,13 +69,13 @@ function Quizz() {
     const quizzData = quizzDoc.data();
 
     const existingRateIndex = quizzData.rates.findIndex(
-      (rate) => rate.uid === currentUser.uid
+      (rate) => rate.uid === currentUser?.uid
     );
 
     if (existingRateIndex !== -1) {
       const updatedRates = [...quizzData.rates];
       updatedRates[existingRateIndex] = {
-        uid: currentUser.uid,
+        uid: currentUser?.uid,
         rate: rate,
         rateComment: rateComment,
       };
@@ -85,7 +85,7 @@ function Quizz() {
       const updatedRates = [
         ...quizzData.rates,
         {
-          uid: currentUser.uid,
+          uid: currentUser?.uid,
           rate: rate,
           rateComment: rateComment,
         },
@@ -247,7 +247,7 @@ function Quizz() {
   return (
     <div className={styles.quizz_wrapper}>
       {dataQuizz?.quizz_items?.map((e) => (
-        <img src={e.image} style={{ display: "none" }} alt="img" />
+        <img src={e.image} key={e.term} style={{ display: "none" }} alt="img" />
       ))}
       <h1>{dataQuizz?.title}</h1>
       <div
@@ -260,16 +260,16 @@ function Quizz() {
           29 người học trong 1 ngày qua
         </span>
         <StarFilled style={{ color: "#FFCD1F", marginRight: "5px" }} />
-        <span
-          style={{ cursor: "pointer" }}
+        <button
+          style={{ cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}
           onClick={() => {
-            if (currentUser.uid !== dataQuizz.uidCreator) {
+            if (currentUser?.uid !== dataQuizz.uidCreator) {
               setIsRateModalOpen(true);
             }
           }}
         >
           {`${rateOfQuizz} (${countRateOfQuizz} đánh giá)`}
-        </span>
+        </button>
       </div>
 
       <div className={styles.mode_wrapper}>
@@ -604,7 +604,7 @@ function Quizz() {
           <h2>{`Thuật ngữ trong học phần này (${totalQuizzItem})`}</h2>
           <div>
             {dataQuizz?.quizz_items.map((item) => {
-              return <Item key={item} props={item} voice={voice} />;
+              return <Item key={item.term} props={item} voice={voice} />;
             })}
           </div>
         </div>
@@ -766,6 +766,8 @@ Item.propTypes = {
   term: PropTypes.string,
   definition: PropTypes.string,
   voice: PropTypes.any,
+  pronunciation: PropTypes.any,
+  partsOfSpeech: PropTypes.any,
 };
 
 export default Quizz;

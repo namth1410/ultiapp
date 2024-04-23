@@ -1,6 +1,7 @@
 import { TestProvider } from "contexts/test_context/TestContext";
 
 import { AddHomeWorkProvider } from "contexts/add_homework_context/AddHomeWorkContext";
+import { CreateSpeakingProvider } from "contexts/create_speaking_context/CreateSpeakingContext";
 import { HomeworkProvider } from "contexts/homework_context/HomeworkContext";
 import CardContainer from "games/memory/CardContainer";
 import { MemoryProvider } from "games/memory/MemoryContext";
@@ -30,9 +31,11 @@ import Login from "pages/Login/Login";
 import MenuGame from "pages/MenuGame/MenuGame";
 import Quizz from "pages/Quizz/Quizz";
 import Spell from "pages/Quizz/Spell/Spell";
-import Signup from "pages/Signup";
+import { SpellProvider } from "pages/Quizz/Spell/SpellContext";
 import PracticeSpeaking from "pages/Speaking/PracticeSpeaking/PracticeSpeaking";
 import Speaking from "pages/Speaking/Speaking";
+import Tts from "pages/TTS/TTS";
+import { TTSProvider } from "pages/TTS/TTSContext";
 import Test from "pages/Test/Test";
 import { ExamProvider } from "pages/TestOnline/ExamContext";
 import PreTest from "pages/TestOnline/PreTest/PreTest";
@@ -40,10 +43,6 @@ import Exam from "pages/TestOnline/Test/Test";
 import TestOnline from "pages/TestOnline/TestOnline";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { SpellProvider } from "pages/Quizz/Spell/SpellContext";
-import TTS from "pages/TTS/TTS";
-import { TTSProvider } from "pages/TTS/TTSContext";
-import { CreateSpeakingProvider } from "contexts/create_speaking_context/CreateSpeakingContext";
 
 function App() {
   const needLogin = !localStorage.getItem("ulti_auth");
@@ -54,7 +53,7 @@ function App() {
         path="/tts"
         element={
           <TTSProvider>
-            <TTS />
+            <Tts />
           </TTSProvider>
         }
       ></Route>
@@ -63,7 +62,6 @@ function App() {
           <>
             <Route index path="/login" element={<Login />} />
             <Route index path="/*" element={<Navigate to="/login" />} />
-            <Route path="/signup" element={<Signup />} />
             <Route index element={<Navigate to="/login" />} />
           </>
         ) : (

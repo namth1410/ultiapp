@@ -1,7 +1,7 @@
 import { Radio } from "antd";
 import React, { useEffect, useState } from "react";
 import { useExam } from "../ExamContext";
-import styles from "./Part2.module.css";
+import styles from "./Part2.module.scss";
 
 function Part2() {
   const {

@@ -47,52 +47,50 @@ function CardClass({ props, isSearching = false }) {
           progress: undefined,
           theme: "light",
         });
-      } else {
-        if (config.approveStudent) {
-          const q = query(
-            collection(firestore, "notifications"),
-            where("type", "==", "request_join_class"),
-            where("uidCreator", "==", auth.currentUser.uid),
-            where("class", "==", id)
-          );
+      } else if (config.approveStudent) {
+        const q = query(
+          collection(firestore, "notifications"),
+          where("type", "==", "request_join_class"),
+          where("uidCreator", "==", auth.currentUser.uid),
+          where("class", "==", id)
+        );
 
-          const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(q);
 
-          if (!querySnapshot.empty) {
-            console.log("Đã tồn tại bản ghi với cùng type và uidCreator");
-          } else {
-            const dataToAdd = {
-              dateCreate: new Date().toISOString(),
-              uidCreator: auth.currentUser.uid,
-              nameCreator: auth.currentUser.displayName,
-              photoURL: auth.currentUser.photoURL,
-              class: id,
-              type: "request_join_class",
-            };
-            await addDoc(collection(firestore, "notifications"), dataToAdd);
-            setInputPassword("");
-          }
+        if (!querySnapshot.empty) {
+          console.log("Đã tồn tại bản ghi với cùng type và uidCreator");
         } else {
-          const classRef = doc(firestore, "classes", id);
-          let dataToAdd = {};
-          if (!members || !Array.isArray(members)) {
-            dataToAdd.members = [auth.currentUser.uid];
-          } else {
-            dataToAdd.members = [...members, auth.currentUser.uid];
-          }
-          await updateDoc(classRef, dataToAdd);
-          toast.success("Bạn đã ở trong lớp", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          navigate(`/class/${id}/newsfeed`);
+          const dataToAdd = {
+            dateCreate: new Date().toISOString(),
+            uidCreator: auth.currentUser.uid,
+            nameCreator: auth.currentUser.displayName,
+            photoURL: auth.currentUser.photoURL,
+            class: id,
+            type: "request_join_class",
+          };
+          await addDoc(collection(firestore, "notifications"), dataToAdd);
+          setInputPassword("");
         }
+      } else {
+        const classRef = doc(firestore, "classes", id);
+        let dataToAdd = {};
+        if (!members || !Array.isArray(members)) {
+          dataToAdd.members = [auth.currentUser.uid];
+        } else {
+          dataToAdd.members = [...members, auth.currentUser.uid];
+        }
+        await updateDoc(classRef, dataToAdd);
+        toast.success("Bạn đã ở trong lớp", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        navigate(`/class/${id}/newsfeed`);
       }
 
       setIsLoading(false);

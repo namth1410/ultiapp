@@ -85,7 +85,7 @@ const CardContainer = () => {
         {cards.map((card, index) => (
           <Card
             card={card}
-            key={index}
+            key={card.id}
             onClick={handleCardItemClick}
             disabled={disabledCards}
           />

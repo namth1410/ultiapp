@@ -13,7 +13,7 @@ import Part3 from "../Part3/Part3";
 import Part5 from "../Part5/Part5";
 import Part6 from "../Part6/Part6";
 import Part7 from "../Part7/Part7";
-import styles from "./Test.module.css";
+import styles from "./Test.module.scss";
 
 function Exam() {
   const nameExam = window.location.pathname.split("/")[3];
@@ -214,9 +214,7 @@ function Exam() {
     <div className={styles.wrapper}>
       <div className={styles.wrapper_1}>
         <div className={styles.title_flex}>
-          <div
-            style={{ color: "var(--blue)", fontSize: "26px" }}
-          >{`PART ${part}`}</div>
+          <div className={styles.title_part_text}>{`PART ${part}`}</div>
 
           {isShowKey ? (
             <div
@@ -228,13 +226,6 @@ function Exam() {
               {canBack && (
                 <button
                   className={styles.back_btn}
-                  style={{
-                    color: "var(--blue)",
-                    fontSize: "20px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontFamily: "Gilroy",
-                  }}
                   onClick={handleBackQuestion}
                 >
                   Câu trước
@@ -263,12 +254,6 @@ function Exam() {
           {!isShowKey && isReady && (
             <button
               className={styles.submit_btn}
-              style={{
-                border: "none",
-                fontSize: "20px",
-                cursor: "pointer",
-                fontFamily: "Gilroy",
-              }}
               onClick={() => {
                 Swal.fire({
                   title: "Bạn có muốn nộp bài không?",
@@ -308,13 +293,6 @@ function Exam() {
                 ) && (
                   <button
                     className={styles.back_btn}
-                    style={{
-                      color: "var(--blue)",
-                      fontSize: "20px",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontFamily: "Gilroy",
-                    }}
                     onClick={handleBackQuestion}
                   >
                     Câu trước
@@ -364,17 +342,7 @@ function Exam() {
             </button>
           )}
 
-          <div
-            style={{
-              padding: "25px 40px",
-              backgroundColor: "var(--blue)",
-              color: "#fff",
-              borderRadius: "8px",
-            }}
-            onClick={() => {
-              setIndexQuestion(indexQuestion + 1);
-            }}
-          >
+          <div className={styles.process_test}>
             {`${answer.filter((el) => el !== 0).length}/200`}
           </div>
         </div>
@@ -555,20 +523,7 @@ function Timer({
   const secondsStr = String(seconds).padStart(2, "0");
 
   return (
-    <div
-      style={{
-        border: "none",
-        padding: "15px 20px",
-        color: "#fff",
-        fontSize: "20px",
-        backgroundColor: "var(--blue)",
-        borderRadius: "8px",
-        cursor: "pointer",
-        fontFamily: "Gilroy",
-        width: "80px",
-        textAlign: "center",
-      }}
-    >
+    <div className={styles.timer}>
       <p>
         {hoursStr}:{minutesStr}:{secondsStr}
       </p>

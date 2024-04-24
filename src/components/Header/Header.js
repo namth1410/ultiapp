@@ -17,6 +17,8 @@ import axiosInstance from "ultis/api";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Header.module.scss";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
@@ -124,6 +126,21 @@ function Header() {
   const handleClickMenu = (e) => {
     if (needLogin) {
       e.preventDefault();
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        background: "#000",
+        color: "#fff",
+        title: "Chào bạn!",
+        text: `Bạn cần đăng nhập để truy cập phần này!`,
+        icon: "info",
+        confirmButtonText: "Đăng nhập",
+        allowOutsideClick: true,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        preConfirm: () => {
+          signInWithGoogle();
+        },
+      });
     }
   };
 
@@ -530,7 +547,7 @@ const NotificationItem = ({ notification, navigate }) => {
           padding: "6px 8px",
           fontWeight: "bold",
           textAlign: "start",
-          lineHeight: "1.57"
+          lineHeight: "1.57",
         }}
       >
         <p>{notification.content}</p>

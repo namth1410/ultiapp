@@ -1,10 +1,12 @@
 import bg_memory from "assets/img/bg_memory.png";
+import timer from "assets/img/timer.png";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Card from "./Card";
 import { useMemoryCards } from "./MemoryContext";
 import "./index.css";
+import { useState, useEffect } from "react";
 
 const CardContainer = () => {
   const {
@@ -17,26 +19,45 @@ const CardContainer = () => {
   } = useMemoryCards();
 
   const navigate = useNavigate();
+  const [seconds, setSeconds] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(true);
 
-  if (checkWin()) {
-    setTimeout(() => {
-      const MySwal = withReactContent(Swal);
-      MySwal.fire({
-        background: "#000",
-        color: "#fff",
-        title: "Chúc mừng bạn!",
-        text: `Bạn đã mất ${turn} lượt để hoàn thành trò chơi!`,
-        icon: "success",
-        confirmButtonText: "Chơi lại",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        allowEnterKey: false,
-        preConfirm: () => {
-          startGame();
-        },
-      });
-    }, 500);
+  if (checkWin() && timerRunning) {
+    setTimerRunning(false);
   }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (timerRunning) {
+        setSeconds((prevSeconds) => prevSeconds + 1);
+      }
+    }, 1000);
+
+    if (!timerRunning) {
+      setTimeout(() => {
+        const MySwal = withReactContent(Swal);
+        MySwal.fire({
+          background: "#000",
+          color: "#fff",
+          title: "Chúc mừng bạn!",
+          html: `<div>Bạn đã mất ${turn} lượt để hoàn thành trò chơi!</div><div>Thời gian: ${seconds} giây</div>`,
+          icon: "success",
+          confirmButtonText: "Chơi lại",
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+          preConfirm: () => {
+            startGame();
+            setTimerRunning(true);
+            setSeconds(0);
+          },
+        });
+      }, 500);
+    }
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerRunning]);
 
   return (
     <div
@@ -56,20 +77,14 @@ const CardContainer = () => {
         style={{
           color: "#ffffffde",
           fontSize: "3.2em",
-          paddingTop: "20px",
+          padding: "0px 20px",
           fontFamily: "Rocher",
           fontPalette: "--Grays",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <button
-          style={{
-            float: "left",
-            marginLeft: "20px",
-            fontSize: "0.9em",
-            padding: "0.3em 0.6em",
-            position: "absolute",
-            left: "10px",
-          }}
           onClick={() => {
             navigate(-1);
           }}
@@ -77,9 +92,43 @@ const CardContainer = () => {
           <span>🔙</span>
         </button>
         {""}
-        Memory Game
+
+        <span>Memory Game</span>
+        <button
+          style={{ fontFamily: "Gilroy", fontSize: "20px" }}
+          onClick={startGame}
+        >
+          Chơi mới
+        </button>
       </div>
-      <button onClick={startGame}>Chơi mới</button>
+
+      <div
+        style={{
+          width: "200px",
+          height: "80px",
+          backgroundImage: `url(${timer})`,
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          marginInline: "auto",
+          position: "relative",
+        }}
+      >
+        <span
+          style={{
+            color: "#fff",
+            fontSize: "20px",
+            position: "absolute",
+            top: "40%",
+            left: "55%",
+          }}
+        >
+          {Math.floor(seconds / 60)
+            .toString()
+            .padStart(2, "0")}{" "}
+          : {(seconds % 60).toString().padStart(2, "0")}
+        </span>
+      </div>
 
       <div
         style={{

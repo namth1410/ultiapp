@@ -36,9 +36,8 @@ const onFinishFailed = (errorInfo) => {
   }
 };
 
-const imageListURLUpdate = [];
-
 function EditSet() {
+  const imageListURLUpdate = [];
   const { quizz_id } = useParams();
 
   const navigate = useNavigate();
@@ -48,8 +47,14 @@ function EditSet() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageListInitial, setImageListInitial] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [indexItemHasChangeImageList, setIndexItemHasChangeImageList] =
-    useState([]);
+
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
 
   const uploadImageList = async (quizz) => {
     const quizz_items = quizz.quizz_items;
@@ -57,7 +62,10 @@ function EditSet() {
     for (let [index, question] of quizz_items.entries()) {
       if (typeof question.image === "object") {
         const storageRef = ref(storage, `ImagesQuizz/${quizz.title}_${index}`);
-
+        if (question.image.fileList.length === 0) {
+          imageListURLUpdate.push("");
+          continue;
+        }
         try {
           const snapshot = await uploadString(
             storageRef,
@@ -88,8 +96,15 @@ function EditSet() {
     console.log("Success:", values);
     setIsLoading(true);
     await uploadImageList(values);
+    let _quizz_items = values.quizz_items.map((el, index) => ({
+      ...el,
+      image: imageListURLUpdate[index],
+      pronunciation: el.pronunciation || "",
+      partsOfSpeech: el.partsOfSpeech || "",
+    }));
     const dataToAdd = {
       ...values,
+      quizz_items: _quizz_items,
       access: access,
       dateCreate: new Date().toISOString(),
       uidCreator: auth.currentUser.uid,
@@ -128,16 +143,7 @@ function EditSet() {
   };
 
   const handleChange = (e, index) => {
-    const _indexItemHasChangeImageList = [...indexItemHasChangeImageList];
-    if (e.fileList.length !== 0) {
-      _indexItemHasChangeImageList.push(index);
-    } else {
-      _indexItemHasChangeImageList.splice(
-        _indexItemHasChangeImageList.indexOf(index),
-        1
-      );
-    }
-    setIndexItemHasChangeImageList(_indexItemHasChangeImageList);
+    console.log(e);
   };
 
   const uploadButton = (
@@ -178,6 +184,21 @@ function EditSet() {
 
   return (
     <div className={styles.wrapper}>
+      <button
+        style={{
+          alignSelf: "flex-start",
+          display: "flex",
+          alignItems: "center",
+          fontSize: "26px",
+          cursor: "pointer",
+          fontFamily: "Gilroy",
+          fontWeight: "bold",
+        }}
+        onClick={showModal}
+      >
+        <i className="bi bi-arrow-left" style={{ marginRight: "10px" }}></i>
+        <span>Quay lại</span>
+      </button>
       <h2>Tạo học phần mới</h2>
       <Form
         name="basic"
@@ -203,6 +224,10 @@ function EditSet() {
           {
             name: ["quizz_items"],
             value: dataQuizz?.quizz_items,
+          },
+          {
+            name: ["password"],
+            value: dataQuizz?.password,
           },
         ]}
       >
@@ -264,6 +289,24 @@ function EditSet() {
             <Select.Option value="private">Chỉ mình tôi</Select.Option>
           </Select>
         </Form.Item>
+
+        {access === "password" && (
+          <Form.Item
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Không để trống!",
+              },
+            ]}
+          >
+            <Input.Password
+              name="password"
+              style={{ width: "200px" }}
+              placeholder="Nhập mật khẩu"
+            />
+          </Form.Item>
+        )}
 
         <Form.Item>
           <Form.List
@@ -342,16 +385,38 @@ function EditSet() {
                       >
                         <Input placeholder="Định nghĩa" />
                       </Form.Item>
-                      {!indexItemHasChangeImageList.includes(index) && (
-                        <Image
-                          width={100}
-                          style={{
-                            borderRadius: "8px",
-                            marginBottom: "10px",
-                          }}
-                          src={imageListInitial[index]}
-                        />
-                      )}
+                      <Form.Item
+                        {...restField}
+                        name={[name, "pronunciation"]}
+                        rules={[
+                          {
+                            required: false,
+                            message: "Không để trống!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Phiên âm" />
+                      </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "partsOfSpeech"]}
+                        rules={[
+                          {
+                            required: false,
+                            message: "Không để trống!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Từ loại" />
+                      </Form.Item>
+                      <Image
+                        width={100}
+                        style={{
+                          borderRadius: "8px",
+                          marginBottom: "10px",
+                        }}
+                        src={imageListInitial[index]}
+                      />
                       <Form.Item name={[name, "image"]}>
                         <Upload
                           name="image"
@@ -362,6 +427,7 @@ function EditSet() {
                             return false;
                           }}
                           maxCount={1}
+                          previewFile={getBase64}
                         >
                           {uploadButton}
                         </Upload>
@@ -418,9 +484,7 @@ function EditSet() {
               fontFamily: "Gilroy",
               height: "auto",
             }}
-            onClick={() => {
-              showModal();
-            }}
+            onClick={showModal}
           >
             Hủy
           </Button>

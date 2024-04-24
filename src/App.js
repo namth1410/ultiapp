@@ -26,6 +26,7 @@ import { ScoreProvider } from "pages/Class/Score/ScoreContext";
 import CreateClass from "pages/CreateClass/CreateClass";
 import CreateSet from "pages/CreateSet/CreateSet";
 import EditSet from "pages/EditSet/EditSet";
+import GoodNight from "pages/G9/GoodNight";
 import Home from "pages/Home/Home";
 import Login from "pages/Login/Login";
 import MenuGame from "pages/MenuGame/MenuGame";
@@ -49,6 +50,7 @@ function App() {
 
   return (
     <Routes>
+      <Route path="/hi-giang" element={<GoodNight />}></Route>
       <Route
         path="/tts"
         element={

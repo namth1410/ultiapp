@@ -2,7 +2,9 @@ import box_memory from "assets/img/box_memory.png";
 import PropTypes from "prop-types";
 
 const Card = ({ card, onClick, disabled }) => {
-  const className = `${card.isFlipped ? "flipped" : ""}`;
+  const className = `${card.isFlipped ? "flipped" : ""} ${
+    card.isMatched ? "matched" : ""
+  }`;
 
   const handleClick = () => {
     if (!disabled) {

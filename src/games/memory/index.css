@@ -42,7 +42,7 @@
   .card-container .card .flipped .front {
     transform: rotateY(0deg);
     transition-delay: 0.2s;
-    cursor: not-allowed;
+    cursor: default;
   }
 
   .card-container .card .back {
@@ -53,6 +53,11 @@
   .card-container .card .flipped .back {
     /* transform: rotateY(90deg); */
     transition-delay: 0s;
+  }
+
+  .card-container .card .matched {
+    opacity: 0;
+    transition: opacity 1.5s;
   }
 
   button {

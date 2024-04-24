@@ -1,4 +1,4 @@
-import React from "react";
+import box_memory from "assets/img/box_memory.png";
 import PropTypes from "prop-types";
 
 const Card = ({ card, onClick, disabled }) => {
@@ -18,9 +18,10 @@ const Card = ({ card, onClick, disabled }) => {
         </div>
         <img
           className="back"
-          src="/img/cover.png"
+          src={box_memory}
           alt="Card Cover"
           onClick={handleClick}
+          draggable={false}
         />
       </div>
     </div>

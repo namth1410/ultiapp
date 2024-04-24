@@ -1,3 +1,4 @@
+import bg_memory from "assets/img/bg_memory.png";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -18,21 +19,23 @@ const CardContainer = () => {
   const navigate = useNavigate();
 
   if (checkWin()) {
-    const MySwal = withReactContent(Swal);
-    MySwal.fire({
-      background: "#000",
-      color: "#fff",
-      title: "Chúc mừng bạn!",
-      text: `Bạn đã mất ${turn} lượt để hoàn thành trò chơi!`,
-      icon: "success",
-      confirmButtonText: "Chơi lại",
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      preConfirm: () => {
-        startGame();
-      },
-    });
+    setTimeout(() => {
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        background: "#000",
+        color: "#fff",
+        title: "Chúc mừng bạn!",
+        text: `Bạn đã mất ${turn} lượt để hoàn thành trò chơi!`,
+        icon: "success",
+        confirmButtonText: "Chơi lại",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        preConfirm: () => {
+          startGame();
+        },
+      });
+    }, 500);
   }
 
   return (
@@ -40,9 +43,12 @@ const CardContainer = () => {
       style={{
         width: "100%",
         height: "-webkit-fill-available",
-        backgroundColor: "#242424",
         textAlign: "center",
         boxSizing: "border-box",
+        backgroundImage: `url(${bg_memory})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
       className="game_memory"
     >

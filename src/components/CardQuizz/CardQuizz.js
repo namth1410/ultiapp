@@ -2,6 +2,7 @@ import { Card, Input, Modal, Tag } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./CardQuizz.module.scss";
 
 function CardQuizz({ props }) {
   const { id, title, quizz_items, photoURL, nameCreator, access, password } =
@@ -53,12 +54,14 @@ function CardQuizz({ props }) {
             navigate(`/quizz/${id}`);
           }
         }}
-        style={{ cursor: "pointer", border: "none", backgroundColor: "unset" }}
+        className={styles.card_quizz_btn}
       >
         <Card
           title={title}
           style={{
             width: 300,
+            backgroundColor: "var(--button-background)",
+            border: "var(--text-color-primary)",
           }}
           extra={<Tag color={COLOR_ACCESS[access]}>{access}</Tag>}
         >

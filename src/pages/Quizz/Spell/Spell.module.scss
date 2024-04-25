@@ -1,7 +1,6 @@
 .wrapper {
   width: 100%;
   height: 100%;
-  background-color: rgba(219, 223, 255, 0.2);
 
   .container {
     display: flex;
@@ -13,7 +12,7 @@
     .left_box {
       width: 12.1875rem;
       box-shadow: 0 0.25rem 1.25rem #00000014;
-      background-color: #f6f7fb;
+      background-color: var(--button-background);
       position: relative;
       box-sizing: border-box;
       padding: 1rem;
@@ -82,7 +81,7 @@
           right: 1rem;
 
           button {
-            background: #fff !important;
+            background: var(--body-background);
             border: 0.125rem solid #d9dde8;
             color: #3ccfcf;
             padding: 0.75rem 1.5rem;
@@ -109,7 +108,6 @@
         flex: 1;
         overflow: auto;
         padding: 2rem;
-        background-color: #fff;
 
         .input_wrapper {
           display: flex;
@@ -211,6 +209,10 @@
           font-size: 1.25rem;
           line-height: 1.5;
           margin-top: 1.5rem;
+
+          .input_prompt_phonetic {
+            color: var(--text-color-primary);
+          }
 
           .input_prompt_image {
             margin-top: 1.5rem;

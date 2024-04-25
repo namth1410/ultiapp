@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 998;
-  background-color: #fff;
+  background-color: var(--body-background);
   box-shadow: 0 0.25rem 1rem 0 #00000029;
 
   .header {
@@ -33,7 +33,7 @@
 
           .menu_item {
             text-decoration: none;
-            color: #1a1919;
+            color: var(--text-color-primary);
             display: flex;
             gap: 5px;
             cursor: pointer;
@@ -52,7 +52,7 @@
           .active {
             div {
               color: #4f83fc;
-              background-color: #f4f4f4;
+              background-color: var(--button-background);
               border-radius: 8px;
             }
           }

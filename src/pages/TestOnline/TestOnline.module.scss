@@ -10,6 +10,7 @@
     padding-left: 8px;
     margin-bottom: 15px;
     ul {
+      background-color: var(--body-background);
       border: none;
     }
     li {
@@ -17,7 +18,7 @@
     }
 
     .menu_item {
-      background-color: #bbbbbb;
+      background-color: var(--button-background);
       color: #fff;
       transition: background-color 0.25s;
       padding: 15px 20px;
@@ -65,9 +66,9 @@
     .test_item {
       display: flex;
       border-radius: 6px;
-      border: 1px solid #dcdcdc;
+      border: 1px solid #a5a5a5;
       overflow: hidden;
-      background: #fff;
+      background: var(--button-background);
       width: 100%;
       cursor: pointer;
 
@@ -86,7 +87,7 @@
           rgba(0, 212, 255, 1) 100%
         );
 
-        color: #fff;
+        color: var(--text-color-primary);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -105,10 +106,10 @@
 
       button {
         padding: 6px 16px;
-        background-color: #005186;
-        color: #fff;
+        background-color: var(--button-background);
+        color: var(--text-color-primary);
         border-radius: 3px;
-        border: 1px solid #005186;
+        border: 1px solid #8d8d8d;
         font-size: 16px;
         cursor: pointer;
       }

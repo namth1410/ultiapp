@@ -10,7 +10,7 @@
   .tools {
     display: flex;
     position: sticky;
-    background: white;
+    background: var(--body-background);
     z-index: 300;
     padding: 16px 32px;
     width: 100%;
@@ -30,7 +30,7 @@
   }
 
   .create_quizz {
-    background-color: #eaf9ff;
+    background-color: var(--button-background);
     border-radius: 16px;
     width: 80%;
     height: auto;
@@ -40,10 +40,11 @@
     text-align: left;
     cursor: pointer;
     transition: all 0.5s;
+    color: var(--text-color-primary);
   }
 
   .create_quizz:hover {
-    background-color: #d2f2ff;
+    background-color: #818181;
   }
 
   .my_quizzs_wrapper {

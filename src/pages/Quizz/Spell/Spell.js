@@ -10,7 +10,7 @@ import listen from "assets/img/listen.svg";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
-import styles from "./Spell.module.css";
+import styles from "./Spell.module.scss";
 import { useSpell } from "./SpellContext";
 
 function Spell() {

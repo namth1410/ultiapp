@@ -42,15 +42,19 @@ code {
   --blue-tertiary: #1992cd1a;
   --bgc-primary: #0a092d;
   --text-color-primary: #202227;
-  --black-text-secondary: #1a1919;
-  --red-primary: #ff0401;
-  --red-secondary: #ff04011a;
-  --gray-primary: #f7f7f7;
-  --gray-secondary: #e1e1e1;
-  --green-primary: #48cd3d;
-  --green-secondary: #ebfeea;
-  --warning-primary: #ff8a01;
-  --warning-secondary: #ff8a011a;
+  --text-color-secondary: #202227;
+  --black-text-secondary: #4f4f4f;
+  --body-background: #fff;
+  --button-background: #dbdbdb;
+  --box-shadow: #00000029;
+}
+
+[data-theme="dark"] {
+  --body-background: #282c34;
+  --text-color-primary: #f6f7fb;
+  --box-shadow: #adadad29;
+  --button-background: #2e3856;
+  --text-color-secondary: #939bb4;
 }
 
 p {
@@ -62,6 +66,10 @@ button {
   background-color: unset;
   cursor: pointer;
   padding-inline: 0;
+}
+
+* {
+  transition: background-color 0.3s ease-in-out, color 0.2s ease-in-out;
 }
 
 /* Normal */

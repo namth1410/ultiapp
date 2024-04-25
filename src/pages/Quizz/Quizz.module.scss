@@ -6,7 +6,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  color: #202227;
+  color: var(--text-color-primary);
 
   .mode_wrapper {
     display: flex;
@@ -15,7 +15,8 @@
 
     button {
       box-shadow: 0 0.0625rem 0.1875rem 0.08rem #282e3e14;
-      background: #fff;
+      color: var(--text-color-primary);
+      background-color: var(--button-background);
       border: none;
       border-bottom: 0.25rem solid #0000;
       border-radius: 0.5rem;
@@ -30,7 +31,7 @@
     button:hover {
       box-shadow: 0 0.25rem 1rem 0 #282e3e14;
       border-bottom-color: #dbdfff;
-      background-color: #f0f0f0;
+      background-color: #818181;
     }
   }
 
@@ -38,7 +39,7 @@
     width: 80%;
     height: 400px;
     margin-top: 20px;
-    box-shadow: 0.25rem 0.25rem 1rem 0.25rem #282e3e14;
+    box-shadow: 0.25rem 0.25rem 1rem 0.25rem var(--box-shadow);
     background-color: var(--gray-100-gray-700);
     border-radius: 0.5rem;
     padding: 1.5rem 2rem;

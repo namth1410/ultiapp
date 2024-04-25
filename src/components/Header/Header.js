@@ -1,6 +1,7 @@
 import { BarsOutlined, CloseOutlined, UserOutlined } from "@ant-design/icons";
-import { Badge, Button, Divider, Dropdown, Space } from "antd";
+import { Badge, Button, Divider, Dropdown, Space, Switch } from "antd";
 import Logo from "assets/img/logo.svg";
+import { useTheme } from "contexts/theme_context/ThemeContext";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {
   collection,
@@ -13,12 +14,12 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import axiosInstance from "ultis/api";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
 import styles from "./Header.module.scss";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
 
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
@@ -29,6 +30,7 @@ function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const currentUser = useAuth();
+  const { themeMode, setThemeMode } = useTheme();
 
   const needLogin = !localStorage.getItem("ulti_auth");
 
@@ -41,7 +43,13 @@ function Header() {
     {
       key: "1",
       label: (
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            color: "var(--text-color-primary)",
+          }}
+        >
           <UserOutlined style={{ fontSize: "20px" }} />
           <span>Hồ sơ</span>
         </div>
@@ -50,15 +58,20 @@ function Header() {
     {
       key: "2",
       label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          2nd menu item (disabled)
-        </a>
+        <>
+          <span
+            style={{ marginRight: "10px", color: "var(--text-color-primary)" }}
+          >
+            Chế độ tối
+          </span>
+          <Switch
+            value={themeMode === "dark"}
+            onChange={(e) => {
+              setThemeMode(e ? "dark" : "light");
+            }}
+          />
+        </>
       ),
-      disabled: true,
     },
     {
       key: "3",
@@ -75,13 +88,14 @@ function Header() {
     },
   ];
   const contentStyle = {
-    backgroundColor: "#fff",
+    backgroundColor: "var(--body-background)",
     borderRadius: "10px",
     boxShadow: "0 1.25rem 2rem 0 #00000029",
-    border: "1px solid #ccc",
+    border: "1px solid var(--text-color-primary)",
   };
   const menuStyle = {
     boxShadow: "none",
+    backgroundColor: "var(--body-background)",
   };
 
   const signInWithGoogle = async () => {
@@ -149,7 +163,8 @@ function Header() {
       axiosInstance
         .post(`/logout`)
         .then((response) => {
-          localStorage.clear();
+          localStorage.removeItem("ulti_auth");
+          localStorage.removeItem("ulti_user");
           window.location.href = `${process.env.REACT_APP_HOST}/login`;
         })
         .catch((error) => {
@@ -313,7 +328,6 @@ function Header() {
                       <Space
                         style={{
                           padding: 8,
-                          backgroundColor: "#f4f9fe",
                           borderRadius: "8px",
                           maxWidth: "400px",
                         }}
@@ -359,13 +373,16 @@ function Header() {
                         borderRadius: "100px",
                         aspectRatio: "1",
                         cursor: "pointer",
-                        backgroundColor: "#f0f2f5",
+                        border: "1px solid var(--button-background)",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                       }}
                     >
-                      <i className="bi bi-bell-fill"></i>
+                      <i
+                        className="bi bi-bell-fill"
+                        style={{ color: "var(--text-color-primary)" }}
+                      ></i>
                     </div>
                   </Badge>
                 </Dropdown>
@@ -383,6 +400,7 @@ function Header() {
                       <Space
                         style={{
                           padding: 8,
+                          color: "var(--text-color-primary)",
                         }}
                       >
                         <div
@@ -550,7 +568,9 @@ const NotificationItem = ({ notification, navigate }) => {
           lineHeight: "1.57",
         }}
       >
-        <p>{notification.content}</p>
+        <p style={{ color: "var(--text-color-primary)" }}>
+          {notification.content}
+        </p>
         <p style={{ color: "#65697b", fontSize: "12px" }}>
           {convertISOToCustomFormat(notification.dateCreate)}
         </p>

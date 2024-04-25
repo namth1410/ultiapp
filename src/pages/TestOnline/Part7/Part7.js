@@ -88,13 +88,7 @@ function Part7() {
                       : selectedValue5
                   }
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "10px",
-                    }}
-                  >
+                  <div className={styles.container_answer}>
                     {dataExam.data[indexQuestion + index].answer.map(
                       (_answer, ansIndex) => (
                         <Radio

@@ -353,7 +353,7 @@ const TestItem = ({ props, navigate }) => {
         <div
           style={{
             fontSize: "18px",
-            color: "#333333",
+            color: "var(--text-color-primary)",
             textTransform: "uppercase",
           }}
           className={styles.name_test}

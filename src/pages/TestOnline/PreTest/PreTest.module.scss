@@ -2,7 +2,7 @@
   padding: 20px;
 
   .name_test {
-    color: #005186;
+    color: var(--text-color-primary);
     font-size: 26px;
   }
 
@@ -10,7 +10,7 @@
     padding: 20px;
 
     .title_top {
-      color: #4f4f4f;
+      color: var(--text-color-secondary);
       font-size: 20px;
       font-weight: 500;
       display: flex;
@@ -33,6 +33,19 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+
+      .table_wrapper {
+        div {
+          div {
+            div {
+              th, tbody, td {
+                background-color: var(--button-background);
+                color: var(--text-color-secondary);
+              }
+            }
+          }
+        }
+      }
     }
   }
 

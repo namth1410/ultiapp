@@ -168,7 +168,13 @@ const Home = () => {
 
       {myQuizzs && typeShow !== "explore" && (
         <div className={styles.my_quizzs_wrapper}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: "var(--text-color-primary",
+            }}
+          >
             <h2>{`Danh sách quizz của bạn (${myQuizzs.length})`}</h2>
             <div
               style={{

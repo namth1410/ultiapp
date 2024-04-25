@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./PreTest.module.css";
+import styles from "./PreTest.module.scss";
 import { toast } from "react-toastify";
 
 const countsLis = [6, 25, 39, 30, 30, 16, 54];
@@ -87,13 +87,14 @@ function PreTest() {
               rowSelection={rowSelection}
               columns={columns}
               dataSource={dataListen}
+              className={styles.table_wrapper}
             />
           </div>
         </div>
 
         <div className={styles.footer}>
           <button
-          className={styles.start_btn}
+            className={styles.start_btn}
             onClick={() => {
               if (parts === "" || !parts) {
                 toast.warning("Bạn chưa chọn part nào!", {

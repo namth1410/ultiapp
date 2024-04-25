@@ -32,7 +32,8 @@ export const setupAxios = () => {
     },
     async (error) => {
       if (error.response.status === 401) {
-        localStorage.clear();
+        localStorage.removeItem("ulti_auth");
+        localStorage.removeItem("ulti_user");
         window.location.reload();
       }
       console.log(error);

@@ -199,7 +199,9 @@ function Test() {
                     onClick={() => scrollToIndex(index)}
                     style={{
                       color:
-                        answer[index] !== -1 ? "var(--primary-color)" : "#ccc",
+                        answer[index] !== -1
+                          ? "var(--primary-color)"
+                          : "var(--text-color-primary)",
                     }}
                   >
                     <div>
@@ -241,7 +243,6 @@ function Test() {
                   <div
                     style={{
                       paddingBottom: "40px",
-                      backgroundColor: "#f6f7fb",
                     }}
                     key={item.term}
                   >

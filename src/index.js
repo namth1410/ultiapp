@@ -1,5 +1,6 @@
 import { store } from "appdata/store";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { ThemeProvider } from "contexts/theme_context/ThemeContext";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
@@ -14,10 +15,12 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 setupAxios();
 root.render(
   <BrowserRouter>
-    <Provider store={store}>
-      <App />
-      <ToastContainer />
-    </Provider>
+    <ThemeProvider>
+      <Provider store={store}>
+        <App />
+        <ToastContainer />
+      </Provider>
+    </ThemeProvider>
   </BrowserRouter>
 );
 

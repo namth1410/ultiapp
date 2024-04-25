@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { firestore, useAuth } from "../../firebase";
-import styles from "./MenuClass.module.css";
+import styles from "./MenuClass.module.scss";
 
 function getItem(label, key, icon, children, type) {
   return {

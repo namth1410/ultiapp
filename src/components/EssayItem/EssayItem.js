@@ -1,7 +1,7 @@
 import { Input } from "antd";
 import { useTest } from "contexts/test_context/TestContext";
 import PropTypes from "prop-types";
-import styles from "./EssayItem.module.css";
+import styles from "./EssayItem.module.scss";
 
 function EssayItem({ props, indexItem, total, keys }) {
   const { definition } = props;

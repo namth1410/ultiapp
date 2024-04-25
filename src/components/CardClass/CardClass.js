@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { auth, firestore } from "../../firebase";
+import styles from "./CardClass.module.scss";
 
 function CardClass({ props, isSearching = false }) {
   const { id, nameClass, members, nameCreator, password, config } = props;
@@ -104,17 +105,14 @@ function CardClass({ props, isSearching = false }) {
         onClick={() => {
           isSearching ? setIsModalOpen(true) : navigate(`/class/${id}`);
         }}
-        style={{
-          cursor: "pointer",
-          border: "none",
-          backgroundColor: "unset",
-          width: "fit-content",
-        }}
+        className={styles.card_class_btn}
       >
         <Card
           title={nameClass}
           style={{
             width: 300,
+            backgroundColor: "var(--button-background)",
+            border: "var(--text-color-primary)",
           }}
         >
           <Tag color="#108ee9">{`${members?.length || 0} thành viên`}</Tag>

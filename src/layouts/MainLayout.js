@@ -76,8 +76,9 @@ function MainLayout() {
         ref={contentRef}
         style={{
           width: "100%",
-          height: visibleHeader ? "calc(100vh - 89px)" : "100vh",
+          height: visibleHeader ? "calc(100vh - 76px)" : "100vh",
           overflow: "auto",
+          backgroundColor: "var(--body-background)",
         }}
       >
         <Outlet />

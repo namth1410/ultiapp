@@ -20,7 +20,7 @@ function Part5() {
     } else {
       setSelectedValue(answer[indexQuestion]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexQuestion]);
 
   return (
@@ -42,9 +42,7 @@ function Part5() {
             value={selectedValue}
             disabled={isShowKey}
           >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
+            <div className={styles.container_answer}>
               {dataExam.data[indexQuestion].answer.map((_answer, ansIndex) => (
                 <Radio
                   key={_answer}

@@ -1,7 +1,7 @@
 import { useTest } from "contexts/test_context/TestContext";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import styles from "./MultipleChoiceItem.module.css";
+import styles from "./MultipleChoiceItem.module.scss";
 
 function MultipleChoiceItem({ props, index, keys, indexSequence }) {
   const { definition } = props;
@@ -29,7 +29,7 @@ function MultipleChoiceItem({ props, index, keys, indexSequence }) {
         return index_in_item === correctAnswer[indexSequence] ? "green" : "unset";
       }
     } else {
-      return indexSelectedKey === index_in_item ? "#edefff" : "unset";
+      return indexSelectedKey === index_in_item ? "var(--body-background)" : "unset";
     }
   };
 

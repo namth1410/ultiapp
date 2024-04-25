@@ -43,9 +43,7 @@ function Part2() {
             value={selectedValue}
             disabled={isShowKey}
           >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
+            <div className={styles.container_answer}>
               <Radio style={{ fontSize: "20px" }} value={1}>
                 A {isShowKey && checkKey(1)}
               </Radio>

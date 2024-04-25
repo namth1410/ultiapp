@@ -18,7 +18,7 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { auth, firestore, storage } from "../../firebase";
-import styles from "./EditSet.module.css";
+import styles from "./EditSet.module.scss";
 
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
@@ -193,6 +193,7 @@ function EditSet() {
           cursor: "pointer",
           fontFamily: "Gilroy",
           fontWeight: "bold",
+          color: "var(--text-color-primary)"
         }}
         onClick={showModal}
       >

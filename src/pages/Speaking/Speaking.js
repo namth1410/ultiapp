@@ -92,7 +92,12 @@ function Speaking() {
                   cover={<img alt="example" src={img} />}
                 >
                   <Meta
-                    style={{ textAlign: "center", textDecoration: "underline" }}
+                    style={{
+                      textAlign: "center",
+                      textDecoration: "underline",
+                      color: "var(--text-color-primary)",
+                    }}
+                    className={styles.meta_card}
                     title={item.topic}
                   />
                 </Card>
@@ -113,6 +118,7 @@ function Speaking() {
                   fontSize: "40px",
                   justifyContent: "center",
                   alignItems: "center",
+                  color: "var(--text-color-primary)",
                 }}
               >
                 +
@@ -133,14 +139,6 @@ function Speaking() {
                 <Card
                   className={styles.card}
                   hoverable
-                  style={{
-                    width: 240,
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    boxShadow: "0 0 10px 0 rgba(0,0,0,.15)",
-                  }}
                   onClick={() => {
                     navigate(`practice/${item.toLowerCase()}`);
                   }}
@@ -153,7 +151,12 @@ function Speaking() {
                   }
                 >
                   <Meta
-                    style={{ textAlign: "center", textDecoration: "underline" }}
+                    style={{
+                      textAlign: "center",
+                      textDecoration: "underline",
+                      color: "var(--text-color-primary)",
+                    }}
+                    className={styles.meta_card}
                     title={item}
                   />
                 </Card>

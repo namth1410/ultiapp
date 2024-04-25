@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { normalizePartsOfSpeech, normalizePronunciation } from "ultis/func";
 import { convertISOToCustomFormat } from "ultis/time";
 import { auth, firestore, useAuth } from "../../firebase";
-import styles from "./Quizz.module.css";
+import styles from "./Quizz.module.scss";
 
 function Quizz() {
   const { quizz_id } = useParams();
@@ -250,18 +250,19 @@ function Quizz() {
         <img src={e.image} key={e.term} style={{ display: "none" }} alt="img" />
       ))}
       <h1>{dataQuizz?.title}</h1>
-      <div
-        style={{
-          color: "var(--text-color-primary)",
-        }}
-      >
+      <div>
         <RiseOutlined style={{ color: "red", marginRight: "5px" }} />
         <span style={{ marginRight: "15px" }}>
           29 người học trong 1 ngày qua
         </span>
         <StarFilled style={{ color: "#FFCD1F", marginRight: "5px" }} />
         <button
-          style={{ cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}
+          style={{
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "16px",
+            color: "var(--text-color-primary)",
+          }}
           onClick={() => {
             if (currentUser?.uid !== dataQuizz.uidCreator) {
               setIsRateModalOpen(true);
@@ -709,11 +710,11 @@ const Item = ({ props, voice }) => {
       style={{
         display: "flex",
         padding: "15px",
-        boxShadow: "0 0.25rem 1rem 0 #282e3e14",
-        backgroundColor: "#fff",
+        boxShadow: "0 0.25rem 1rem 0 var(--box-shadow)",
+        backgroundColor: "var(--button-background0",
         borderRadius: "0.5rem",
         alignItems: "center",
-        color: "#1a1d28",
+        color: "var(--text-color-primary)",
         fontWeight: "500",
       }}
     >

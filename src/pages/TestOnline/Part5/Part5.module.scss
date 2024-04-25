@@ -20,7 +20,7 @@
       overflow-y: auto;
       font-size: 16px;
       line-height: 150%;
-      background-color: #fff;
+      background-color: var(--button-background);
       border-radius: 8px;
       padding: 15px;
 
@@ -29,6 +29,15 @@
         overflow: hidden;
         object-fit: cover;
         margin-bottom: 12px;
+      }
+
+      .container_answer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        label {
+          color: var(--text-color-primary);
+        }
       }
     }
   }

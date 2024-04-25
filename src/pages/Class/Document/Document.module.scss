@@ -13,7 +13,7 @@
     .tools {
       display: flex;
       position: sticky;
-      background: white;
+      background: var(--body-background);
       z-index: 300;
       padding: 16px 32px;
       width: 100%;
@@ -61,6 +61,7 @@
         overflow: hidden;
         white-space: nowrap;
         width: 100%;
+        color: var(--text-color-primary);
       }
     }
 
@@ -94,15 +95,16 @@
       font-size: 16px;
       width: 100%;
       border: none;
-      background-color: #fff;
+      background-color: var(--button-background);
       font-family: Gilroy, Arial, Helvetica, sans-serif;
       text-transform: none;
       padding: 15px 10px;
       cursor: pointer;
+      color: var(--text-color-primary);
     }
 
     .action_homework_item:hover {
-      background-color: #2022270a;
+      background-color: #999999;
     }
   }
 }

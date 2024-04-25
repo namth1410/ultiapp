@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Select, ConfigProvider } from "antd";
 import CardClass from "components/CardClass/CardClass";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,6 @@ import {
   getUserJoinedClasses,
 } from "appdata/classes/classesSlice";
 import { useNavigate } from "react-router-dom";
-const { Search } = Input;
 
 function ClassHome() {
   const dispatch = useDispatch();
@@ -157,27 +156,48 @@ function ClassHome() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.tools}>
-        <Search
-          placeholder="Tìm kiếm..."
-          allowClear
-          enterButton="Tìm kiếm"
-          size="large"
-          onSearch={(e) => {
-            onSearch(e.trim());
+        <ConfigProvider
+          theme={{
+            token: {
+              inputFontSize: "26",
+              colorText: "var(--text-color-primary)",
+              colorTextPlaceholder: "var(--text-color-secondary)",
+              colorBorder: "var(--text-color-primary)",
+              colorBgContainer: "var(--body-background)",
+            },
+            components: {
+              Select: {
+                optionSelectedColor: "var(--primary-color)",
+                selectorBg: "var(--body-background)",
+                colorText: "#000",
+              },
+            },
           }}
-          onChange={(e) => {
-            setSearchValue(e.target.value);
-          }}
-          className={styles.search_tool}
-        />
-        <Select
-          defaultValue="time_desc"
-          className={styles.filter_tool}
-          options={filters}
-          onChange={(e) => {
-            setFilter(e);
-          }}
-        />
+        >
+          <Input.Search
+            placeholder="Tìm kiếm..."
+            allowClear
+            enterButton="Tìm kiếm"
+            size="large"
+            onSearch={(e) => {
+              onSearch(e.trim());
+            }}
+            activeBorderColor="red"
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+            className={styles.search_tool}
+          />
+          <Select
+            defaultValue="time_desc"
+            className={styles.filter_tool}
+            options={filters}
+            onChange={(e) => {
+              setFilter(e);
+            }}
+          />
+        </ConfigProvider>
+
         <Button
           size="large"
           type="primary"

@@ -1,10 +1,10 @@
 import { CloseCircleFilled, FileImageFilled } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import { Button, Input, ConfigProvider } from "antd";
 import { postNewsfeed } from "appdata/newsfeed/newsfeedSlice";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "../../firebase";
-import styles from "./FormCreateNews.module.css";
+import styles from "./FormCreateNews.module.scss";
 
 const { TextArea } = Input;
 
@@ -53,19 +53,30 @@ function FormCreateNews() {
           />
         </div>
         <div className={styles.content}>
-          <TextArea
-            placeholder="Nhập nội dung thảo luận với lớp học..."
-            style={{
-              border: "none",
-              boxShadow: "none",
-              maxWidth: "none",
-              width: "100%",
+          <ConfigProvider
+            theme={{
+              token: {
+                colorText: "var(--text-color-primary)",
+                colorTextPlaceholder: "var(--text-color-secondary)",
+                colorBorder: "var(--text-color-primary)",
+                colorBgContainer: "var(--body-background)",
+              },
             }}
-            value={content}
-            onChange={(e) => {
-              setContent(e.target.value);
-            }}
-          />
+          >
+            <TextArea
+              placeholder="Nhập nội dung thảo luận với lớp học..."
+              style={{
+                border: "none",
+                boxShadow: "none",
+                maxWidth: "none",
+                width: "100%",
+              }}
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+              }}
+            />
+          </ConfigProvider>
         </div>
       </div>
 
@@ -85,7 +96,7 @@ function FormCreateNews() {
       <div className={styles.footer}>
         <div
           style={{
-            borderRight: "1px solid rgb(216, 220, 240)",
+            borderRight: "1px solid var(--text-color-secondary)",
           }}
         >
           <Button

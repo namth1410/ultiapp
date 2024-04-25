@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { convertDurationToStringV1 } from "ultis/time";
 import { auth, useAuth } from "../../firebase";
-import styles from "./NewItem.module.css";
+import styles from "./NewItem.module.scss";
 
 function NewItem({ newfeed }) {
   const { creatorId } = useClass();
@@ -106,6 +106,7 @@ function NewItem({ newfeed }) {
               textDecoration: "underline",
               fontFamily: "Gilroy",
               fontSize: "16px",
+              color: "var(--text-primary-color)",
             }}
           >
             {isHiddenComment ? "Hiện bình luận" : "Ẩn bình luận"}
@@ -137,7 +138,11 @@ function NewItem({ newfeed }) {
           }
           onClick={onComment}
           disabled={commentDraft.length <= 0}
-          style={{ color: "primary", border: "none", backgroundColor: "#fff" }}
+          style={{
+            color: "primary",
+            border: "none",
+            backgroundColor: "var(--button-background)",
+          }}
         ></Button>
       </div>
 

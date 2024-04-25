@@ -1,6 +1,6 @@
 import { useClass } from "contexts/class_context/ClassContext";
 import { convertISOToCustomFormat } from "ultis/time";
-import styles from "./LeftBox.module.css";
+import styles from "./LeftBox.module.scss";
 import { useScore } from "./ScoreContext";
 
 function LeftBox() {

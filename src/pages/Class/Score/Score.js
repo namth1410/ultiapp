@@ -1,6 +1,6 @@
 import LeftBox from "./LeftBox";
 import RightBox from "./RightBox";
-import styles from "./Score.module.css";
+import styles from "./Score.module.scss";
 function Score() {
   return (
     <div className={styles.wrapper}>

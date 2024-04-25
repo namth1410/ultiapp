@@ -7,6 +7,17 @@
   position: sticky;
   top: 4.5rem;
   width: fit-content;
-  border-right: 1px solid #d8dcf0;
+  border-right: 1px solid var(--text-color-secondary);
   color: var(--text-color-primary);
+
+  .member_item {
+    color: var(--text-color-primary);
+    width: 100%;
+    &:hover {
+      color: var(--primary-color);
+      span {
+        color: var(--primary-color);
+      }
+    }
+  }
 }

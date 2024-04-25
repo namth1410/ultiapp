@@ -1,6 +1,8 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Modal, Table } from "antd";
+import { Button, ConfigProvider, Modal, Table } from "antd";
+import { deleteHomework } from "appdata/homework/homeworkSlice";
 import { useClass } from "contexts/class_context/ClassContext";
+import { useHomework } from "contexts/homework_context/HomeworkContext";
 import {
   collection,
   onSnapshot,
@@ -9,14 +11,11 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { auth, firestore, useAuth } from "../../../firebase";
-import styles from "./HomeWork.module.css";
-
-import { deleteHomework } from "appdata/homework/homeworkSlice";
-import { useHomework } from "contexts/homework_context/HomeworkContext";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { convertISOToCustomFormat } from "ultis/time";
+import { auth, firestore, useAuth } from "../../../firebase";
+import styles from "./HomeWork.module.scss";
 
 const symbNull = "--";
 
@@ -47,7 +46,9 @@ function HomeWork() {
           props: {
             style: {
               background:
-                name === selectedHomework?.nameHomework ? "#e3f2fd" : "unset",
+                name === selectedHomework?.nameHomework
+                  ? "var(--blue)"
+                  : "unset",
             },
           },
           children: <div>{name}</div>,
@@ -149,24 +150,41 @@ function HomeWork() {
         </div>
       )}
       <div style={{ display: "flex", width: "100%", height: "100%" }}>
-        <Table
-          style={{
-            width: "70%",
-            borderRight: "1px solid rgb(216, 220, 240)",
-            height: "100%",
-          }}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: (event) => {
-                setSelectedHomework(
-                  dataHomework.find((el) => el.id === record.key)
-                );
+        <ConfigProvider
+          theme={{
+            token: {
+              colorText: "var(--text-color-primary)",
+              colorTextPlaceholder: "var(--text-color-secondary)",
+              colorBorder: "var(--text-color-primary)",
+              colorBgContainer: "var(--body-background)",
+            },
+            components: {
+              Table: {
+                rowHoverBg: "var(--blue)",
+                headerBg: "#868e97",
               },
-            };
+            },
           }}
-          columns={columns}
-          dataSource={homeworkData}
-        />
+        >
+          <Table
+            style={{
+              width: "70%",
+              borderRight: "1px solid rgb(216, 220, 240)",
+              height: "100%",
+            }}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: (event) => {
+                  setSelectedHomework(
+                    dataHomework.find((el) => el.id === record.key)
+                  );
+                },
+              };
+            }}
+            columns={columns}
+            dataSource={homeworkData}
+          />
+        </ConfigProvider>
 
         {selectedHomework && (
           <div className={styles.right_box}>

@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Input, Select } from "antd";
+import { Input, Select, ConfigProvider } from "antd";
 import CardQuizz from "components/CardQuizz/CardQuizz";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -136,24 +136,43 @@ const Home = () => {
   return (
     <div className={styles.home}>
       <div className={styles.tools}>
-        <Search
-          placeholder="Tìm kiếm..."
-          allowClear
-          enterButton="Tìm kiếm"
-          size="large"
-          onChange={(e) => {
-            setSearchValue(e.target.value);
+        <ConfigProvider
+          theme={{
+            token: {
+              inputFontSize: "26",
+              colorText: "var(--text-color-primary)",
+              colorTextPlaceholder: "var(--text-color-secondary)",
+              colorBorder: "var(--text-color-primary)",
+              colorBgContainer: "var(--body-background)",
+            },
+            components: {
+              Select: {
+                optionSelectedColor: "var(--primary-color)",
+                selectorBg: "var(--body-background)",
+                colorText: "#000",
+              },
+            },
           }}
-          className={styles.search_tool}
-        />
-        <Select
-          defaultValue="time_desc"
-          className={styles.filter_tool}
-          options={filters}
-          onChange={(e) => {
-            setFilter(e);
-          }}
-        />
+        >
+          <Search
+            placeholder="Tìm kiếm..."
+            allowClear
+            enterButton="Tìm kiếm"
+            size="large"
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+            className={styles.search_tool}
+          />
+          <Select
+            defaultValue="time_desc"
+            className={styles.filter_tool}
+            options={filters}
+            onChange={(e) => {
+              setFilter(e);
+            }}
+          />
+        </ConfigProvider>
       </div>
 
       <button

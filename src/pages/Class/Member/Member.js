@@ -1,5 +1,5 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Input, Modal, Table } from "antd";
+import { Button, Input, Modal, Table, ConfigProvider } from "antd";
 import {
   addUserToClass,
   deleteRequestJoinClass,
@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../firebase";
-import styles from "./Member.module.css";
+import styles from "./Member.module.scss";
 
 const { Search } = Input;
 
@@ -193,12 +193,23 @@ function Member() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.tools}>
-        <Search
-          placeholder="Nhập và nhấn enter để tìm kiếm"
-          onSearch={onSearch}
-          enterButton
-          size="large"
-        />
+        <ConfigProvider
+          theme={{
+            token: {
+              colorText: "var(--text-color-primary)",
+              colorTextPlaceholder: "var(--text-color-secondary)",
+              colorBorder: "var(--text-color-primary)",
+              colorBgContainer: "var(--body-background)",
+            },
+          }}
+        >
+          <Search
+            placeholder="Nhập và nhấn enter để tìm kiếm"
+            onSearch={onSearch}
+            enterButton
+            size="large"
+          />
+        </ConfigProvider>
 
         <Button
           type="primary"
@@ -223,11 +234,28 @@ function Member() {
             loop={true}
           />
         ) : (
-          <Table
-            style={{ width: "100%" }}
-            columns={columns}
-            dataSource={dataMembers}
-          />
+          <ConfigProvider
+            theme={{
+              token: {
+                colorText: "var(--text-color-primary)",
+                colorTextPlaceholder: "var(--text-color-secondary)",
+                colorBorder: "var(--text-color-primary)",
+                colorBgContainer: "var(--body-background)",
+              },
+              components: {
+                Table: {
+                  rowHoverBg: "var(--blue)",
+                  headerBg: "#868e97",
+                },
+              },
+            }}
+          >
+            <Table
+              style={{ width: "100%" }}
+              columns={columns}
+              dataSource={dataMembers}
+            />
+          </ConfigProvider>
         )}
         {requestJoinClass && isOwnClass && (
           <div className={styles.right_box}>

@@ -2,10 +2,9 @@ import {
   DeleteOutlined,
   DesktopOutlined,
   DownloadOutlined,
-  EyeOutlined,
   PartitionOutlined,
 } from "@ant-design/icons";
-import { Badge, Button, Input, Select } from "antd";
+import { Badge, Button, ConfigProvider, Input, Select } from "antd";
 import { uploadFile } from "appdata/homework/homeworkSlice";
 import empty from "assets/img/empty.json";
 import pdf from "assets/img/pdf.png";
@@ -14,7 +13,7 @@ import { useClass } from "contexts/class_context/ClassContext";
 import Lottie from "lottie-react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./Document.module.css";
+import styles from "./Document.module.scss";
 import { useDocument } from "./DocumentContext";
 
 function MyDocument() {
@@ -144,25 +143,36 @@ function MyDocument() {
       <div className={styles.left_box}>
         {!isShowDocument && (
           <div className={styles.tools}>
-            <Search
-              placeholder="Tìm kiếm..."
-              allowClear
-              enterButton="Tìm kiếm"
-              size="large"
-              onChange={(e) => {
-                setSelectedDocument(null);
-                const key = e.target.value.trim();
-                if (key === "") {
-                  setDocumentsToShow(documents);
-                } else {
-                  const a =
-                    documentsToShow?.filter((el) => el.name.includes(key)) ||
-                    [];
-
-                  setDocumentsToShow(a.length === 0 ? null : a);
-                }
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorText: "var(--text-color-primary)",
+                  colorTextPlaceholder: "var(--text-color-secondary)",
+                  colorBorder: "var(--text-color-primary)",
+                  colorBgContainer: "var(--body-background)",
+                },
               }}
-            />
+            >
+              <Search
+                placeholder="Tìm kiếm..."
+                allowClear
+                enterButton="Tìm kiếm"
+                size="large"
+                onChange={(e) => {
+                  setSelectedDocument(null);
+                  const key = e.target.value.trim();
+                  if (key === "") {
+                    setDocumentsToShow(documents);
+                  } else {
+                    const a =
+                      documentsToShow?.filter((el) => el.name.includes(key)) ||
+                      [];
+
+                    setDocumentsToShow(a.length === 0 ? null : a);
+                  }
+                }}
+              />
+            </ConfigProvider>
             <Select
               defaultValue="time_desc"
               style={{
@@ -292,12 +302,13 @@ function MyDocument() {
               onClick={() => {
                 setIsShowDocument(!isShowDocument);
               }}
-              style={{
-                backgroundColor: isShowDocument ? "#ccc" : "unset",
-              }}
             >
               <span>{isShowDocument ? "Đóng tài liệu" : "Xem"}</span>
-              <EyeOutlined />
+              {isShowDocument ? (
+                <i className="bi bi-eye"></i>
+              ) : (
+                <i className="bi bi-eye-slash"></i>
+              )}
             </button>
 
             <button

@@ -36,7 +36,7 @@ function CommentItem({ comment }) {
 
       <div
         style={{
-          backgroundColor: "rgb(239, 239, 245)",
+          backgroundColor: "var(--body-background)",
           borderRadius: "16px",
           padding: "8px 16px",
           margin: "4px",

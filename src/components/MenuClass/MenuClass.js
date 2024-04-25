@@ -5,7 +5,7 @@ import {
   SnippetsFilled,
   WindowsFilled,
 } from "@ant-design/icons";
-import { Badge, Menu, Modal } from "antd";
+import { Badge, Menu, Modal, ConfigProvider } from "antd";
 import { useClass } from "contexts/class_context/ClassContext";
 import { addDoc, collection, doc, runTransaction } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -40,11 +40,15 @@ function MenuClass() {
     getItem("Bảng tin", "newsfeed", <WindowsFilled />),
     getItem(
       isOwnClass ? (
-        <Badge count={requestJoinClass?.length} offset={[15, 7]}>
-          <span>Thành viên</span>
+        <Badge
+          className={styles.member_item}
+          count={requestJoinClass?.length}
+          offset={[15, 7]}
+        >
+          <span className={styles.member_item}>Thành viên</span>
         </Badge>
       ) : (
-        <span>Thành viên</span>
+        <span className={styles.member_item}>Thành viên</span>
       ),
       "member",
       <WindowsFilled />
@@ -112,11 +116,15 @@ function MenuClass() {
         getItem("Bảng tin", "newsfeed", <WindowsFilled />),
         getItem(
           isOwnClass ? (
-            <Badge count={requestJoinClass?.length} offset={[15, 7]}>
-              <span>Thành viên</span>
+            <Badge
+              className={styles.member_item}
+              count={requestJoinClass?.length}
+              offset={[15, 7]}
+            >
+              <span className={styles.member_item}>Thành viên</span>
             </Badge>
           ) : (
-            <span>Thành viên</span>
+            <span className={styles.member_item}>Thành viên</span>
           ),
           "member",
           <WindowsFilled />
@@ -154,25 +162,43 @@ function MenuClass() {
 
   return (
     <div className={styles.wrapper}>
-      <span style={{ color: "#202227" }}>{dataClass?.nameClass}</span>
+      <span>{dataClass?.nameClass}</span>
       <span
-        style={{ color: "#202227", fontWeight: "500", marginTop: "5px" }}
+        style={{ fontWeight: "500", marginTop: "5px" }}
       >{`Mã lớp: ${dataClass?.id}`}</span>
-      <Menu
-        style={{
-          width: 256,
+      <ConfigProvider
+        theme={{
+          token: {
+            colorBgContainer: "var(--body-background)",
+          },
+          components: {
+            Menu: {
+              colorText: "#000",
+              itemActiveBg: "var(--primary-color)",
+              itemSelectedBg: "var(--button-background)",
+              itemColor: "var(--text-color-primary)",
+              itemHoverColor: "var(--primary-color)",
+              lineWidth: 0
+            },
+          },
         }}
-        onClick={(e) => {
-          const parts = window.location.pathname.split("/");
-          parts[parts.length - 1] = e.key;
-          const newPath = parts.join("/");
-          navigate(newPath);
-        }}
-        selectedKeys={selectedKeys}
-        defaultSelectedKeys={["newsfeed"]}
-        mode="inline"
-        items={items}
-      />
+      >
+        <Menu
+          style={{
+            width: 256,
+          }}
+          onClick={(e) => {
+            const parts = window.location.pathname.split("/");
+            parts[parts.length - 1] = e.key;
+            const newPath = parts.join("/");
+            navigate(newPath);
+          }}
+          selectedKeys={selectedKeys}
+          defaultSelectedKeys={["newsfeed"]}
+          mode="inline"
+          items={items}
+        />
+      </ConfigProvider>
       {!preventStudentExitClass && !isOwnClass && (
         <button
           style={{

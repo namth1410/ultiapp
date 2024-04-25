@@ -8,7 +8,7 @@ import NewItem from "components/NewItem/NewItem";
 import { useClass } from "contexts/class_context/ClassContext";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./NewsFeed.module.css";
+import styles from "./NewsFeed.module.scss";
 
 function NewsFeed() {
   const classId = window.location.pathname.split("/")[2];

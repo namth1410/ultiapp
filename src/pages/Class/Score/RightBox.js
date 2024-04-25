@@ -1,10 +1,10 @@
-import { Table } from "antd";
+import { ConfigProvider, Table } from "antd";
 import { useEffect, useState } from "react";
 import {
   convertDurationToStringV2,
   convertISOToCustomFormat,
 } from "ultis/time";
-import styles from "./RightBox.module.css";
+import styles from "./RightBox.module.scss";
 import { useScore } from "./ScoreContext";
 
 function RightBox() {
@@ -59,7 +59,27 @@ function RightBox() {
 
   return (
     <div className={styles.wrapper}>
-      <Table columns={columns} dataSource={dataTable} />
+      <ConfigProvider
+        theme={{
+          token: {
+            colorText: "var(--text-color-primary)",
+            colorTextPlaceholder: "var(--text-color-secondary)",
+            colorBorder: "var(--text-color-primary)",
+            colorBgContainer: "var(--body-background)",
+          },
+          components: {
+            Table: {
+              rowHoverBg: "var(--blue)",
+              headerBg: "#868e97",
+              headerSortHoverBg: "var(--blue)",
+              headerSortActiveBg: "var(--blue)",
+              bodySortBg: "var(--blue)",
+            },
+          },
+        }}
+      >
+        <Table columns={columns} dataSource={dataTable} />
+      </ConfigProvider>
     </div>
   );
 }

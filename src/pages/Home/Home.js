@@ -107,7 +107,7 @@ const Home = () => {
         query(
           quizzsRef,
           where("uidCreator", "!=", uid),
-          where("access", "==", "public")
+          where("access", "!=", "private")
         )
       );
       const quizzsData = [];

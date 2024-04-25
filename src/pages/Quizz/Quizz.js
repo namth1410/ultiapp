@@ -1,5 +1,5 @@
 import { LockOutlined, RiseOutlined, StarFilled } from "@ant-design/icons";
-import { Badge, Button, Input, Modal, Rate, Select } from "antd";
+import { Badge, Button, Input, Modal, Rate } from "antd";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -24,12 +24,13 @@ function Quizz() {
   const [totalQuizzItem, setTotalQuizzItem] = useState(0);
   const [hideTerm, setHideTerm] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
-  const [access, setAccess] = useState("public");
   const [voice, setVoice] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mute, setMute] = useState(false);
+
   const [isEditQuizzItemModalOpen, setIsEditQuizzItemModalOpen] =
     useState(false);
   const [isRateModalOpen, setIsRateModalOpen] = useState(false);
+
   const [rate, setRate] = useState(0);
   const [rateComment, setRateComment] = useState("");
   const [rateOfQuizz, setRateOfQuizz] = useState(0);
@@ -45,16 +46,6 @@ function Quizz() {
   const handleVoiceChange = (event) => {
     const voices = window.speechSynthesis.getVoices();
     setVoice(voices.find((v) => v.name === event.target.value));
-  };
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
   };
 
   const onRate = async () => {
@@ -171,7 +162,7 @@ function Quizz() {
       );
 
       u.voice = voice;
-      synth.speak(u);
+      !mute && synth.speak(u);
 
       const cancelCurrentUtterance = () => {
         if (synth && synth.speaking && u) {
@@ -544,11 +535,13 @@ function Quizz() {
 
           <button
             onClick={() => {
-              showModal();
+              setMute(!mute);
             }}
           >
             <i
-              className="bi bi-gear"
+              className={`bi ${
+                mute ? "bi-volume-mute-fill" : "bi-volume-up-fill"
+              }`}
               style={{ fontSize: "30px", color: "var(--primary-color)" }}
             ></i>
           </button>
@@ -610,32 +603,6 @@ function Quizz() {
           </div>
         </div>
       )}
-
-      <Modal
-        title="Xác nhận nộp bài"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <div style={{}}>
-          <span style={{ marginRight: "10px" }}>Quyền truy cập</span>
-          <Select
-            defaultValue={access}
-            style={{
-              width: "auto",
-            }}
-            onChange={(value) => {
-              setAccess(value);
-            }}
-          >
-            <Select.Option value="public">Mọi người</Select.Option>
-            <Select.Option value="password">Người có mật khẩu</Select.Option>
-            <Select.Option value="private">Chỉ mình tôi</Select.Option>
-          </Select>
-        </div>
-        <p>Có câu chưa làm !!!</p>
-        <p>Bạn có muốn nộp bài không?</p>
-      </Modal>
 
       <Modal
         title="Sửa"

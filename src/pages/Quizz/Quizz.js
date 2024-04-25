@@ -26,6 +26,7 @@ function Quizz() {
   const [isShuffle, setIsShuffle] = useState(false);
   const [voice, setVoice] = useState(null);
   const [mute, setMute] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(false);
 
   const [isEditQuizzItemModalOpen, setIsEditQuizzItemModalOpen] =
     useState(false);
@@ -138,6 +139,29 @@ function Quizz() {
     setIsEditQuizzItemModalOpen(false);
     window.location.reload();
   };
+
+  useEffect(() => {
+    let tmp = null;
+    if (autoPlay) {
+      tmp = setInterval(() => {
+        setHideTerm(true);
+        setTimeout(() => {
+          if (indexQuizzItem === totalQuizzItem - 1) {
+            setAutoPlay(false);
+          } else {
+            setIndexQuizzItem((pre) => pre + 1);
+            setHideTerm(false);
+            console.log(new Date().getSeconds());
+          }
+        }, 1500);
+      }, 3000);
+    }
+
+    return () => {
+      clearInterval(tmp);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, indexQuizzItem]);
 
   useEffect(() => {
     if (isShuffle && dataQuizz?.quizz_items) {
@@ -447,9 +471,13 @@ function Quizz() {
 
       <div className={styles.tools_box}>
         <div style={{ display: "flex", gap: "15px" }}>
-          <button>
+          <button
+            onClick={() => {
+              setAutoPlay(!autoPlay);
+            }}
+          >
             <i
-              className="bi bi-play-fill"
+              className={`bi ${autoPlay ? "bi-pause-fill" : "bi-play-fill"}`}
               style={{ fontSize: "35px", color: "var(--primary-color)" }}
             ></i>
           </button>

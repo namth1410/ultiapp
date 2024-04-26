@@ -3,7 +3,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { auth, firestore } from "../../firebase";
-import styles from "./CreateClass.module.css";
+import styles from "./CreateClass.module.scss";
 
 function CreateClass() {
   const [isLoading, setIsLoading] = useState(false);

@@ -1,6 +1,6 @@
 import { BarsOutlined, CloseOutlined, UserOutlined } from "@ant-design/icons";
 import { Badge, Button, Divider, Dropdown, Space, Switch } from "antd";
-import Logo from "assets/img/logo.svg";
+import Logo from "assets/img/logo.png";
 import { useTheme } from "contexts/theme_context/ThemeContext";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {

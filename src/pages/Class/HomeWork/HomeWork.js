@@ -303,7 +303,7 @@ function HomeWork() {
 
                 <button
                   onClick={() => {
-                    window.location.href = `${process.env.REACT_APP_HOST}/class/${classId}/homework/${selectedHomework.id}/edit`;
+                    navigate(`${selectedHomework.id}/edit`);
                   }}
                   className={styles.action_homework_item}
                   style={{ color: "var(--primary-color)" }}

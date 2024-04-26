@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Spin } from "antd";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
@@ -55,6 +55,7 @@ const SendMessage = () => {
     const { uid, displayName, photoURL } = auth.currentUser;
     const imgUrl = await handleImageUpload();
     setSelectedImage(null);
+    inputFile.current.value = "";
     await addDoc(collection(firestore, "messages"), {
       text: message,
       name: displayName,
@@ -85,24 +86,54 @@ const SendMessage = () => {
     >
       {selectedImage && (
         <div
-          style={{ display: "flex", marginBottom: "10px", marginLeft: "auto" }}
+          style={{
+            display: "flex",
+            marginBottom: "10px",
+            marginLeft: "auto",
+            position: "relative",
+          }}
         >
           <img
             alt="err"
             width="250px"
             src={URL.createObjectURL(selectedImage)}
           />
-          <br />
-          <button onClick={() => setSelectedImage(null)}>
-            <i
-              className="bi bi-trash3-fill"
+          {isSending && (
+            <div
               style={{
-                fontSize: "22px",
-                color: "#ff6666",
-                padding: "8px 12px",
+                width: "250px",
+                height: "100%",
+                position: "absolute",
+                top: "0",
+                left: "0",
+                background: "#000",
+                opacity: "0.5",
               }}
-            ></i>
-          </button>
+            >
+              <Spin
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  translate: "-50% -50%",
+                }}
+                size="large"
+              ></Spin>
+            </div>
+          )}
+          <br />
+          {!isSending && (
+            <button onClick={() => setSelectedImage(null)}>
+              <i
+                className="bi bi-trash3-fill"
+                style={{
+                  fontSize: "22px",
+                  color: "#ff6666",
+                  padding: "8px 12px",
+                }}
+              ></i>
+            </button>
+          )}
         </div>
       )}
       <form

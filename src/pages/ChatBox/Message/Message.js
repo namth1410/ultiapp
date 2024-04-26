@@ -19,7 +19,7 @@ const Message = ({ message }) => {
           <img
             style={{ borderRadius: "8px" }}
             alt="Không tìm thấy"
-            width="250px"
+            width="200px"
             src={message.imgUrl}
           />
         )}

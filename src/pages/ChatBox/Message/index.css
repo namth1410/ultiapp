@@ -33,3 +33,11 @@
 .user-message {
   word-break: break-all;
 }
+
+@media screen and(max-width:650px) {
+  .send-message {
+    input {
+      font-size: 16px;
+    }
+  }
+}

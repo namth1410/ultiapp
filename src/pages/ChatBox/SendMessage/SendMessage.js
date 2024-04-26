@@ -126,7 +126,7 @@ const SendMessage = () => {
           placeholder="Nhập những lời yêu thương vào đây này cậu..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          style={{ fontSize: "20px", flex: 1, padding: "8px" }}
+          style={{ flex: 1, padding: "8px" }}
           autoComplete="off"
         />
 

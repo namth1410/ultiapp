@@ -100,6 +100,7 @@ function CardQuizz({ props }) {
             setStatusPassword("");
             setPasswordModal(e.target.value);
           }}
+          onPressEnter={handleOk}
           value={passwordModal}
           ref={inputRef}
         />

@@ -178,7 +178,7 @@ function Quizz() {
 
   useEffect(() => {
     const synth = window.speechSynthesis;
-    if (dataQuizz && !hideTerm) {
+    if ((dataQuizz && !hideTerm) || autoPlay) {
       const u = new SpeechSynthesisUtterance(
         isShuffle
           ? dataShuffleQuizz?.quizz_items[indexQuizzItem].term
@@ -199,7 +199,7 @@ function Quizz() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexQuizzItem]);
+  }, [indexQuizzItem, autoPlay]);
 
   useEffect(() => {
     const getDataQuizz = async (id) => {

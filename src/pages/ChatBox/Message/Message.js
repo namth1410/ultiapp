@@ -15,6 +15,14 @@ const Message = ({ message }) => {
       <div className="chat-bubble__right">
         <p className="user-name">{message.name}</p>
         <p className="user-message">{message.text}</p>
+        {message.imgUrl !== "" && (
+          <img
+            style={{ borderRadius: "8px" }}
+            alt="Không tìm thấy"
+            width="250px"
+            src={message.imgUrl}
+          />
+        )}
       </div>
     </div>
   );

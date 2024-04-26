@@ -1,18 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
-  query,
   collection,
-  orderBy,
-  onSnapshot,
   limit,
+  onSnapshot,
+  orderBy,
+  query,
 } from "firebase/firestore";
-import { firestore } from "../../firebase";
 import Message from "pages/ChatBox/Message/Message";
 import SendMessage from "pages/ChatBox/SendMessage/SendMessage";
+import { useEffect, useState } from "react";
+import { firestore } from "../../firebase";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
-  const scroll = useRef();
+
+  useEffect(() => {
+    document.querySelector("form").scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     const q = query(
@@ -26,24 +29,28 @@ const ChatBox = () => {
       QuerySnapshot.forEach((doc) => {
         fetchedMessages.push({ ...doc.data(), id: doc.id });
       });
-      fetchedMessages.sort(
-        (a, b) => a.createdAt - b.createdAt
-      );
+      fetchedMessages.sort((a, b) => a.createdAt - b.createdAt);
       setMessages(fetchedMessages);
     });
     return () => unsubscribe;
   }, []);
 
   return (
-    <main className="chat-box">
+    <main
+      className="chat-box"
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "auto",
+      }}
+    >
       <div className="messages-wrapper">
         {messages?.map((message) => (
           <Message key={message.id} message={message} />
         ))}
       </div>
-      {/* when a new message enters the chat, the screen scrolls down to the scroll div */}
-      <span ref={scroll}></span>
-      <SendMessage scroll={scroll} />
+      <SendMessage />
     </main>
   );
 };

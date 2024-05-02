@@ -2,6 +2,7 @@ import { store } from "appdata/store";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { ThemeProvider } from "contexts/theme_context/ThemeContext";
 import ReactDOM from "react-dom/client";
+import "react-medium-image-zoom/dist/styles.css";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";

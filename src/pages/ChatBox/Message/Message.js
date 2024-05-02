@@ -1,6 +1,6 @@
-import React from "react";
-import { auth } from "../../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import Zoom from "react-medium-image-zoom";
+import { auth } from "../../../firebase";
 import "./index.css";
 
 const Message = ({ message }) => {
@@ -16,12 +16,14 @@ const Message = ({ message }) => {
         <p className="user-name">{message.name}</p>
         <p className="user-message">{message.text}</p>
         {message.imgUrl !== "" && (
-          <img
-            style={{ borderRadius: "8px" }}
-            alt="Không tìm thấy"
-            width="200px"
-            src={message.imgUrl}
-          />
+          <Zoom>
+            <img
+              style={{ borderRadius: "8px" }}
+              alt="Không tìm thấy"
+              width="200px"
+              src={message.imgUrl}
+            />
+          </Zoom>
         )}
       </div>
     </div>

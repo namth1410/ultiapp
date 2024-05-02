@@ -164,6 +164,7 @@ const SendMessage = () => {
         <input
           type="file"
           name="myImage"
+          accept="image/*"
           onChange={(event) => {
             setSelectedImage(event.target.files[0]);
           }}

@@ -7,14 +7,15 @@ import {
 } from "firebase/firestore";
 import Message from "pages/ChatBox/Message/Message";
 import SendMessage from "pages/ChatBox/SendMessage/SendMessage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { firestore } from "../../firebase";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    document.querySelector("form").scrollIntoView({ behavior: "smooth" });
+  useLayoutEffect(() => {
+    const tmp = document.querySelectorAll(".chat-bubble");
+    tmp[tmp.length - 1].scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
@@ -42,10 +43,14 @@ const ChatBox = () => {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        overflow: "auto",
       }}
     >
-      <div className="messages-wrapper">
+      <div
+        className="messages-wrapper"
+        style={{
+          overflow: "auto",
+        }}
+      >
         {messages?.map((message) => (
           <Message key={message.id} message={message} />
         ))}

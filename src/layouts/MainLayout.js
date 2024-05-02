@@ -1,7 +1,7 @@
 import { getDataClassById, getHomeworkOfClass } from "appdata/class/classSlice";
 import { getNewsfeedOfClass } from "appdata/newsfeed/newsfeedSlice";
 import Header from "components/Header/Header";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -64,6 +64,10 @@ function MainLayout() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+
+  useLayoutEffect(() => {
+    contentRef.current.style.height = `calc(100vh - ${headerRef.current.offsetHeight}px)`;
+  }, [visibleHeader]);
 
   return (
     <>

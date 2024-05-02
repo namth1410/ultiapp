@@ -15,7 +15,9 @@ const ChatBox = () => {
 
   useLayoutEffect(() => {
     const tmp = document.querySelectorAll(".chat-bubble");
-    tmp[tmp.length - 1].scrollIntoView({ behavior: "smooth" });
+    if (tmp.length > 0) {
+      tmp[tmp.length - 1].scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   useEffect(() => {

@@ -350,7 +350,6 @@ function EditHomework() {
                     console.log(time);
                     setDeadline(new Date(time).toISOString());
                     setDeadlineShow(dayjs(time, "YYYY-MM-DD HH:mm:ss"));
-                    console.log(dayjs(time, "YYYY-MM-DD HH:mm:ss"));
                   }}
                   value={deadlineShow}
                 />

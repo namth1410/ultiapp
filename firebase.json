@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "build",
+    "public": "public",
     "site": "ultiapp-255c3",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

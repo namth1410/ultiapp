@@ -52,6 +52,16 @@ function PracticeSpeaking() {
     synth.speak(u);
   };
 
+  function arrayBufferToBase64(buffer) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  }
+
   function startRecording() {
     if (isRecording) {
       if (mediaRecorder && mediaRecorder.state === "recording") {
@@ -85,6 +95,38 @@ function PracticeSpeaking() {
         _mediaRecorder.onstop = () => {
           const blob = new Blob(chunks, { type: "audio/wav" });
           setAudioUrl(URL.createObjectURL(blob));
+          const reader = new FileReader();
+          reader.readAsArrayBuffer(blob);
+
+          reader.onloadend = () => {
+            const base64String = arrayBufferToBase64(reader.result);
+            console.log(base64String); // Đây là chuỗi base64 của âm thanh
+            const url =
+              "https://wrg7ayuv7i.execute-api.eu-central-1.amazonaws.com/Prod/GetAccuracyFromRecordedAudio";
+            const bodyData = {
+              base64Audio: base64String,
+              language: "en",
+              title: "Who's going to pay for all of this?",
+            };
+
+            fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "text/plain;charset=UTF-8",
+                "X-Api-Key": "rll5QsTiv83nti99BW6uCmvs9BDVxSB39SVFceYb",
+              },
+              body: JSON.stringify(bodyData),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // Xử lý kết quả trả về
+                console.log(data);
+              })
+              .catch((error) => {
+                // Xử lý lỗi
+                console.error(error);
+              });
+          };
         };
         setMediaRecorder(_mediaRecorder);
         SpeechRecognition.startListening({ continuous: true });

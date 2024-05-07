@@ -9,6 +9,7 @@ import Message from "pages/ChatBox/Message/Message";
 import SendMessage from "pages/ChatBox/SendMessage/SendMessage";
 import { useEffect, useState, useLayoutEffect } from "react";
 import { firestore } from "../../firebase";
+import workerScript from "./worker";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -21,6 +22,13 @@ const ChatBox = () => {
   }, [messages]);
 
   useEffect(() => {
+    const worker = new Worker(workerScript);
+    console.log(worker);
+    worker.postMessage(100);
+    worker.addEventListener("message", (e) => {
+      console.log(e.data);
+    });
+
     const q = query(
       collection(firestore, "messages"),
       orderBy("createdAt", "desc"),

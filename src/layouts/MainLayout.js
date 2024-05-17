@@ -66,7 +66,8 @@ function MainLayout() {
   }, [location.pathname]);
 
   useLayoutEffect(() => {
-    contentRef.current.style.height = `calc(100vh - ${headerRef.current.offsetHeight}px)`;
+    console.log(headerRef);
+    contentRef.current.style.height = `calc(100vh - ${headerRef?.current?.offsetHeight}px)`;
   }, [visibleHeader]);
 
   return (

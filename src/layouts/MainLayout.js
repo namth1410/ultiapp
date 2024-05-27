@@ -46,6 +46,29 @@ function MainLayout() {
       }
     });
 
+    fetch("https://api.gateway.mirabo.vn/vtg/dev2/api/v1/health", {
+      credentials: "include",
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.redirected) {
+          window.location = response.url;
+        }
+        if (response.type === "opaqueredirect") {
+          // window.location.href = `${window._env_.REACT_APP_API_URL}/vtg/dev2/api/v1/health`
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Request failed with status: " + response.status);
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     return () => socket.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

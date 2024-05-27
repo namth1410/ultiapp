@@ -178,9 +178,11 @@ function Member() {
   }, [isOwnClass]);
 
   useEffect(() => {
-    if (!memberRedux.members) return;
-    setDataMembers(convertToDataTable(memberRedux.members));
+    if (memberRedux.members) {
+      setDataMembers(convertToDataTable(memberRedux.members));
+    }
     setUserSearch(memberRedux.searchUser);
+    console.log(memberRedux.searchUser);
     setIsSearching(false);
   }, [memberRedux]);
 

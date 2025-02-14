@@ -9,9 +9,9 @@ function Tts() {
   const { ttsItems, setTtsItems, onAddTtsItem, setRunSubmit } = useTTS();
 
   const [keyGGS, setKeyGGS] = useState(
-    "1UqiKR4OQd2hnFaQjzifbmrWDw96M8O17zE56OJi9skY"
+    "1KcESDkXhjofy_ZOgyBgDxqubzR53GsQDyn3nkKS4Tx8"
   );
-  const [rangeGGS, setRangeGGS] = useState("A2:B2");
+  const [rangeGGS, setRangeGGS] = useState("A4:A83");
   async function fetchData() {
     try {
       const response = await fetch(
@@ -25,22 +25,20 @@ function Tts() {
       );
 
       const rows = jsonData.table.rows;
+      console.log(rows);
+
       let a = [];
+
       rows.forEach((row) => {
-        const rowData = row.c.map((cell) => cell.v);
-        const overallDes = rowData[1]?.trim() || "";
-        overallDes.split("$").forEach((el, index) => {
-          if (index !== 0) {
-            const x = {
-              nameEx: rowData[0],
-              namePose: `step_${index}`,
-              des: el,
-              id: `${a.length}${Date.now()}`,
-            };
-            a.push(x);
-          }
-        });
+        const x = {
+          nameEx: "",
+          namePose: row.c[0].v,
+          des: row.c[0].v,
+          id: `${a.length}${Date.now()}`,
+        };
+        a.push(x);
       });
+
       console.log(a);
       setTtsItems(a);
     } catch (error) {
@@ -50,66 +48,78 @@ function Tts() {
 
   const onJSON = () => {
     const tmp = ttsItems.map((el) => ({
-      nameFile: `${el.nameEx}_${el.namePose}.mp3`,
+      nameFile: `${el.namePose}.mp3`,
       audioUrl: el.audioUrl,
       des: el.des,
     }));
     console.log(tmp);
-    let codeToCopy = `  function downloadAudioFiles(audioArray) {
-      audioArray.forEach(function (audio) {
-        let payload = audio.des;
-        let options = {
-          method: "POST",
-          headers: {
-            "api-key": "jqjW6riV0AzGlePhcX4ocvzIYuQS7PiN",
-            speed: "",
-            voice: "banmai",
-          },
-          body: payload,
-        };
-  
-        fetch("https://api.fpt.ai/hmi/tts/v5", options)
-          .then(function (response) {
-            if (!response.ok) {
-              throw new Error("Có lỗi xảy ra khi gửi yêu cầu");
-            }
-            return response.json();
-          })
-          .then(function (data) {
-            fetch(data.async)
-            .then(function (response) {
-              if (!response.ok) {
-                throw new Error("Có lỗi xảy ra khi tải tệp âm thanh");
-              }
-              return response.blob();
-            })
-            .then(function (blob) {
-              // Tạo một URL tạm thời cho blob
-              var audioUrl = URL.createObjectURL(blob);
-
-              // Tạo một thẻ a để tạo link tải tệp
-              var link = document.createElement("a");
-              link.href = audioUrl;
-
-              // Đặt thuộc tính download để tải về tệp thay vì hiển thị nó
-              link.setAttribute("download", audio.nameFile);
-
-              // Tạo sự kiện click tự động cho link để bắt đầu quá trình tải xuống
-              var clickEvent = new MouseEvent("click");
-              link.dispatchEvent(clickEvent);
-            })
-            .catch(function (error) {
-              // Xử lý lỗi
-              console.error("Đã xảy ra lỗi khi tải tệp âm thanh:", error);
-            });
-          });
-      });
-    }
+    let codeToCopy = `  
     
     // Sử dụng hàm với một mảng các đối tượng
     var audioArray = ${JSON.stringify(tmp)};
     
-    downloadAudioFiles(audioArray);`;
+    function processBatch(batch) {
+  batch.forEach(function (audio) {
+    let payload = audio.des;
+    let options = {
+      method: "POST",
+      headers: {
+        "api-key": "jqjW6riV0AzGlePhcX4ocvzIYuQS7PiN",
+        speed: "",
+        voice: "banmai",
+      },
+      body: payload,
+    };
+
+    fetch("https://api.fpt.ai/hmi/tts/v5", options)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Có lỗi xảy ra khi gửi yêu cầu");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        fetch(data.async)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Có lỗi xảy ra khi tải tệp âm thanh");
+            }
+            return response.blob();
+          })
+          .then((blob) => {
+            let audioUrl = URL.createObjectURL(blob);
+            let link = document.createElement("a");
+            link.href = audioUrl;
+            link.setAttribute("download", audio.nameFile);
+            link.dispatchEvent(new MouseEvent("click"));
+          })
+          .catch((error) =>
+            console.error("Đã xảy ra lỗi khi tải tệp âm thanh:", error)
+          );
+      });
+  });
+}
+
+function processAudioArray(audioArray, batchSize) {
+  let index = 0;
+
+  function processNextBatch() {
+    if (index < audioArray.length) {
+      let batch = audioArray.slice(index, index + batchSize);
+      processBatch(batch);
+      index += batchSize;
+
+      // Chờ 5 giây trước khi chạy batch tiếp theo (tuỳ chỉnh nếu cần)
+      setTimeout(processNextBatch, 5000);
+    }
+  }
+
+  processNextBatch();
+}
+
+// Chạy function với audioArray, mỗi lần xử lý tối đa 9 phần tử
+processAudioArray(audioArray, 9);
+`;
     navigator.clipboard
       .writeText(codeToCopy)
       .then(function () {

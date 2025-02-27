@@ -65,7 +65,7 @@ function Tts() {
       method: "POST",
       headers: {
         "api-key": "jqjW6riV0AzGlePhcX4ocvzIYuQS7PiN",
-        speed: "",
+        speed: "0.5",
         voice: "banmai",
       },
       body: payload,
